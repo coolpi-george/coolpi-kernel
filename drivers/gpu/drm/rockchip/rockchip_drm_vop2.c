@@ -262,7 +262,7 @@ struct vop2_power_domain {
 	 *
 	 */
 	spinlock_t lock;
-	unsigned int ref_count;
+	int ref_count;
 	bool on;
 	/* @vp_mask: Bit mask of video port of the power domain's
 	 * module attached to.
@@ -1674,6 +1674,8 @@ static void vop2_power_domain_put(struct vop2_power_domain *pd)
 		else
 			vop2_power_domain_off(pd);
 	}
+	if (pd->ref_count < 0)
+		pd->ref_count = 0;
 
 	spin_unlock(&pd->lock);
 	if (pd->parent)
