@@ -4809,7 +4809,7 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 		 * register (if supported).
 		 */
 		priv->plat->enh_desc = priv->dma_cap.enh_desc;
-		priv->plat->pmt = priv->dma_cap.pmt_remote_wake_up;
+		priv->plat->pmt = 0;//priv->dma_cap.pmt_remote_wake_up;
 		priv->hw->pmt = priv->plat->pmt;
 		if (priv->dma_cap.hash_tb_sz) {
 			priv->hw->multicast_filter_bins =
@@ -4962,6 +4962,110 @@ int stmmac_reinit_ringparam(struct net_device *dev, u32 rx_size, u32 tx_size)
 		ret = stmmac_open(dev);
 
 	return ret;
+}
+
+static unsigned char u_phyaddr[12] = {0};
+
+#include <linux/ctype.h>
+
+#ifndef MODULE
+static int __init mac_cmdline_opt(char *str)
+{
+        char *opt;
+        char *p = NULL;
+        int i = 0;
+        int j = 0;
+        int len = 0;
+        unsigned char temp;
+
+        if (!str || !*str)
+                return -EINVAL;
+
+	while ((opt = strsep(&str, ",")) != NULL) {
+                if (!strncmp(opt, "ethaddr:", 8)) {
+                        len = strlen(opt+8);
+                        if(len > 17)
+                                len = 17;
+                        p = opt + 8;
+                        for(i = 0; i< len; i++) {
+                                temp = tolower(p[i]);
+                                if(temp == ':')
+                                        continue;
+                                if(temp > '9')
+                                        u_phyaddr[j] = temp - 'a' + 10;
+                                else
+                                        u_phyaddr[j] = temp - 0x30;
+                                j++;
+                        }
+                }
+        }
+
+        return 0;
+}
+
+__setup("rtleth=", mac_cmdline_opt);
+#endif /* MODULE */
+
+#define MAC_ADDR_LEN    6
+
+static int stmmac_get_mac_address(struct net_device *dev)
+{
+	int i = 0;
+	int j = 0;
+	u8 mac_addr[MAC_ADDR_LEN];
+	int temp = 0;
+
+	j = 0;
+        for (i = 0; i < MAC_ADDR_LEN; i++) {
+                mac_addr[i] = (u_phyaddr[j] << 4) | u_phyaddr[j+1];
+                j += 2;
+        }
+
+	temp = mac_addr[5] + 1;
+	if (temp > 0xff) {
+		mac_addr[5] = 0;
+		mac_addr[4] += 1;
+		temp = mac_addr[4] + 1;
+		if (temp > 0xff) {
+			mac_addr[4] = 0;
+			mac_addr[3] += 1;
+			temp = mac_addr[3] + 1;
+			if (temp > 0xff) {
+				mac_addr[3] = 0;
+				mac_addr[2] += 1;
+				temp = mac_addr[2] + 1;
+				if (temp > 0xff) {
+					mac_addr[2] = 0;
+					mac_addr[1] += 1;
+					temp = mac_addr[1] + 1;
+					if (temp > 0xff) {
+						mac_addr[1] = 0;
+						mac_addr[0] += 1;
+					} else {
+						mac_addr[0] += 1;
+					}
+				} else {
+					mac_addr[1] += 1;
+				}
+			} else {
+				mac_addr[2] += 1;
+			}
+		} else {
+			mac_addr[3] += 1;
+		}
+	} else {
+		mac_addr[5] += 1;
+	}
+
+        for (i = 0; i < MAC_ADDR_LEN; i++) {
+		dev->dev_addr[i] = mac_addr[i];
+	}
+
+        if (!is_valid_ether_addr(mac_addr)) {
+                eth_hw_addr_random(dev);
+	}
+
+	return 0;
 }
 
 /**
@@ -5189,6 +5293,8 @@ int stmmac_dvr_probe(struct device *device,
 		netdev_err(ndev, "failed to setup phy (%d)\n", ret);
 		goto error_phy_setup;
 	}
+
+	stmmac_get_mac_address(ndev);
 
 	ret = register_netdev(ndev);
 	if (ret) {
