@@ -45,6 +45,7 @@
 
 extern int tinker_mcu_set_bright(int bright);
 extern int tinker_mcu_screen_power_up(void);
+extern void tinker_ft5406_start_polling(void);
 
 struct panel_cmd_header {
 	u8 data_type;
@@ -513,6 +514,8 @@ static int panel_simple_prepare(struct drm_panel *panel)
 	printk("jx:enter panel simple prepare!!\n");
 	tinker_mcu_screen_power_up();
 	tinker_mcu_set_bright(200);
+	msleep(100);
+	tinker_ft5406_start_polling();
 	if (p->prepared)
 		return 0;
 

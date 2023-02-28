@@ -91,6 +91,7 @@ config SND_SOC_ALL_CODECS
 	imply SND_SOC_DMIC
 	imply SND_SOC_DUMMY_CODEC
 	imply SND_SOC_ES8316
+	imply SND_SOC_ES8316_CM5
 	imply SND_SOC_ES8323
 	imply SND_SOC_ES8326
 	imply SND_SOC_ES8328_SPI
@@ -824,6 +825,10 @@ config SND_SOC_ES8311
 	depends on I2C
 
 config SND_SOC_ES8316
+	tristate "Everest Semi ES8316 CODEC"
+	depends on I2C
+
+config SND_SOC_ES8316_CM5
 	tristate "Everest Semi ES8316 CODEC"
 	depends on I2C
 

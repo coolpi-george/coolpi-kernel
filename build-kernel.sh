@@ -10,13 +10,34 @@ if [ "$ARCH" == "x86_64" ]; then
 fi
 export ARCH=arm64
 
-rm -rf arch/arm64/boot/dts/rockchip/rk3588s-cp4.dtb
-make ARCH=arm64 LOCALVERSION= rk3588s_cp4b_defconfig
+BOARD=$1
+
+case "$BOARD" in
+  cp4b)
+    cfg="rk3588s_cp4b_defconfig"
+    dtb="rk3588s-cp4.dtb"
+    txt_config_file="config_cp4b.txt"
+    txt_extconf_file="extlinux_cp4b.conf"
+    ;;
+  cpcm5-8uart)
+    cfg="rk3588_cpcm5_defconfig"
+    dtb="rk3588-cpcm5-8uart.dtb"
+    txt_config_file="config_cpcm5_8uart.txt"
+    txt_extconf_file="extlinux_cpcm5_8uart.conf"
+    ;;
+  *)
+    echo "Usage: $0 {cp4b|cpcm5-8uart}" >&2
+    exit 0
+    ;;
+esac
+
+rm -rf arch/arm64/boot/dts/rockchip/$dtb
+make ARCH=arm64 LOCALVERSION= $cfg
 make ARCH=arm64 LOCALVERSION= -j8
 make ARCH=arm64 LOCALVERSION= modules -j8
 cp arch/arm64/boot/Image.gz vmlinuz
 cp arch/arm64/boot/Image Image
-cp arch/arm64/boot/dts/rockchip/rk3588s-cp4.dtb .
+cp arch/arm64/boot/dts/rockchip/$dtb .
 
 rm -rf out_modules
 mkdir -p out_modules
@@ -34,10 +55,12 @@ tar -czf ../../modules.tar.gz *
 
 cd $K_SRC
 rm -rf out
-mkdir -p out
+mkdir -p out/extlinux
 cp vmlinuz out/
 cp Image out/
-cp rk3588s-cp4.dtb out/
+cp $dtb out/
 cp modules.tar.gz out/
+cp demo-cfgs/$txt_config_file out/config.txt
+cp demo-cfgs/$txt_extconf_file out/extlinux/extlinux.conf
 
 exit 0
