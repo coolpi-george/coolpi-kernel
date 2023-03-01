@@ -456,11 +456,11 @@
 };
 
 &mipi_dcphy0 {
-	status = "okay";
+	status = "disabled";
 };
 
 &dsi0 {
-	status = "okay";
+	status = "disabled";
 	dsi0_panel: panel@0 {
 		status = "okay";
 		compatible = "simple-panel-dsi";
@@ -556,11 +556,11 @@
 };
 
 &dsi0_in_vp3 {
-	status = "okay";
+	status = "disabled";
 };
 
 &route_dsi0 {
-	status = "okay";
+	status = "disabled";
 	connect = <&vp3_out_dsi0>;
 };
 
