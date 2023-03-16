@@ -1,0 +1,118 @@
+# SPDX-License-Identifier: GPL-2.0
+
+menuconfig WLAN_NXP
+    bool "Nxp Wireless modues driver"
+    default n
+    help
+        If you have a wireless card belonging to this class, say Y.
+
+        Note that the answer to this question doesn't directly affect the
+        kenrel: saying N will jst cause the configurator to skip all the
+        questiongs abuout these cards. If you say Y, you will be asked for
+        your sepecific card in the following questions.
+
+if WLAN_NXP
+
+config SD8887
+	tristate "NXP 88W8887 SDIO WiFi"
+	help
+	  Help message of SD8887
+
+config SD8897
+	tristate "NXP 88W8897 SDIO WiFi"
+	help
+	  Help message of SD8897
+
+config SD8977
+	tristate "NXP 88W8977 SDIO WiFi"
+	help
+	  Help message of SD8977
+
+config SD8978
+	tristate "NXP 88W8978 SDIO WiFi"
+	help
+	  Help message of SD8978
+
+config SD8997
+	tristate "NXP 88W8997 SDIO WiFi"
+	help
+	  Help message of SD8997
+
+config SD8987
+	tristate "NXP 88W8987 SDIO WiFi"
+	help
+	  Help message of SD8987
+
+config SD9097
+	tristate "NXP 88W9097 SDIO WiFi"
+	help
+	  Help message of SD9097
+
+config SD9177
+	tristate "NXP 88W9177 SDIO WiFi"
+	help
+	  Help message of SD9177
+
+config SD8801
+	tristate "NXP 88W8801 SDIO WiFi"
+	help
+	  Help message of SD8801
+
+config SD9098
+	tristate "NXP 88W9098 SDIO WiFi"
+	help
+	  Help message of SD9098
+
+#usb wifi
+config USB8897
+	tristate "NXP 88W8897 USB WiFi"
+	help
+	  Help message of USB8897
+
+config USB8801
+	tristate "NXP 88W8801 USB WiFi"
+	help
+	  Help message of USB8801
+
+config USB8978
+	tristate "NXP 88W8978 USB WiFi"
+	help
+	  Help message of USB8978
+
+config USB8997
+	tristate "NXP 88W8897 USB WiFi"
+	help
+	  Help message of USB8997
+
+config USB9097
+	tristate "NXP 88W9097 USB WiFi"
+	help
+	  Help message of USB9097
+
+config USB9098
+	tristate "NXP 88W8898 USB WiFi"
+	help
+	  Help message of USB9098
+
+#pcie wifi
+config PCIE8997
+	tristate "NXP 88W8997 PCIE WiFi"
+	help
+	  Help message of PCIE8997
+
+config PCIE8897
+	tristate "NXP 88W8897 PCIE WiFi"
+	help
+	  Help message of PCIE8897
+
+config PCIE9097
+	tristate "NXP 88W9097 PCIE WiFi"
+	help
+	  Help message of PCIE9097
+
+config PCIE9098
+	tristate "NXP 88W9098 PCIE WiFi"
+	help
+	  Help message of PCIE9098
+
+endif #WLAN_NXP
