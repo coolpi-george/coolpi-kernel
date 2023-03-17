@@ -23,8 +23,19 @@
 	compatible = "rockchip,rk3588-core", "rockchip,rk3588";
 	
 	aliases {
+		mmc0 = &sdhci;
+		mmc1 = &sdio;
+		mmc2 = &sdmmc;
 		serial0 = &uart2;
-                serial1 = &uart9;
+		serial1 = &uart9;
+		serial2 = &uart6;
+		serial3 = &uart3;
+		serial4 = &uart4;
+		serial5 = &uart5;
+		serial6 = &uart0;
+		serial7 = &uart7;
+		serial8 = &uart8;
+		serial9 = &uart1;
 	};
 
 	cspmu: cspmu@fd10c000 {
@@ -307,10 +318,10 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
 		vin-supply = <&vcc5v0_sys>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&vcc5v0_host2_en &vcc5v0_host3_en>;
+		pinctrl-0 = <&vcc5v0_host1_en>;
 	};
 
 	vcc5v0_otg: vcc5v0-otg-regulator {
@@ -318,11 +329,13 @@
 		regulator-name = "vcc5v0_otg";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
+		regulator-boot-on;
+		regulator-always-on;
 		enable-active-high;
-		gpio = <&gpio3 RK_PC0 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
 		vin-supply = <&vcc5v0_sys>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&vcc5v0_host1_en>;
+		pinctrl-0 = <&typec5v_pwren>;
 	};
 };
 
@@ -367,7 +380,7 @@
 	disable-wp;
 	sd-uhs-sdr104;
 	vqmmc-supply = <&vccio_sd_s0>;
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi0 {
@@ -762,6 +775,18 @@
         status = "okay";
 };
 
+&usbdp_phy1 {
+        status = "okay";
+};
+
+&usbdp_phy1_dp {
+        status = "okay";
+};
+
+&usbdp_phy1_u3 {
+        status = "okay";
+};
+
 &usbdrd3_0 {
         status = "okay";
 };
@@ -772,12 +797,20 @@
 };
 
 &usbhost3_0 {
-        status = "disabled";
+        status = "okay";
 };
 
 &usbhost_dwc3_0 {
         dr_mode = "host";
-        status = "disabled";
+        status = "okay";
+};
+
+&usbdrd3_1 {
+        status = "okay";
+};
+
+&usbdrd_dwc3_1 {
+        status = "okay";
 };
 
 &vdpu {
@@ -1038,58 +1071,10 @@
 	phy-supply = <&vcc5v0_host>;
 };
 
-&uart0 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart0m2_xfer>;
-};
-
 &uart2 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart2m0_xfer>;
-};
-
-&uart3 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart3m2_xfer>;
-};
-
-&uart4 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart4m0_xfer>;
-};
-
-&uart5 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart5m1_xfer>;
-};
-
-&uart6 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart6m1_xfer>;
-};
-
-&uart7 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart7m0_xfer>;
-};
-
-&uart8 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart8m0_xfer>;
-};
-
-&uart9 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart9m1_xfer>;
 };
 
 &i2c5 {
@@ -1121,25 +1106,13 @@
 
 	usb {
 		vcc5v0_host1_en: vcc5v0-host1-en {
-			rockchip,pins = <3 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-		
-		vcc5v0_host2_en: vcc5v0-host2-en {
-			rockchip,pins = <3 RK_PC1 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-		
-		vcc5v0_host3_en: vcc5v0-host3-en {
-			rockchip,pins = <3 RK_PC2 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <1 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 
 	usb-typec {
-		usbc0_int: usbc0-int {
-			rockchip,pins = <3 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-
 		typec5v_pwren: typec5v-pwren {
-			rockchip,pins = <4 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
