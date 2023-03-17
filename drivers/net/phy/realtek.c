@@ -185,6 +185,11 @@ static int rtl8211f_config_init(struct phy_device *phydev)
 	u16 val;
 	int ret;
 
+	/* Set link act led mode */
+	phy_write(phydev, 31, 0xd04);
+	phy_write(phydev, 0x10, 0x6151);
+	phy_write(phydev, 31, 0xa42);
+
 	val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
 	phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1, val, val);
 
