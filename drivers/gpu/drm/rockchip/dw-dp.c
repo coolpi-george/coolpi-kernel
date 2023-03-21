@@ -722,6 +722,18 @@ static int dw_dp_connector_get_modes(struct drm_connector *connector)
 		list_for_each_entry(mode, &connector->probed_modes, head)
 			drm_mode_convert_to_split_mode(mode);
 	}
+	
+	if (num_modes > 0) {
+        struct drm_display_mode *pmode;
+        list_for_each_entry(pmode, &connector->probed_modes, head)
+            if(pmode->hdisplay == 1366){
+                pmode->hdisplay = 1368;
+                pmode->hsync_start += 2;
+                pmode->hsync_end += 2;
+                pmode->htotal += 2;
+            }
+    }
+
 
 	return num_modes;
 }
