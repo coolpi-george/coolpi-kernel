@@ -225,6 +225,54 @@
 		rockchip,codec = <&dp1 1>;
 		rockchip,jack-det;
 	};
+
+	panel-edp0 {
+		compatible = "simple-panel";
+		backlight = <&backlight>;
+		power-supply = <&vcc3v3_lcd>;
+		prepare-delay-ms = <120>;
+		enable-delay-ms = <120>;
+		unprepare-delay-ms = <120>;
+		disable-delay-ms = <120>;
+		width-mm = <129>;
+		height-mm = <171>;
+
+		port {
+			panel_in_edp0: endpoint {
+				remote-endpoint = <&edp0_out_panel>;
+			};
+		};
+	};
+	
+	panel-edp1 {
+		compatible = "simple-panel";
+		backlight = <&backlight>;
+		power-supply = <&vcc3v3_lcd>;
+		prepare-delay-ms = <120>;
+		enable-delay-ms = <120>;
+		unprepare-delay-ms = <120>;
+		disable-delay-ms = <120>;
+		width-mm = <129>;
+		height-mm = <171>;
+
+		port {
+			panel_in_edp1: endpoint {
+				remote-endpoint = <&edp1_out_panel>;
+			};
+		};
+	};
+	
+	vcc3v3_lcd: vcc3v3-lcd {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_lcd";
+		enable-active-high;
+		gpio = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc3v3_sys>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&lcdpwr_en>;
+
+	};
+	
 	hdmiin-sound {
 		compatible = "rockchip,hdmi";
 		rockchip,mclk-fs = <128>;
@@ -236,6 +284,7 @@
 		rockchip,codec = <&hdmirx_ctrler 0>;
 		rockchip,jack-det;
 	};
+	
 	es8316_sound: es8316-sound {
                 status = "okay";
                 compatible = "simple-audio-card";
@@ -795,7 +844,7 @@
 };
 
 &usbdp_phy0 {
-        rockchip,dp-lane-mux = < 0 1 >;
+        rockchip,dp-lane-mux = < 3 2 >;
         status = "okay";
 };
 
@@ -808,7 +857,7 @@
 };
 
 &usbdp_phy1 {
-        rockchip,dp-lane-mux = < 0 1 >;
+        rockchip,dp-lane-mux = < 3 2 >;
         status = "okay";
 };
 
@@ -908,10 +957,10 @@
 
 &backlight {
 	pwms = <&pwm2 0 25000 0>;
-	status = "disabled";
-
-
-
+	enable-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&bl_en>;	
+	status = "okay";
 };
 
 &gmac0 {
@@ -1001,6 +1050,16 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&dp0m2_pins>;
 	status = "okay";
+	
+	ports {
+		port@1 {
+			reg = <1>;
+
+			edp0_out_panel: endpoint {
+				remote-endpoint = <&panel_in_edp0>;
+			};
+		};
+	};
 };
 
 &dp0_in_vp2 {
@@ -1015,6 +1074,16 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&dp1m2_pins>;
 	status = "okay";
+	
+	ports {
+		port@1 {
+			reg = <1>;
+
+			edp1_out_panel: endpoint {
+				remote-endpoint = <&panel_in_edp1>;
+			};
+		};
+	};
 };
 
 &dp1_in_vp2 {
@@ -1271,6 +1340,15 @@
 	hdmi {
 		hdmirx_det: hdmirx-det {
 			rockchip,pins = <2 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+	
+	lcd {
+		lcdpwr_en: lcdpwr-en {
+			rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+		bl_en: bl-en {
+			rockchip,pins = <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 };

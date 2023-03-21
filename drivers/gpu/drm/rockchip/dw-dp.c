@@ -14,6 +14,7 @@
 #include <drm/drm_bridge.h>
 #include <drm/drm_dp_helper.h>
 #include <drm/drm_of.h>
+#include <drm/drm_panel.h>
 #include <drm/drm_print.h>
 #include <drm/drm_probe_helper.h>
 #include <drm/drm_simple_kms_helper.h>
@@ -285,6 +286,7 @@ struct dw_dp {
 	struct drm_encoder encoder;
 	struct drm_dp_aux aux;
 	struct drm_bridge *next_bridge;
+	struct drm_panel *panel;
 
 	struct dw_dp_link link;
 	struct dw_dp_video video;
@@ -693,6 +695,9 @@ static int dw_dp_connector_get_modes(struct drm_connector *connector)
 
 	if (dp->next_bridge)
 		num_modes = drm_bridge_get_modes(dp->next_bridge, connector);
+
+	if (dp->panel)
+		num_modes = drm_panel_get_modes(dp->panel, connector);
 
 	if (!num_modes) {
 		edid = drm_bridge_get_edid(&dp->bridge, connector);
@@ -2216,7 +2221,7 @@ static int dw_dp_bridge_attach(struct drm_bridge *bridge,
 		return -ENODEV;
 	}
 
-	ret = drm_of_find_panel_or_bridge(bridge->of_node, 1, 0, NULL,
+	ret = drm_of_find_panel_or_bridge(bridge->of_node, 1, -1, &dp->panel,
 					  &dp->next_bridge);
 	if (ret < 0 && ret != -ENODEV)
 		return ret;
@@ -2283,6 +2288,19 @@ static void dw_dp_bridge_atomic_pre_enable(struct drm_bridge *bridge,
 
 	if (dp->split_mode)
 		drm_mode_convert_to_origin_mode(m);
+
+	if (dp->panel)
+		drm_panel_prepare(dp->panel);
+}
+
+static void
+dw_dp_bridge_atomic_post_disable(struct drm_bridge *bridge,
+				 struct drm_bridge_state *bridge_state)
+{
+	struct dw_dp *dp = bridge_to_dp(bridge);
+
+	if (dp->panel)
+		drm_panel_unprepare(dp->panel);
 }
 
 static bool dw_dp_needs_link_retrain(struct dw_dp *dp)
@@ -2355,6 +2373,9 @@ static void dw_dp_bridge_atomic_enable(struct drm_bridge *bridge,
 		dev_err(dp->dev, "failed to enable video: %d\n", ret);
 		return;
 	}
+
+	if (dp->panel)
+		drm_panel_enable(dp->panel);
 }
 
 static void dw_dp_reset(struct dw_dp *dp)
@@ -2381,6 +2402,8 @@ static void dw_dp_bridge_atomic_disable(struct drm_bridge *bridge,
 					struct drm_bridge_state *old_bridge_state)
 {
 	struct dw_dp *dp = bridge_to_dp(bridge);
+	if (dp->panel)
+		drm_panel_disable(dp->panel);
 
 	dw_dp_video_disable(dp);
 	dw_dp_link_disable(dp);
@@ -2412,6 +2435,9 @@ static enum drm_connector_status dw_dp_bridge_detect(struct drm_bridge *bridge)
 {
 	struct dw_dp *dp = bridge_to_dp(bridge);
 	enum drm_connector_status status = connector_status_connected;
+
+	if (dp->panel)
+		drm_panel_prepare(dp->panel);
 
 	if (!dw_dp_detect(dp)) {
 		status = connector_status_disconnected;
@@ -2476,6 +2502,21 @@ static u32 *dw_dp_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
 
 	if (dp->split_mode)
 		drm_mode_convert_to_origin_mode(&mode);
+
+	if (dp->panel) {
+		*num_output_fmts = 1;
+
+		output_fmts = kzalloc(sizeof(*output_fmts), GFP_KERNEL);
+		if (!output_fmts)
+			return NULL;
+
+		if (di->num_bus_formats && di->bus_formats)
+			output_fmts[0] = di->bus_formats[0];
+		else
+			output_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
+
+		return output_fmts;
+	}
 
 	*num_output_fmts = 0;
 
@@ -2551,6 +2592,7 @@ static const struct drm_bridge_funcs dw_dp_bridge_funcs = {
 	.mode_valid = dw_dp_bridge_mode_valid,
 	.atomic_check = dw_dp_bridge_atomic_check,
 	.atomic_pre_enable = dw_dp_bridge_atomic_pre_enable,
+	.atomic_post_disable = dw_dp_bridge_atomic_post_disable,
 	.atomic_enable = dw_dp_bridge_atomic_enable,
 	.atomic_disable = dw_dp_bridge_atomic_disable,
 	.detect = dw_dp_bridge_detect,
