@@ -2207,7 +2207,7 @@ static int imx477_probe(struct i2c_client *client)
 
 	/* Request optional enable pin */
 	imx477->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-	if (IS_ERR(imx415->reset_gpio))
+	if (IS_ERR(imx477->reset_gpio))
 		dev_warn(dev, "Failed to get reset-gpios\n");
 
 	/*
