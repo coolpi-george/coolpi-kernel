@@ -1133,6 +1133,31 @@
                         };
                 };
         };
+		
+	imx219: imx219@10 {
+		compatible = "sony,imx219";
+		status = "okay";
+		reg = <0x10>;
+		clocks = <&cru CLK_MIPI_CAMARAOUT_M0>;
+		clock-names = "xvclk";
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_clkout0>;
+		power-domains = <&power RK3588_PD_VI>;
+		avdd-supply = <&vcc_mipidphy0>;
+		rockchip,camera-module-index = <1>;//<0>
+		rockchip,camera-module-facing =  "front";//"back";
+		rockchip,camera-module-name = "GEIR180089";
+		rockchip,camera-module-lens-name = "LG500627G";
+		port {
+			imx219_out: endpoint {
+				remote-endpoint = <&mipidphy0_in_ucam2>;
+				data-lanes = <1 2>;
+				clock-noncontinuous;
+				link-frequencies =
+					/bits/ 64 <456000000>;
+			};
+		};
+	};
 };
 
 &csi2_dphy0 {
@@ -1155,6 +1180,12 @@
 			mipidphy0_in_ucam1: endpoint@2 {
 				reg = <2>;
 				remote-endpoint = <&imx477_out>;
+				data-lanes = <1 2>;
+			};
+			
+			mipidphy0_in_ucam2: endpoint@3 {
+				reg = <3>;
+				remote-endpoint = <&imx219_out>;
 				data-lanes = <1 2>;
 			};
 		};
