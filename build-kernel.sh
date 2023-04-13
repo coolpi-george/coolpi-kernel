@@ -25,6 +25,12 @@ case "$BOARD" in
     txt_config_file="config_cpcm5_evb.txt"
     txt_extconf_file="extlinux_cpcm5_evb.conf"
     ;;
+  cm5-minipc)
+    cfg="rk3588_cpcm5_minipc_defconfig"
+    dtb="rk3588-cpcm5-minipc.dtb"
+    txt_config_file="config_cpcm5_minipc.txt"
+    txt_extconf_file="extlinux_cpcm5_minipc.conf"
+    ;;
   cm5-8uart)
     cfg="rk3588_cpcm5_defconfig"
     dtb="rk3588-cpcm5-8uart.dtb"
@@ -32,7 +38,7 @@ case "$BOARD" in
     txt_extconf_file="extlinux_cpcm5_8uart.conf"
     ;;
   *)
-    echo "Usage: $0 {cp4b|cm5-evb|cm5-8uart}" >&2
+    echo "Usage: $0 {cp4b|cm5-evb|cm5-minipc|cm5-8uart}" >&2
     exit 0
     ;;
 esac

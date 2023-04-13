@@ -33,7 +33,7 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/regmap.h>
-#include "es8316.h"
+#include "es8316-cm5.h"
 
 #define INVALID_GPIO -1
 #define GPIO_LOW  0
@@ -1238,7 +1238,7 @@ static const struct i2c_device_id es8316_i2c_id[] = {
 MODULE_DEVICE_TABLE(i2c, es8316_i2c_id);
 
 static const struct of_device_id es8316_of_match[] = {
-	{ .compatible = "everest,es8316", },
+	{ .compatible = "everest,es8316-cm5", },
 	{ }
 };
 MODULE_DEVICE_TABLE(of, es8316_of_match);

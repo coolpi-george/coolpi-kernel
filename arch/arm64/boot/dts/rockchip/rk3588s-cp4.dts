@@ -1369,6 +1369,13 @@
                 spi-max-frequency = <12000000>;
                 spi-lsb-first;
         };
+
+        spi_dev@1 {
+                compatible = "rockchip,spidev";
+                reg = <1>;
+                spi-max-frequency = <12000000>;
+                spi-lsb-first;
+        };
 };
 
 &spi2 {
