@@ -165,3 +165,4 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-cp4-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-8uart.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-evb.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-minipc.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-evb-v11.dtb
