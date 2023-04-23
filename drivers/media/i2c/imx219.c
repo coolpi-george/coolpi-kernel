@@ -1158,7 +1158,7 @@ static int imx219_probe(struct i2c_client *client,
 	if (IS_ERR(priv->pwdn_gpio))
 		dev_warn(dev, "Failed to get pwdn-gpios\n");
 	/* 1920 * 1080 by default */
-	priv->cur_mode = &supported_modes[1];
+	priv->cur_mode = &supported_modes[0];
 	priv->cfg_num = ARRAY_SIZE(supported_modes);
 
 	priv->crop_rect.left = 680;
