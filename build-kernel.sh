@@ -15,7 +15,7 @@ BOARD=$1
 case "$BOARD" in
   cp4b)
     cfg="rk3588s_cp4b_defconfig"
-    dtb="rk3588s-cp4.dtb"
+    dtb="rk3588s-cp4.dtb rk3588s-cp4-dsi.dtb rk3588s-cp4-sfc.dtb"
     txt_config_file="config_cp4b.txt"
     txt_extconf_file="extlinux_cp4b.conf"
     ;;
@@ -49,13 +49,19 @@ case "$BOARD" in
     ;;
 esac
 
-rm -rf arch/arm64/boot/dts/rockchip/$dtb
+for dtb_f in $dtb
+do
+    rm -rf arch/arm64/boot/dts/rockchip/$dtb_f
+done
 make ARCH=arm64 LOCALVERSION= $cfg
 make ARCH=arm64 LOCALVERSION= -j8
 make ARCH=arm64 LOCALVERSION= modules -j8
 cp arch/arm64/boot/Image.gz vmlinuz
 cp arch/arm64/boot/Image Image
-cp arch/arm64/boot/dts/rockchip/$dtb .
+for dtb_f in $dtb
+do
+    cp arch/arm64/boot/dts/rockchip/$dtb_f .
+done
 
 rm -rf out_modules
 mkdir -p out_modules
@@ -76,7 +82,10 @@ rm -rf out
 mkdir -p out/extlinux
 cp vmlinuz out/
 cp Image out/
-cp $dtb out/
+for dtb_f in $dtb
+do
+    cp $dtb_f out/
+done
 cp modules.tar.gz out/
 cp demo-cfgs/$txt_config_file out/config.txt
 cp demo-cfgs/$txt_extconf_file out/extlinux/extlinux.conf
