@@ -949,8 +949,8 @@ static int npu_devfreq_target(struct device *dev, unsigned long *freq,
 			rknpu_dev->devfreq->last_status.current_frequency =
 				*freq;
 		rknpu_dev->current_volt = opp_volt;
-		LOG_DEV_INFO(dev, "set rknpu freq: %lu, volt: %lu\n",
-			     rknpu_dev->current_freq, rknpu_dev->current_volt);
+		//LOG_DEV_INFO(dev, "set rknpu freq: %lu, volt: %lu\n",
+		//	     rknpu_dev->current_freq, rknpu_dev->current_volt);
 	}
 #if KERNEL_VERSION(5, 10, 0) <= LINUX_VERSION_CODE
 	rockchip_monitor_volt_adjust_unlock(rknpu_dev->mdev_info);
@@ -1035,8 +1035,8 @@ static int npu_devfreq_target(struct device *dev, unsigned long *target_freq,
 	}
 	rknpu_dev->current_volt = volt;
 
-	LOG_DEV_INFO(dev, "set rknpu freq: %lu, volt: %lu\n",
-		     rknpu_dev->current_freq, rknpu_dev->current_volt);
+	//LOG_DEV_INFO(dev, "set rknpu freq: %lu, volt: %lu\n",
+	//	     rknpu_dev->current_freq, rknpu_dev->current_volt);
 
 	return ret;
 }
