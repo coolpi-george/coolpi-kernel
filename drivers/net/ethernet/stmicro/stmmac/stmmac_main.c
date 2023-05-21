@@ -120,6 +120,26 @@ static void stmmac_exit_fs(struct net_device *dev);
 #endif
 
 #define STMMAC_COAL_TIMER(x) (jiffies + usecs_to_jiffies(x))
+#define RTL_8211F_PHY_ID  0x001cc916
+#define YT_8531C_PHY_ID	  0x4f51e91b
+
+static int phy_rtl8211f_led_fixup(struct phy_device *phydev)
+{
+       /*switch to extension page31*/
+       phy_write(phydev, 31, 0xd04);
+       /*set led1(yellow) act*/
+       phy_write(phydev, 16, 0xa200);
+       /*switch back to page0*/
+       phy_write(phydev,31,0xa42);
+       return 0;
+}
+
+static int phy_yt8531_led_fixup(struct phy_device *phydev)
+{
+	   phy_write(phydev, 0x1e, 0xA00D);//先写地址
+	   phy_write(phydev, 0x1f, 0x0070);//再写数据
+       return 0;
+}
 
 int stmmac_bus_clks_config(struct stmmac_priv *priv, bool enabled)
 {
@@ -5310,7 +5330,8 @@ int stmmac_dvr_probe(struct device *device,
 		if (ret < 0)
 			goto error_serdes_powerup;
 	}
-
+  ret = phy_register_fixup_for_uid(RTL_8211F_PHY_ID, 0xffffffff, phy_rtl8211f_led_fixup);
+	ret = phy_register_fixup_for_uid(YT_8531C_PHY_ID, 0xffffffff, phy_yt8531_led_fixup);
 #ifdef CONFIG_DEBUG_FS
 	stmmac_init_fs(ndev);
 #endif
