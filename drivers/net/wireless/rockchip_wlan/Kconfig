@@ -35,6 +35,10 @@ menuconfig AICDHD
 menuconfig BCMDHD
 	bool "Broadcom Wireless Device Driver Support"
 	default y
+	
+menuconfig WLAN_RTL
+	bool "Realtek Wireless Device Driver Support"
+	default y
 
 if BCMDHD
 source "drivers/net/wireless/rockchip_wlan/rkwifi/Kconfig"
@@ -44,5 +48,7 @@ source "drivers/net/wireless/rockchip_wlan/cywdhd/Kconfig"
 source "drivers/net/wireless/rockchip_wlan/infineon/Kconfig"
 source "drivers/net/wireless/rockchip_wlan/aic8800/Kconfig"
 source "drivers/net/wireless/rockchip_wlan/wlan_src/Kconfig"
+source "drivers/net/wireless/rockchip_wlan/rtl8188eu/Kconfig"
+source "drivers/net/wireless/rockchip_wlan/rtl8822bu/Kconfig"
 
 endif # WL_ROCKCHIP

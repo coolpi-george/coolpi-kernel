@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -109,7 +108,7 @@ dm_InterruptMigration(
 	/* when interrupt migration is set before. 2010.03.05. */
 	/*  */
 	if (!Adapter->registrypriv.wifi_spec &&
-	    (check_fwstate(pmlmepriv, _FW_LINKED) == _TRUE) &&
+	    (check_fwstate(pmlmepriv, WIFI_ASOC_STATE) == _TRUE) &&
 	    pmlmepriv->LinkDetectInfo.bHigherBusyTraffic) {
 		IntMtToSet = _TRUE;
 

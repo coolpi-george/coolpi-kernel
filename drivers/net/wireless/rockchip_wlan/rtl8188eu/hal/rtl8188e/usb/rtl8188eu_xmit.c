@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -312,10 +311,8 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz , u8 ba
 
 		fill_txdesc_sectype(pattrib, ptxdesc);
 
-#if defined(CONFIG_CONCURRENT_MODE)
 		if (bmcst)
 			fill_txdesc_force_bmc_camid(pattrib, ptxdesc);
-#endif
 
 		if (pattrib->ampdu_en == _TRUE) {
 			ptxdesc->txdw2 |= cpu_to_le32(AGG_EN);/* AGG EN */
@@ -618,7 +615,7 @@ static s32 rtw_dump_xframe(_adapter *padapter, struct xmit_frame *pxmitframe)
 	    (pxmitframe->attrib.ether_type != 0x888e) &&
 	    (pxmitframe->attrib.ether_type != 0x88b4) &&
 	    (pxmitframe->attrib.dhcp_pkt != 1))
-		rtw_issue_addbareq_cmd(padapter, pxmitframe);
+		rtw_issue_addbareq_cmd(padapter, pxmitframe, _FALSE);
 #endif /* CONFIG_80211N_HT */
 	mem_addr = pxmitframe->buf_addr;
 
@@ -719,7 +716,14 @@ s32 rtl8188eu_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv
 	int res = _SUCCESS;
 #endif
 
-
+#ifdef CONFIG_RTW_MGMT_QUEUE
+	/* dump management frame directly */
+	pxmitframe = rtw_dequeue_mgmt_xframe(pxmitpriv);
+	if (pxmitframe) {
+		rtw_dump_xframe(padapter, pxmitframe);
+		return _TRUE;
+	}
+#endif
 
 	/* check xmitbuffer is ok */
 	if (pxmitbuf == NULL) {
@@ -804,8 +808,8 @@ s32 rtl8188eu_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv
 		RTW_INFO("%s, pattrib->psta(%p) != psta(%p)\n", __func__, pfirstframe->attrib.psta, psta);
 	if (psta == NULL)
 		RTW_INFO("rtw_xmit_classifier: psta == NULL\n");
-	if (!(psta->state & _FW_LINKED))
-		RTW_INFO("%s, psta->state(0x%x) != _FW_LINKED\n", __func__, psta->state);
+	if (!(psta->state & WIFI_ASOC_STATE))
+		RTW_INFO("%s, psta->state(0x%x) != WIFI_ASOC_STATE\n", __func__, psta->state);
 
 	switch (pfirstframe->attrib.priority) {
 	case 1:
@@ -944,7 +948,7 @@ agg_end:
 	    (pfirstframe->attrib.ether_type != 0x888e) &&
 	    (pfirstframe->attrib.ether_type != 0x88b4) &&
 	    (pfirstframe->attrib.dhcp_pkt != 1))
-		rtw_issue_addbareq_cmd(padapter, pfirstframe);
+		rtw_issue_addbareq_cmd(padapter, pfirstframe, _FALSE);
 #endif /* CONFIG_80211N_HT */
 #ifndef CONFIG_USE_USB_BUFFER_ALLOC_TX
 	/* 3 3. update first frame txdesc */
@@ -1014,6 +1018,14 @@ s32 rtl8188eu_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv
 	phwxmits = pxmitpriv->hwxmits;
 	hwentry = pxmitpriv->hwxmit_entry;
 
+#ifdef CONFIG_RTW_MGMT_QUEUE
+	/* dump management frame directly */
+	pxmitframe = rtw_dequeue_mgmt_xframe(pxmitpriv);
+	if (pxmitframe) {
+		rtw_dump_xframe(padapter, pxmitframe);
+		return _TRUE;
+	}
+#endif
 
 	if (pxmitbuf == NULL) {
 		pxmitbuf = rtw_alloc_xmitbuf(pxmitpriv);
@@ -1155,6 +1167,25 @@ s32 rtl8188eu_hal_xmit(_adapter *padapter, struct xmit_frame *pxmitframe)
 {
 	return pre_xmitframe(padapter, pxmitframe);
 }
+
+#ifdef CONFIG_RTW_MGMT_QUEUE
+s32 rtl8188eu_hal_mgmt_xmitframe_enqueue(PADAPTER padapter, struct xmit_frame *pxmitframe)
+{
+	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+	s32 err;
+
+	err = rtw_mgmt_xmitframe_enqueue(padapter, pxmitframe);
+	if (err != _SUCCESS) {
+		rtw_free_xmitframe(pxmitpriv, pxmitframe);
+		pxmitpriv->tx_drop++;
+	} else {
+#ifdef PLATFORM_LINUX
+		tasklet_hi_schedule(&pxmitpriv->xmit_tasklet);
+#endif
+	}
+	return err;
+}
+#endif
 
 s32	rtl8188eu_hal_xmitframe_enqueue(_adapter *padapter, struct xmit_frame *pxmitframe)
 {

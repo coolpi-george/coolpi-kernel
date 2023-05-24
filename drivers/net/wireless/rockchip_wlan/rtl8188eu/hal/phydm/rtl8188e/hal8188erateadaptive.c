@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) Semiconductor - 2017 Realtek Corporation.
@@ -297,7 +296,6 @@ odm_rate_down_8188e(
 {
 	u8 rate_id, lowest_rate, highest_rate;
 	s8 i;
-
 	PHYDM_DBG(dm, DBG_RA, "=====>%s\n", __func__);
 	if (NULL == p_ra_info) {
 		PHYDM_DBG(dm, DBG_RA, "%s: p_ra_info is NULL\n", __func__);
@@ -306,7 +304,6 @@ odm_rate_down_8188e(
 	rate_id = p_ra_info->pre_rate;
 	lowest_rate = p_ra_info->lowest_rate;
 	highest_rate = p_ra_info->highest_rate;
-
 	PHYDM_DBG(dm, DBG_RA,
 		  " rate_id=%d lowest_rate=%d highest_rate=%d rate_sgi=%d\n",
 		  rate_id, lowest_rate, highest_rate, p_ra_info->rate_sgi);
@@ -315,25 +312,29 @@ odm_rate_down_8188e(
 	else if (p_ra_info->rate_sgi)
 		p_ra_info->rate_sgi = 0;
 	else if (rate_id > lowest_rate) {
-		if (rate_id > 0) {
-			for (i = rate_id - 1; i >= lowest_rate; i--) {
-				if (p_ra_info->ra_use_rate & BIT(i)) {
+		for (i = rate_id - 1; i >= lowest_rate; i--) {
+			if (p_ra_info->ra_use_rate & BIT(i)) {
 #if (DM_ODM_SUPPORT_TYPE == ODM_AP) && \
 	((DEV_BUS_TYPE == RT_USB_INTERFACE) || (DEV_BUS_TYPE == RT_SDIO_INTERFACE))
-					p_ra_info->rate_down_counter++;
-					p_ra_info->rate_direction = DM_RA_RATE_DOWN;
+				u8 raup_cnt, learning_t, radn_t;
 
-					/* Learning +(0)-(-)(-)+ and ++(0)--(-)(-)(0)+ after the persistence of learned TX rate expire*/
-					if (0xFF == p_ra_info->rate_down_start_time) {
-						if ((0 == p_ra_info->rate_up_counter) || (p_ra_info->rate_up_counter + 2 < p_ra_info->bounding_learning_time))
-							p_ra_info->rate_down_start_time = 0;
-						else
-							p_ra_info->rate_down_start_time = p_ra_info->bounding_learning_time;
-					}
-#endif
-					rate_id = i;
-					goto rate_down_finish;
+				raup_cnt = p_ra_info->rate_up_counter;
+				learning_t = p_ra_info->bounding_learning_time;
+				p_ra_info->rate_down_counter++;
+				p_ra_info->rate_direction = DM_RA_RATE_DOWN;
+				radn_t = p_ra_info->rate_down_start_time;
+				if (radn_t == 0xFF) {
+					if (raup_cnt == 0)
+						radn_t = 0;
+					else if (raup_cnt + 2 < learning_t)
+						radn_t = 0;
+					else
+						radn_t = learning_t;
 				}
+				p_ra_info->rate_down_start_time = radn_t;
+#endif
+				rate_id = i;
+				goto rate_down_finish;
 			}
 		}
 	} else if (rate_id <= lowest_rate)
@@ -346,7 +347,7 @@ rate_down_finish:
 		p_ra_info->ra_pending_counter += 1;
 	} else */ if ((0 != p_ra_info->rate_down_start_time) && (0xFF != p_ra_info->rate_down_start_time)) {
 		/* Learning +(0)-(-)(-)+ and ++(0)--(-)(-)(0)+ after the persistence of learned TX rate expire*/
-		if (p_ra_info->rate_down_counter < p_ra_info->rate_up_counter) {
+		if (p_ra_info->rate_down_counter < raup_cnt) {
 		} else if (p_ra_info->rate_down_counter == p_ra_info->rate_up_counter) {
 			p_ra_info->ra_waiting_counter = 2;
 			p_ra_info->ra_pending_counter += 1;
@@ -670,25 +671,22 @@ odm_arfb_refresh_8188e(
 		break;
 	}
 	/* Highest rate */
-	if (p_ra_info->ra_use_rate)
-		for (i = RATESIZE; i >= 0; i--) {
-			if (p_ra_info->ra_use_rate & BIT(i)) {
-				p_ra_info->highest_rate = i;
-				break;
-			}
+	p_ra_info->highest_rate = 0;
+	for (i = RATESIZE; i > 0; i--) {
+		if (p_ra_info->ra_use_rate & BIT(i)) {
+			p_ra_info->highest_rate = i;
+			break;
 		}
-	else
-		p_ra_info->highest_rate = 0;
+	}
+
 	/* Lowest rate */
-	if (p_ra_info->ra_use_rate)
-		for (i = 0; i < RATESIZE; i++) {
-			if (p_ra_info->ra_use_rate & BIT(i)) {
-				p_ra_info->lowest_rate = i;
-				break;
-			}
+	p_ra_info->lowest_rate = 0;
+	for (i = 0; i < RATESIZE; i++) {
+		if (p_ra_info->ra_use_rate & BIT(i)) {
+			p_ra_info->lowest_rate = i;
+			break;
 		}
-	else
-		p_ra_info->lowest_rate = 0;
+	}
 
 #if POWER_TRAINING_ACTIVE == 1
 	if (p_ra_info->highest_rate > 0x13)

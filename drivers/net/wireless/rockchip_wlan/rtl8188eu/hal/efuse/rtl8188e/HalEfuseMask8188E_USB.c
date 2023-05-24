@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -39,7 +38,7 @@ u8 Array_MP_8188E_MUSB[] = {
 	0x00,
 	0x00,
 	0x0F,
-	0xF1,
+	0xF3,
 	0xFF,
 	0xFF,
 	0xFF,

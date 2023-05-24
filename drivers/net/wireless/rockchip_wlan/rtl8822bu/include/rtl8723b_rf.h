@@ -1,7 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
- * Copyright(c) 2009-2010 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -13,23 +12,14 @@
  * more details.
  *
  *****************************************************************************/
+#ifndef __RTL8723B_RF_H__
+#define __RTL8723B_RF_H__
 
-#ifndef __RTW_WIFI_REGD_H__
-#define __RTW_WIFI_REGD_H__
+int	PHY_RF6052_Config8723B(PADAPTER		Adapter);
 
-struct country_code_to_enum_rd {
-	u16 countrycode;
-	const char *iso_name;
-};
+void
+PHY_RF6052SetBandwidth8723B(
+		PADAPTER				Adapter,
+		enum channel_width		Bandwidth);
 
-enum country_code_type_t {
-	COUNTRY_CODE_USER = 0,
-
-	/*add new channel plan above this line */
-	COUNTRY_CODE_MAX
-};
-
-void rtw_regd_apply_flags(struct wiphy *wiphy);
-int rtw_regd_init(struct wiphy *wiphy);
-
-#endif /* __RTW_WIFI_REGD_H__ */
+#endif

@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -1007,14 +1006,13 @@ void _phy_pi_mode_switch(struct dm_struct *dm, boolean pi_mode)
 
 boolean
 phy_simularity_compare_8188e(struct dm_struct *dm, s32 result[][8], u8 c1,
-			     u8 c2)
+			     u8 c2, boolean is2t)
 {
 	u32 i, j, diff, simularity_bit_map, bound = 0;
 	u8 final_candidate[2] = {0xFF, 0xFF}; /* for path A and path B */
 	boolean is_result = true;
-	boolean is2T = false;
 
-	if (is2T)
+	if (is2t)
 		bound = 8;
 	else
 		bound = 4;
@@ -1057,7 +1055,7 @@ phy_simularity_compare_8188e(struct dm_struct *dm, s32 result[][8], u8 c1,
 		for (i = 0; i < 4; i++)
 			result[3][i] = result[c1][i];
 		return false;
-	} else if (!(simularity_bit_map & 0xF0) && is2T) { /* path B OK */
+	} else if (!(simularity_bit_map & 0xF0) && is2t) { /* path B OK */
 		for (i = 4; i < 8; i++)
 			result[3][i] = result[c1][i];
 		return false;
@@ -1245,7 +1243,7 @@ void _phy_iq_calibrate_8188e(struct dm_struct *dm, s32 result[][8], u8 t,
 void _phy_lc_calibrate_8188e(struct dm_struct *dm, boolean is2T)
 {
 	u8 tmp_reg;
-	u32 rf_amode = 0, rf_bmode = 0, lc_cal;
+	u32 rf_amode = 0, rf_bmode = 0, lc_cal, cnt;
 
 	/* Check continuous TX and Packet TX */
 	tmp_reg = odm_read_1byte(dm, 0xd03);
@@ -1276,6 +1274,17 @@ void _phy_lc_calibrate_8188e(struct dm_struct *dm, boolean is2T)
 	/* 4. Set LC calibration begin	bit15 */
 	odm_set_rf_reg(dm, RF_PATH_A, RF_CHNLBW, MASK12BITS, lc_cal | 0x08000);
 	ODM_delay_ms(100);
+	for (cnt = 0; cnt < 5; cnt++) {
+		if (odm_get_rf_reg(dm, RF_PATH_A, RF_CHNLBW, 0x8000) != 0x1)
+			break;
+		ODM_delay_ms(10);
+	}
+
+	if (cnt == 5)
+		RF_DBG(dm, DBG_RF_LCK, "LCK time out\n");
+
+	/*recover channel number*/
+	odm_set_rf_reg(dm, RF_PATH_A, RF_CHNLBW, MASK20BITS, lc_cal);
 
 	/* Restore original situation */
 	if ((tmp_reg & 0x70) != 0) { /* Deal with contisuous TX case */
@@ -1330,7 +1339,7 @@ void phy_iq_calibrate_8188e(void *dm_void, boolean is_recovery)
 	for (i = 0; i < 3; i++) {
 		_phy_iq_calibrate_8188e(dm, result, i, false);
 		if (i == 1) {
-			is12simular = phy_simularity_compare_8188e(dm, result, 0, 1);
+			is12simular = phy_simularity_compare_8188e(dm, result, 0, 1, false);
 			if (is12simular) {
 				final_candidate = 0;
 				RF_DBG(dm, DBG_RF_IQK,
@@ -1341,7 +1350,7 @@ void phy_iq_calibrate_8188e(void *dm_void, boolean is_recovery)
 		}
 
 		if (i == 2) {
-			is13simular = phy_simularity_compare_8188e(dm, result, 0, 2);
+			is13simular = phy_simularity_compare_8188e(dm, result, 0, 2, false);
 			if (is13simular) {
 				final_candidate = 0;
 				RF_DBG(dm, DBG_RF_IQK,
@@ -1349,7 +1358,7 @@ void phy_iq_calibrate_8188e(void *dm_void, boolean is_recovery)
 				       final_candidate);
 				break;
 			}
-			is23simular = phy_simularity_compare_8188e(dm, result, 1, 2);
+			is23simular = phy_simularity_compare_8188e(dm, result, 1, 2, false);
 			if (is23simular) {
 				final_candidate = 1;
 				RF_DBG(dm, DBG_RF_IQK,

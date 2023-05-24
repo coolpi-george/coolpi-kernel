@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -110,7 +109,6 @@
 
 /* #endif */	/* #ifndef CONFIG_MP_INCLUDED */
 
-#define CONFIG_AP_MODE
 #ifdef CONFIG_AP_MODE
 
 	/* #define CONFIG_INTERRUPT_BASED_TXBCN */ /* Tx Beacon when driver BCN_OK ,BCN_ERR interrupt occurs */
@@ -129,7 +127,6 @@
 	#define CONFIG_FIND_BEST_CHANNEL
 #endif
 
-#define CONFIG_P2P
 #ifdef CONFIG_P2P
 	/* The CONFIG_WFD is for supporting the Wi-Fi display */
 	#define CONFIG_WFD
@@ -179,8 +176,6 @@
 
 #define CONFIG_GLOBAL_UI_PID
 
-#define CONFIG_LAYER2_ROAMING
-#define CONFIG_LAYER2_ROAMING_RESUME
 /* #define CONFIG_ADAPTOR_INFO_CACHING_FILE */ /* now just applied on 8192cu only, should make it general... */
 /* #define CONFIG_RESUME_IN_WORKQUEUE */
 /* #define CONFIG_SET_SCAN_DENY_TIMER */
@@ -236,6 +231,7 @@
  */
 
 #define RTL8188E_RX_PACKET_INCLUDE_CRC	0
+#define CONFIG_RX_PACKET_APPEND_FCS
 
 #define SUPPORTED_BLOCK_IO
 
@@ -297,8 +293,6 @@
  * Debug Related Config
  */
 #define DBG	1
-
-#define CONFIG_PROC_DEBUG
 
 #define DBG_CONFIG_ERROR_DETECT
 /* #define DBG_CONFIG_ERROR_DETECT_INT */

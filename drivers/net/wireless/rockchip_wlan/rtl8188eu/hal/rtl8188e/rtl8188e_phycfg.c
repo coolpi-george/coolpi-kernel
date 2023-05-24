@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -638,9 +637,6 @@ PHY_QueryRFReg8188E(
 	/* u8	RFWaitCounter = 0; */
 	/* _irqL	irqL; */
 
-	if (eRFPath >= MAX_RF_PATH)
-		return 0;
-
 #if (DISABLE_BB_RF == 1)
 	return 0;
 #endif
@@ -702,9 +698,6 @@ PHY_SetRFReg8188E(
 	/* u8			RFWaitCounter	= 0; */
 	u32		Original_Value, BitShift;
 	/* _irqL	irqL; */
-
-	if (eRFPath >= MAX_RF_PATH)
-		return;
 
 #if (DISABLE_BB_RF == 1)
 	return;
@@ -998,33 +991,12 @@ PHY_RFConfig8188E(
 		PADAPTER	Adapter
 )
 {
-	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
 	int		rtStatus = _SUCCESS;
 
 	/*  */
 	/* RF config */
 	/*  */
 	rtStatus = PHY_RF6052_Config8188E(Adapter);
-#if 0
-	switch (pHalData->rf_chip) {
-	case RF_6052:
-		rtStatus = PHY_RF6052_Config(Adapter);
-		break;
-	case RF_8225:
-		rtStatus = PHY_RF8225_Config(Adapter);
-		break;
-	case RF_8256:
-		rtStatus = PHY_RF8256_Config(Adapter);
-		break;
-	case RF_8258:
-		break;
-	case RF_PSEUDO_11N:
-		rtStatus = PHY_RF8225_Config(Adapter);
-		break;
-	default: /* for MacOs Warning: "RF_TYPE_MIN" not handled in switch */
-		break;
-	}
-#endif
 	return rtStatus;
 }
 
@@ -1311,60 +1283,19 @@ PHY_SetTxPowerIndex_8188E(
 		RTW_INFO("Invalid RFPath!!\n");
 }
 
-s8 tx_power_extra_bias(
-		enum rf_path		RFPath,
-		u8				Rate,
-		enum channel_width	BandWidth,
-		u8				Channel
-)
+s8 phy_get_txpwr_target_extra_bias_8188e(_adapter *adapter, enum rf_path rfpath
+	, RATE_SECTION rs, enum MGN_RATE rate, enum channel_width bw, BAND_TYPE band, u8 cch)
 {
 	s8 bias = 0;
 
-	if (Rate == MGN_2M)
+	if (adapter->registrypriv.mp_mode)
+		goto exit;
+
+	if (rate == MGN_2M)
 		bias = -9;
 
+exit:
 	return bias;
-}
-
-u8
-PHY_GetTxPowerIndex_8188E(
-		PADAPTER		pAdapter,
-		enum rf_path		RFPath,
-		u8				Rate,
-		u8				BandWidth,
-		u8				Channel,
-	struct txpwr_idx_comp *tic
-)
-{
-	PHAL_DATA_TYPE pHalData = GET_HAL_DATA(pAdapter);
-	struct hal_spec_t *hal_spec = GET_HAL_SPEC(pAdapter);
-	s16 power_idx;
-	u8 pg = 0;
-	s8 by_rate_diff = 0, limit = 0, tpt_offset = 0, extra_bias = 0;
-	BOOLEAN bIn24G = _FALSE;
-
-	pg = phy_get_pg_txpwr_idx(pAdapter, RFPath, Rate, RF_1TX, BandWidth, Channel, &bIn24G);
-
-	by_rate_diff = PHY_GetTxPowerByRate(pAdapter, BAND_ON_2_4G, RFPath, Rate);
-	limit = PHY_GetTxPowerLimit(pAdapter, NULL, (u8)(!bIn24G), pHalData->current_channel_bw, RFPath, Rate, RF_1TX, pHalData->current_channel);
-
-	tpt_offset = PHY_GetTxPowerTrackingOffset(pAdapter, RFPath, Rate);
-
-	if (pAdapter->registrypriv.mp_mode != 1)
-		extra_bias = tx_power_extra_bias(RFPath, Rate, BandWidth, Channel);
-
-	if (tic)
-		txpwr_idx_comp_set(tic, RF_1TX, pg, by_rate_diff, limit, tpt_offset, extra_bias, 0, 0);
-
-	by_rate_diff = by_rate_diff > limit ? limit : by_rate_diff;
-	power_idx = pg + by_rate_diff + tpt_offset + extra_bias;
-
-	if (power_idx < 0)
-		power_idx = 0;
-	else if (power_idx > hal_spec->txgi_max)
-		power_idx = hal_spec->txgi_max;
-
-	return power_idx;
 }
 
 void
@@ -1655,17 +1586,15 @@ static void _PHY_SwChnl8188E(PADAPTER Adapter, u8 channel)
 	enum rf_path eRFPath;
 	u32 param1, param2;
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
+	struct hal_spec_t *hal_spec = GET_HAL_SPEC(Adapter);
 
 	if (Adapter->bNotifyChannelChange)
 		RTW_INFO("[%s] ch = %d\n", __FUNCTION__, channel);
 
-	/* s1. pre common command - CmdID_SetTxPowerLevel */
-	rtw_hal_set_tx_power_level(Adapter, channel);
-
 	/* s2. RF dependent command - CmdID_RF_WriteReg, param1=RF_CHNLBW, param2=channel */
 	param1 = RF_CHNLBW;
 	param2 = channel;
-	for (eRFPath = RF_PATH_A; eRFPath < pHalData->NumTotalRFPath; eRFPath++) {
+	for (eRFPath = RF_PATH_A; eRFPath < hal_spec->rf_reg_path_num; eRFPath++) {
 		pHalData->RfRegChnlVal[eRFPath] = ((pHalData->RfRegChnlVal[eRFPath] & 0xfffffc00) | param2);
 		phy_set_rf_reg(Adapter, eRFPath, param1, bRFRegOffsetMask, pHalData->RfRegChnlVal[eRFPath]);
 	}
@@ -1683,7 +1612,6 @@ PHY_SwChnl8188E(/* Call after initialization */
 	/* PADAPTER Adapter =  ADJUST_TO_ADAPTIVE_ADAPTER(pAdapter, _TRUE); */
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
 	u8	tmpchannel = pHalData->current_channel;
-	BOOLEAN  bResult = _TRUE;
 
 	if (pHalData->rf_chip == RF_PSEUDO_11N) {
 		/* pHalData->SwChnlInProgress=FALSE; */
@@ -1743,15 +1671,6 @@ PHY_SwChnl8188E(/* Call after initialization */
 #endif
 
 
-
-		if (!bResult) {
-			/* if(IS_HARDWARE_TYPE_8192SU(Adapter)) */
-			/* { */
-			/*	pHalData->SwChnlInProgress = FALSE; */
-			pHalData->current_channel = tmpchannel;
-			/* } */
-		}
-
 	} else {
 		/* if(IS_HARDWARE_TYPE_8192SU(Adapter)) */
 		/* { */
@@ -1775,6 +1694,9 @@ PHY_SetSwChnlBWMode8188E(
 
 	PHY_SwChnl8188E(Adapter, channel);
 	PHY_SetBWMode8188E(Adapter, Bandwidth, Offset40);
+
+	rtw_hal_set_tx_power_level(Adapter, channel);
+
 	if (pHalData->bNeedIQK == _TRUE) {
 		if (pHalData->neediqk_24g == _TRUE) {
 

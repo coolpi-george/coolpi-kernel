@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -272,7 +271,6 @@ void UpdateEarlyModeInfo8188E(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmi
 }
 #endif
 
-#if defined(CONFIG_CONCURRENT_MODE)
 void fill_txdesc_force_bmc_camid(struct pkt_attrib *pattrib, struct tx_desc *ptxdesc)
 {
 	if ((pattrib->encrypt > 0) && (!pattrib->bswenc)
@@ -282,7 +280,6 @@ void fill_txdesc_force_bmc_camid(struct pkt_attrib *pattrib, struct tx_desc *ptx
 		ptxdesc->txdw1 |= cpu_to_le32((pattrib->bmc_camid) & 0x1f);
 	}
 }
-#endif
 
 void rtl8188e_cal_txdesc_chksum(struct tx_desc *ptxdesc)
 {

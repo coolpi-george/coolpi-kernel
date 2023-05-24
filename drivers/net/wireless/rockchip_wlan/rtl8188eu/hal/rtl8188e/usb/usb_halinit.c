@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2017 Realtek Corporation.
@@ -94,8 +93,6 @@ void rtl8188eu_interface_configure(_adapter *padapter)
 	} else {
 		pHalData->UsbBulkOutSize = USB_FULL_SPEED_BULK_SIZE;/* 64 bytes */
 	}
-
-	pHalData->interfaceIndex = pdvobjpriv->InterfaceNumber;
 
 #ifdef CONFIG_USB_TX_AGGREGATION
 	pHalData->UsbTxAggMode		= 1;
@@ -564,7 +561,7 @@ _InitWMACSetting(
 	/* rcr = */
 	/* RCR_AAP | RCR_APM | RCR_AM | RCR_AB |RCR_CBSSID_DATA| RCR_CBSSID_BCN| RCR_APP_ICV | RCR_AMF | RCR_HTC_LOC_CTRL | RCR_APP_MIC | RCR_APP_PHYSTS;	  */
 	/* don't turn on AAP, it will allow all packets to driver */
-	rcr = RCR_APM | RCR_AM | RCR_AB | RCR_CBSSID_DATA | RCR_CBSSID_BCN | RCR_APP_ICV | RCR_AMF | RCR_HTC_LOC_CTRL | RCR_APP_MIC | RCR_APP_PHYST_RXFF;
+	rcr = RCR_APM | RCR_AM | RCR_AB | RCR_CBSSID_DATA | RCR_CBSSID_BCN | RCR_APP_ICV | RCR_AMF | RCR_HTC_LOC_CTRL | RCR_APP_MIC | RCR_APP_PHYST_RXFF | RCR_APPFCS;
 
 #if (1 == RTL8188E_RX_PACKET_INCLUDE_CRC)
 	rcr |= ACRC32;
@@ -608,11 +605,8 @@ _InitAdaptiveCtrl(
 	value32 &= ~RATE_BITMAP_ALL;
 	value32 |= RATE_RRSR_CCK_ONLY_1M;
 
-	#ifdef RTW_DYNAMIC_RRSR
-		rtw_phydm_set_rrsr(Adapter, value32, TRUE);
-	#else
-		rtw_write32(Adapter, REG_RRSR, value32);
-	#endif
+	rtw_phydm_set_rrsr(Adapter, value32, TRUE);
+
 
 	/* CF-END Threshold */
 	/* m_spIoBase->rtw_write8(REG_CFEND_TH, 0x1); */
@@ -1502,7 +1496,7 @@ exit:
 	hal_init_stages_timestamp[HAL_INIT_STAGES_END] = rtw_get_current_time();
 
 	for (hal_init_profiling_i = 0; hal_init_profiling_i < HAL_INIT_STAGES_NUM - 1; hal_init_profiling_i++) {
-		RTW_INFO("DBG_HAL_INIT_PROFILING: %35s, %lu, %5lu, %5u\n"
+		RTW_INFO("DBG_HAL_INIT_PROFILING: %35s, %u, %5u, %5u\n"
 			 , hal_init_stages_str[hal_init_profiling_i]
 			 , hal_init_stages_timestamp[hal_init_profiling_i]
 			, (hal_init_stages_timestamp[hal_init_profiling_i + 1] - hal_init_stages_timestamp[hal_init_profiling_i])
@@ -1658,6 +1652,7 @@ u32 rtl8188eu_hal_deinit(PADAPTER Adapter)
 
 unsigned int rtl8188eu_inirp_init(PADAPTER Adapter)
 {
+	struct registry_priv *regsty = adapter_to_regsty(Adapter);
 	u8 i;
 	struct recv_buf *precvbuf;
 	uint	status;
@@ -1680,7 +1675,7 @@ unsigned int rtl8188eu_inirp_init(PADAPTER Adapter)
 
 	/* issue Rx irp to receive data	 */
 	precvbuf = (struct recv_buf *)precvpriv->precv_buf;
-	for (i = 0; i < NR_RECVBUFF; i++) {
+	for (i = 0; i < regsty->recvbuf_nr; i++) {
 		if (_read_port(pintfhdl, precvpriv->ff_hwaddr, 0, (unsigned char *)precvbuf) == _FALSE) {
 			status = _FAIL;
 			goto exit;
@@ -2063,9 +2058,6 @@ GetHalDefVar8188EUsb(
 	case HAL_DEF_RX_LDPC:
 		*((u8 *)pValue) = _FALSE;
 		break;
-	case HAL_DEF_TX_STBC:
-		*((u8 *)pValue) = 0;
-		break;
 	case HAL_DEF_RX_STBC:
 		*((u8 *)pValue) = 1;
 		break;
@@ -2160,14 +2152,6 @@ static u8 rtl8188eu_ps_func(PADAPTER Adapter, HAL_INTF_PS_FUNC efunc_id, u8 *val
 	u8 bResult = _TRUE;
 	switch (efunc_id) {
 
-#if defined(CONFIG_AUTOSUSPEND) && defined(SUPPORT_HW_RFOFF_DETECTED)
-	case HAL_USB_SELECT_SUSPEND: {
-		u8 bfwpoll = *((u8 *)val);
-		/* rtl8188e_set_FwSelectSuspend_cmd(Adapter,bfwpoll ,500); */ /* note fw to support hw power down ping detect */
-	}
-	break;
-#endif /* CONFIG_AUTOSUSPEND && SUPPORT_HW_RFOFF_DETECTED */
-
 	default:
 		break;
 	}
@@ -2210,6 +2194,9 @@ void rtl8188eu_set_hal_ops(_adapter *padapter)
 
 	pHalFunc->hal_xmit = &rtl8188eu_hal_xmit;
 	pHalFunc->mgnt_xmit = &rtl8188eu_mgnt_xmit;
+#ifdef CONFIG_RTW_MGMT_QUEUE
+	pHalFunc->hal_mgmt_xmitframe_enqueue = &rtl8188eu_hal_mgmt_xmitframe_enqueue;
+#endif
 	pHalFunc->hal_xmitframe_enqueue = &rtl8188eu_hal_xmitframe_enqueue;
 
 
