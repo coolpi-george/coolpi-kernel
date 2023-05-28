@@ -4516,8 +4516,8 @@ void fxgmac_release_phy(struct fxgmac_pdata* pdata)
         fxgmac_write_ephy_reg(pdata, REG_MII_EXT_DATA, REG_MII_EXT_COMMON_LED1_CFG_VALUE_SOLUTION1);
     }
 
-    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_ADDR, REG_MII_EXT_COMMON_LED2_CFG);
-    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_DATA, REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION);
+//    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_ADDR, REG_MII_EXT_COMMON_LED2_CFG);
+//    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_DATA, REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION);
 #endif
 }
 
@@ -4601,8 +4601,8 @@ void fxgmac_close_phy_led(struct fxgmac_pdata* pdata)
     fxgmac_write_ephy_reg(pdata, REG_MII_EXT_ADDR, REG_MII_EXT_COMMON_LED1_CFG);
     fxgmac_write_ephy_reg(pdata, REG_MII_EXT_DATA, 0x00);
 
-    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_ADDR, REG_MII_EXT_COMMON_LED2_CFG);
-    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_DATA, 0x00);
+//    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_ADDR, REG_MII_EXT_COMMON_LED2_CFG);
+//    fxgmac_write_ephy_reg(pdata, REG_MII_EXT_DATA, 0x00);
 }
 
 #ifdef LINUX
