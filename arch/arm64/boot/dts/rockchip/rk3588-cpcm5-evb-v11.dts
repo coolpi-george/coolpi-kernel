@@ -17,7 +17,7 @@
 #include <dt-bindings/sensor-dev.h>
 #include "rk3588-rk806-single.dtsi"
 #include "rk3588-cpu-swap.dtsi"
-#include "coolpicam/cm5-evb-ov5647-2x.dtsi"
+#include "coolpicam/cm5-evb-imx219-1x.dtsi"
 
 / {
 	model = "RK3588 CoolPi CM5 EVB Board";
