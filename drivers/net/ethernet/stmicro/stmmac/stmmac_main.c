@@ -136,8 +136,10 @@ static int phy_rtl8211f_led_fixup(struct phy_device *phydev)
 
 static int phy_yt8531_led_fixup(struct phy_device *phydev)
 {
-	   phy_write(phydev, 0x1e, 0xA00D);//先写地址
-	   phy_write(phydev, 0x1f, 0x0070);//再写数据
+	   phy_write(phydev, 0x1e, 0xA00D);//先写地址led1
+	   phy_write(phydev, 0x1f, 0x0026);//再写数据
+	   phy_write(phydev, 0x1e, 0xA00E);//先写地址led2
+	   phy_write(phydev, 0x1f, 0x00D8);//再写数据
        return 0;
 }
 
