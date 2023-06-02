@@ -23,8 +23,11 @@ bool fxgmac_write_mac_addr_to_efuse(struct fxgmac_pdata* pdata, u8* mac_addr);
 bool fxgmac_read_subsys_from_efuse(struct fxgmac_pdata* pdata, u32* subsys, u32* revid);
 bool fxgmac_write_subsys_to_efuse(struct fxgmac_pdata* pdata, u32* subsys, u32* revid);
 bool fxgmac_efuse_load(struct fxgmac_pdata* pdata);
-bool fxgmac_efuse_read_regionA_regionB(struct fxgmac_pdata* pdata, u32 reg, u32* value);
+bool fxgmac_efuse_read_data(struct fxgmac_pdata* pdata, u32 offset, u32* value);
+bool fxgmac_efuse_write_data(struct fxgmac_pdata* pdata, u32 offset, u32 value);
 bool fxgmac_efuse_write_oob(struct fxgmac_pdata* pdata);
 bool fxgmac_efuse_write_led(struct fxgmac_pdata* pdata, u32 value);
+bool fxgmac_read_led_setting_from_efuse(struct fxgmac_pdata* pdata);
+bool fxgmac_write_led_setting_to_efuse(struct fxgmac_pdata* pdata);
 
 #endif // __FUXI_EFUSE_H__

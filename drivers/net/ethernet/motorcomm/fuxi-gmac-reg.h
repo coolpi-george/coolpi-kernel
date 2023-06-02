@@ -269,10 +269,10 @@ distribute without commercial permission.
 #define MAC_VLANTR_VTHM_LEN		1
 #define MAC_VLANTR_VTIM_POS		17
 #define MAC_VLANTR_VTIM_LEN		1
-#define MAC_VR_DEVID_POS		16
-#define MAC_VR_DEVID_LEN		16
-#define MAC_VR_SNPSVER_POS		0
-#define MAC_VR_SNPSVER_LEN		8
+#define MAC_VR_DEVID_POS          16
+#define MAC_VR_DEVID_LEN          16
+#define MAC_VR_SVER_POS           0
+#define MAC_VR_SVER_LEN           8
 #define MAC_VR_USERVER_POS		8
 #define MAC_VR_USERVER_LEN		8
 
@@ -1150,14 +1150,25 @@ distribute without commercial permission.
 #define REG_MII_EXT_ANALOG_CFG8                                           0x57
 #define REG_MII_EXT_ANALOG_CFG8_LED_VALUE                                 0x274c
 
+#define REG_MII_EXT_COMMON_LED_CFG                                        0xA00B
 #define REG_MII_EXT_COMMON_LED0_CFG                                       0xA00C
-#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SOLUTION1                       0x2600
-#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SOLUTION2                       0x00
+#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SOLUTION0                       0x2600
+#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SOLUTION1                       0x00
+#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SOLUTION2                       0x20
+#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SOLUTION3                       0x2600
 #define REG_MII_EXT_COMMON_LED1_CFG                                       0xA00D
-#define REG_MII_EXT_COMMON_LED1_CFG_VALUE_SOLUTION1                       0x1800
-#define REG_MII_EXT_COMMON_LED1_CFG_VALUE_SOLUTION2                       0x00
+#define REG_MII_EXT_COMMON_LED1_CFG_VALUE_SOLUTION0                       0x1800
+#define REG_MII_EXT_COMMON_LED1_CFG_VALUE_SOLUTION1                       0x00
+#define REG_MII_EXT_COMMON_LED1_CFG_VALUE_SOLUTION2                       0x40
 #define REG_MII_EXT_COMMON_LED2_CFG                                       0xA00E
-#define REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION                        0x00
+#define REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION0                       0x00
+#define REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION2                       0x07
+#define REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION3                       0x20
+#define REG_MII_EXT_COMMON_LED2_CFG_VALUE_SOLUTION4                       0x1800
+#define REG_MII_EXT_COMMON_LED_BLINK_CFG                                  0xA00F
+#define REG_MII_EXT_COMMON_LED_BLINK_CFG_SOLUTION2                        0x0F
+
+#define REG_MII_EXT_COMMON_LED0_CFG_VALUE_SLEEP_SOLUTION3                 0x2600
 
 #define REG_MII_EXT_PKG_CFG0                                              0xA0
 #define REG_MII_EXT_PKG_CHECK_POS                                         14
@@ -1210,8 +1221,11 @@ distribute without commercial permission.
 #define MGMT_EPHY_CTRL_STA_EPHY_RESET           0 // 0: reset state.
 #define MGMT_EPHY_CTRL_STA_EPHY_RELEASE         1 // 1: release state.
 #define MGMT_EPHY_CTRL_STA_EPHY_LINKUP          2 // 1: link up; 0: link down.
-	
+#define MGMT_EPHY_CTRL_STA_EPHY_DUPLEX_POS      2 // ephy duplex  
+#define MGMT_EPHY_CTRL_STA_EPHY_DUPLEX_LEN      1 // 
+
 #define MGMT_EPHY_CTRL_STA_SPEED_POS	        3
+#define MGMT_EPHY_CTRL_STA_SPEED_LEN	        2
 #define MGMT_EPHY_CTRL_STA_SPEED_MASK           0x18
 
 #define MGMT_PCIE_EP_CTRL                       0x1008
@@ -1261,7 +1275,8 @@ distribute without commercial permission.
 #define MGMT_INT_CTRL0_INT_STATUS_RX        0x0001
 #define MGMT_INT_CTRL0_INT_STATUS_TX        0x0010
 #define MGMT_INI_CTRL0_INT_STATUS_TX_INVERSE 0xFFEF
-#define MGMT_INT_CTRL0_INT_STATUS_TXRXMASK   0x001F
+#define MGMG_INT_CTRL0_INT_STATUS_PHY_INVERSE 0xFFDF
+#define MGMT_INT_CTRL0_INT_STATUS_PHY         0x0020
 
 #define MGMT_INT_CTRL0_INT_MASK_RXCH_POS    16
 #define MGMT_INT_CTRL0_INT_STATUS_RXCH_POS  0
@@ -1324,7 +1339,7 @@ system exit idle state, send out one LTR exit message.
 #define  LTR_IDLE_ENTER_USVAL                   900
 #define  LTR_IDLE_ENTER_SCALE_POS               10
 #define  LTR_IDLE_ENTER_SCALE_LEN               5
-#define  LTR_IDLE_ENTER_SCALE                   2
+#define  LTR_IDLE_ENTER_SCALE                   2       /* 0-1ns, 1-32ns, 2-1024ns, 3-32,768ns, 4-1,048,576ns, 5-33,554,432ns, 110-111-Not Permitted.*/
 #define  LTR_IDLE_ENTER_REQUIRE_POS             15
 #define  LTR_IDLE_ENTER_REQUIRE_LEN             1
 #define  LTR_IDLE_ENTER_REQUIRE                 1
@@ -1516,6 +1531,18 @@ system exit idle state, send out one LTR exit message.
 
 #define MGMT_RMK_CTRL				0x1400
 
+#define MGMT_SIGDET                 0x17F8
+#define MGMT_SIGDET_POS             13
+#define MGMT_SIGDET_LEN             3
+#define MGMT_SIGDET_55MV            7
+#define MGMT_SIGDET_50MV            6
+#define MGMT_SIGDET_45MV            5  //default value
+#define MGMT_SIGDET_40MV            4
+#define MGMT_SIGDET_35MV            3
+#define MGMT_SIGDET_30MV            2
+#define MGMT_SIGDET_25MV            1
+#define MGMT_SIGDET_20MV            0
+
 #define FXGMAC_MTL_REG(pdata, n, reg)					\
 	((pdata)->mac_regs + MTL_Q_BASE + ((n) * MTL_Q_INC) + (reg))
 
@@ -1594,7 +1621,11 @@ system exit idle state, send out one LTR exit message.
 #define	EFUSE_OP_DONE_POS               1
 #define	EFUSE_OP_DONE_LEN               1
 
+//efuse layout refer to http://redmine.motor-comm.com/issues/3856
+#define EFUSE_FISRT_UPDATE_ADDR         255
+#define EFUSE_SECOND_UPDATE_ADDR        209
 #define FUXI_EFUSE_MAX_ENTRY            39
+#define FUXI_EFUSE_MAX_ENTRY_UNDER_LED_COMMON 24
 #define EFUSE_PATCH_ADDR_START_BYTE     0
 #define EFUSE_PATCH_DATA_START_BYTE     2
 #define EFUSE_REGION_A_B_LENGTH         18
@@ -1611,8 +1642,12 @@ system exit idle state, send out one LTR exit message.
 #define EFUSE_OOB_ADDR                  0x07
 #define EFUSE_OOB_POS                   2
 #define EFUSE_OOB_LEN                   1
-#define EFUSE_LED_SOLUTION1             0
-#define EFUSE_LED_SOLUTION2             1
+#define EFUSE_LED_SOLUTION0             0
+#define EFUSE_LED_SOLUTION1             1
+#define EFUSE_LED_SOLUTION2             2
+#define EFUSE_LED_SOLUTION3             3
+#define EFUSE_LED_SOLUTION4             4
+#define EFUSE_LED_COMMON_SOLUTION       0x1F
 
 /******************** Below for pcie configuration register. *********************/
 #define REG_PCI_VENDOR_ID                       0x0     /* WORD reg */
@@ -1679,15 +1714,42 @@ system exit idle state, send out one LTR exit message.
 
 #define REG_MSIX_CAPABILITY                     0xB0
 
-#define REG_ASPM_L1SS_CTRL                      0x158
-#define ASPM_L1SS_CTRL_L12_PCIPM_EN_POS         0       /* L1.2 in D3 state. */
-#define ASPM_L1SS_CTRL_L12_PCIPM_EN_LEN         1
-#define ASPM_L1SS_CTRL_L11_PCIPM_EN_POS         1       /* L1.1 in D3 state. */
-#define ASPM_L1SS_CTRL_L11_PCIPM_EN_LEN         1
-#define ASPM_L1SS_CTRL_L12_EN_POS               2
-#define ASPM_L1SS_CTRL_L12_EN_LEN               1
-#define ASPM_L1SS_CTRL_L11_EN_POS               3
-#define ASPM_L1SS_CTRL_L11_EN_LEN               1
+/* ASPM L1ss PM Substates */
+#define REG_ASPM_L1SS_CAP                       0x154   /* Capabilities Register */
+#define ASPM_L1SS_CAP_PCIPM_L1_2_POS            0       /* PCI-PM L1.2 Supported */
+#define ASPM_L1SS_CAP_PCIPM_L1_2_LEN            1
+#define ASPM_L1SS_CAP_PCIPM_L1_1_POS            1       /* PCI-PM L1.1 Supported */
+#define ASPM_L1SS_CAP_PCIPM_L1_1_LEN            1
+#define ASPM_L1SS_CAP_ASPM_L1_2_POS             2       /* ASPM L1.2 Supported */
+#define ASPM_L1SS_CAP_ASPM_L1_2_LEN             1
+#define ASPM_L1SS_CAP_ASPM_L1_1_POS             3       /* ASPM L1.1 Supported */
+#define ASPM_L1SS_CAP_ASPM_L1_1_LEN             1
+#define ASPM_L1SS_CAP_L1_PM_SS_POS              4       /* L1 PM Substates Supported */
+#define ASPM_L1SS_CAP_L1_PM_SS_LEN              1
+#define ASPM_L1SS_CAP_CM_RESTORE_TIME_POS       8       /* Port Common_Mode_Restore_Time */
+#define ASPM_L1SS_CAP_CM_RESTORE_TIME_LEN       8
+#define ASPM_L1SS_CAP_P_PWR_ON_SCALE_POS        16      /* Port T_POWER_ON scale */
+#define ASPM_L1SS_CAP_P_PWR_ON_SCALE_LEN        2
+#define ASPM_L1SS_CAP_P_PWR_ON_VALUE_POS        19      /* Port T_POWER_ON value */
+#define ASPM_L1SS_CAP_P_PWR_ON_VALUE_LEN        5
+
+#define REG_ASPM_L1SS_CTRL1                     0x158
+#define ASPM_L1SS_CTRL1_L12_PCIPM_EN_POS        0       /* L1.2 in D3 state. */
+#define ASPM_L1SS_CTRL1_L12_PCIPM_EN_LEN        1
+#define ASPM_L1SS_CTRL1_L11_PCIPM_EN_POS        1       /* L1.1 in D3 state. */
+#define ASPM_L1SS_CTRL1_L11_PCIPM_EN_LEN        1
+#define ASPM_L1SS_CTRL1_L12_EN_POS              2
+#define ASPM_L1SS_CTRL1_L12_EN_LEN              1
+#define ASPM_L1SS_CTRL1_L11_EN_POS              3
+#define ASPM_L1SS_CTRL1_L11_EN_LEN              1
+#define ASPM_L1SS_CTRL1_CM_RESTORE_TIME_POS     8       /* Common_Mode_Restore_Time */
+#define ASPM_L1SS_CTRL1_CM_RESTORE_TIME_LEN     8
+#define ASPM_L1SS_CTRL1_LTR_L12_TH_VALUE_POS    16      /* LTR_L1.2_THRESHOLD_Value */
+#define ASPM_L1SS_CTRL1_LTR_L12_TH_VALUE_LEN    10
+#define ASPM_L1SS_CTRL1_L12_TH_SCALE_POS        29      /* LTR_L1.2_THRESHOLD_Scale */
+#define ASPM_L1SS_CTRL1_L12_TH_SCALE_LEN        3
+
+#define REG_ASPM_L1SS_CTL2                      0x15c   /* Control 2 Register */
 
 #define REG_ASPM_CONTROL                        0x70C
 #define ASPM_L1_IDLE_THRESHOLD_POS              27

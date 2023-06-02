@@ -51,6 +51,17 @@ distribute without commercial permission.
 #define CRC32C_POLY_LE 0x82F63B78
 #endif
 
+#define FXGMAC_FAIL    -1
+#define FXGMAC_SUCCESS     0
+#define FXGMAC_DEV_CMD      (SIOCDEVPRIVATE + 1)
+#define FXGMAC_IOCTL_DFS_COMMAND    _IOWR('M', 0x80, struct ext_ioctl_data)
+
+#define FXGMAC_MAX_DBG_TEST_PKT     150
+#define FXGMAC_MAX_DBG_BUF_LEN      64000
+#define FXGMAC_MAX_DBG_RX_DATA      1600
+
+#define FXGMAC_TEST_MAC_HEAD_LEN        14
+
 #endif
 
 // For fpga before 20210507
@@ -58,7 +69,8 @@ distribute without commercial permission.
 #define FXGMAC_FPGA_VER_20210507	1
 
 #define FXGMAC_DRV_NAME                     "fuxi-gmac"
-#define FXGMAC_DRV_VERSION                  "1.0.0"
+
+#define FXGMAC_DRV_VERSION                  "1.0.15"
 
 #define FXGMAC_DRV_DESC                     "Motorcomm FUXI GMAC Driver"
 
@@ -316,6 +328,18 @@ struct pattern_packet{
 };
 #pragma pack()
 
+typedef enum
+{
+    CURRENT_STATE_SHUTDOWN = 0,
+    CURRENT_STATE_RESUME = 1,
+    CURRENT_STATE_INIT = 2,
+    CURRENT_STATE_SUSPEND = 3,
+    CURRENT_STATE_CLOSE = 4,
+    CURRENT_STATE_OPEN = 5,
+    CURRENT_STATE_RESTART = 6,
+    CURRENT_STATE_REMOVE = 7,
+}CURRENT_STATE;
+
 #endif
 
 // Don't change the member variables or types, this inherits from Windows OS.
@@ -330,6 +354,15 @@ struct wol_bitmap_pattern
     u16         pattern_crc;
 };
 
+struct led_setting
+{
+    u32 s0_led_setting[5];
+    u32 s3_led_setting[5];
+    u32 s5_led_setting[5];
+    u32 disable_led_setting[5];
+};
+
+typedef struct led_setting LED_SETTING;
 typedef struct wol_bitmap_pattern WOL_BITMAP_PATTERN;
 
 typedef enum
@@ -984,6 +1017,10 @@ struct fxgmac_hw_ops {
     int (*set_ephy_autoneg_advertise)(struct fxgmac_pdata* pdata,  struct fxphy_ag_adv phy_ag_adv);
     int (*phy_config)(struct fxgmac_pdata* pdata);
     void (*close_phy_led)(struct fxgmac_pdata* pdata);
+    void (*led_under_active)(struct fxgmac_pdata* pdata);
+    void (*led_under_sleep)(struct fxgmac_pdata* pdata);
+    void (*led_under_shutdown)(struct fxgmac_pdata* pdata);
+    void (*led_under_disable)(struct fxgmac_pdata* pdata);
 
     /* For power management */
     void (*pre_power_down)(struct fxgmac_pdata* pdata, bool phyloopback);
@@ -1017,9 +1054,12 @@ struct fxgmac_hw_ops {
     bool (*read_mac_addr_from_efuse)(struct fxgmac_pdata* pdata, u8* mac_addr);
     bool (*write_mac_addr_to_efuse)(struct fxgmac_pdata* pdata, u8* mac_addr);
     bool (*efuse_load)(struct fxgmac_pdata* pdata);
-    bool (*read_regionA_regionB)(struct fxgmac_pdata* pdata, u32 reg, u32* value);
+    bool (*read_efuse_data)(struct fxgmac_pdata* pdata, u32 offset, u32* value);
     bool (*write_oob)(struct fxgmac_pdata* pdata);
     bool (*write_led)(struct fxgmac_pdata* pdata, u32 value);
+    bool (*read_led_config)(struct fxgmac_pdata* pdata);
+    bool (*write_led_config)(struct fxgmac_pdata* pdata);
+
     int (*pcie_init)(struct fxgmac_pdata* pdata, bool ltr_en, bool aspm_l1ss_en, bool aspm_l1_en, bool aspm_l0s_en);
     void (*trigger_pcie)(struct fxgmac_pdata* pdata, u32 code); // To trigger pcie sniffer for analysis.
 };
@@ -1087,6 +1127,23 @@ struct net_device;
 struct device;
 struct pci_dev;
 #endif
+
+#define FXGAMC_MAX_DATA_SIZE (1024*4+16)
+struct per_regisiter_info
+{
+    unsigned int           size;
+    unsigned int           address;
+    unsigned int           value;
+    unsigned char          data[FXGAMC_MAX_DATA_SIZE];
+};
+
+struct ext_command_data {
+    u32 val0;
+    u32 val1;
+};
+
+typedef struct per_regisiter_info   PER_REG_INFO;
+typedef struct ext_command_data     CMD_DATA;
 
 struct fxgmac_pdata {
     struct net_device               *netdev;
@@ -1224,7 +1281,7 @@ struct fxgmac_pdata {
     u32 wol; //wol options
     unsigned long powerstate; //20210708, power state
     unsigned int ns_offload_tab_idx; //20220120, for ns-offload table. 2 entries supported.
-    u8 current_state;   // 1: resume, 0:not resume,include suspend/init and so on
+    CURRENT_STATE current_state;
 #endif
 
     /* Netdev related settings */
@@ -1255,19 +1312,34 @@ struct fxgmac_pdata {
     u32                             rss_options;
 
 #ifdef LINUX
-    bool                            phy_link;
+    bool                          phy_link;
 #endif
     int                             phy_speed;
-    char                            phy_duplex;
-    char                            phy_autoeng;
-   
+    int                             phy_duplex;
+    int                             phy_autoeng;
+
     char                            drv_name[32];
     char                            drv_ver[32];
 
+    struct wol_bitmap_pattern   pattern[MAX_PATTERN_COUNT];
+
+    struct led_setting          led;
+    struct led_setting          ledconfig;
+
 #ifdef LINUX
+    bool            fxgmac_test_tso_flag;
+    u32             fxgmac_test_tso_seg_num;
+    u32             fxgmac_test_last_tso_len;
+    u32             fxgmac_test_packet_len;
+    volatile u32    fxgmac_test_skb_arr_in_index;
+    volatile u32    fxgmac_test_skb_arr_out_index;
+    CMD_DATA        ex_cmd_data; 
+    PER_REG_INFO    per_reg_data;
+    struct sk_buff  *fxgmac_test_skb_array[FXGMAC_MAX_DBG_TEST_PKT];
 #ifdef HAVE_FXGMAC_DEBUG_FS
-    struct dentry *dbg_adapter;
-#endif /*HAVE_FXGMAC_DEBUG_FS*/
+    struct dentry   *dbg_adapter;
+    struct dentry   *fxgmac_dbg_root;
+#endif
 #endif
 };
 
@@ -1347,18 +1419,22 @@ int fxgmac_drv_probe(struct device *dev,
 int fxgmac_drv_remove(struct device *dev);
 
 #ifdef LINUX
-int fxgmac_init(struct fxgmac_pdata *pdata, bool save_private_reg);
+int  fxgmac_init(struct fxgmac_pdata *pdata, bool save_private_reg);
 void fxgmac_set_pattern_data(struct fxgmac_pdata *pdata);
 /* for phy interface */
-int fxgmac_config_mac_speed(struct fxgmac_pdata *pdata);
+int  fxgmac_config_mac_speed(struct fxgmac_pdata *pdata);
 void fxgmac_act_phy_link(struct fxgmac_pdata *pdata);
-int fuxi_phy_timer_init(struct fxgmac_pdata *pdata);
-void fuxi_phy_timer_destroy(struct fxgmac_pdata *pdata);
-void fuxi_phy_timer_resume(struct fxgmac_pdata *pdata);
-int fuxi_ephy_autoneg_ability_get(struct fxgmac_pdata *pdata, unsigned int *cap_mask);
-int fuxi_ephy_status_get(/*u32 lport*/struct fxgmac_pdata *pdata, int* speed, int* duplex, int* ret_link, int *media);
-int fuxi_ephy_soft_reset(struct fxgmac_pdata *pdata);
-unsigned int fxgmac_get_netdev_ip4addr(struct fxgmac_pdata *pdata);
+int  fxgmac_phy_timer_init(struct fxgmac_pdata *pdata);
+void fxgmac_phy_timer_destroy(struct fxgmac_pdata *pdata);
+void fxgmac_phy_timer_resume(struct fxgmac_pdata *pdata);
+int  fxgmac_ephy_autoneg_ability_get(struct fxgmac_pdata *pdata, unsigned int *cap_mask);
+int  fxgmac_ephy_status_get(/*u32 lport*/struct fxgmac_pdata *pdata, int* speed, int* duplex, int* ret_link, int *media);
+int  fxgmac_ephy_soft_reset(struct fxgmac_pdata *pdata);
+void fxgmac_phy_force_speed(struct fxgmac_pdata *pdata, int speed);
+void fxgmac_phy_force_duplex(struct fxgmac_pdata *pdata, int duplex);
+void fxgmac_phy_force_autoneg(struct fxgmac_pdata *pdata, int autoneg);
+
+unsigned int    fxgmac_get_netdev_ip4addr(struct fxgmac_pdata *pdata);
 unsigned char * fxgmac_get_netdev_ip6addr(struct fxgmac_pdata *pdata, unsigned char *ipval, unsigned char *ip6addr_solicited, unsigned int ifa_flag);
 void fxgmac_update_aoe_ipv4addr(struct fxgmac_pdata *pdata, u8 *ip_addr);
 void fxgmac_update_ns_offload_ipv6addr(struct fxgmac_pdata *pdata, unsigned int param);
@@ -1397,21 +1473,22 @@ void fxgmac_net_powerup(struct fxgmac_pdata *pdata);
 int fxgmac_diag_sanity_check(struct fxgmac_pdata *pdata);
 #endif
 #else
-int fxgmac_init(struct fxgmac_pdata* pdata, unsigned int rx_desc_count, unsigned int tx_desc_count, bool save_nonstick_reg);
-int fxgmac_open(struct fxgmac_pdata* pdata);
-int fxgmac_close(struct fxgmac_pdata* pdata);
+int  fxgmac_init(struct fxgmac_pdata* pdata, unsigned int rx_desc_count, unsigned int tx_desc_count, bool save_nonstick_reg);
+int  fxgmac_open(struct fxgmac_pdata* pdata);
+int  fxgmac_close(struct fxgmac_pdata* pdata);
 void nic_enable_rx_tx_ints(struct fxgmac_pdata* pdata);
 void fxgmac_disable_rx_tx_ints(struct fxgmac_pdata* pdata);
 
-int dma_start(struct fxgmac_pdata* pdata);
-int fxgmac_start(struct fxgmac_pdata* pdata);
+int  dma_start(struct fxgmac_pdata* pdata);
+int  fxgmac_start(struct fxgmac_pdata* pdata);
 void fxgmac_stop(struct fxgmac_pdata* pdata);
 void fxgmac_suspend(struct fxgmac_pdata* pdata);	
 #endif
 
+#if defined(UEFI)
+
 #define FXGMAC_DEBUG
 
-#if defined(UEFI)
 /* For debug prints */
 #ifdef FXGMAC_DEBUG
 /*#define FXGMAC_PR(fmt, args...) \
@@ -1425,6 +1502,7 @@ void fxgmac_suspend(struct fxgmac_pdata* pdata);
 #endif
 #define netif_msg_drv(pdata) FALSE
 #define printk(x,...) do { } while (0)
+#define DPRINTK(x,...) do { } while (0)
 
 #define netif_dbg(a, b, c, fmt, ...) \
     DBGPRINT(MP_TRACE, ("[%a,%d]:" fmt, __func__, __LINE__, __VA_ARGS__))
@@ -1443,6 +1521,8 @@ void fxgmac_suspend(struct fxgmac_pdata* pdata);
 
 #elif defined(_WIN32) || defined(_WIN64)
 
+#define FXGMAC_DEBUG
+
 /* For debug prints */
 #ifdef FXGMAC_DEBUG
 /*#define FXGMAC_PR(fmt, args...) \
@@ -1457,6 +1537,7 @@ void fxgmac_suspend(struct fxgmac_pdata* pdata);
 
 #define netif_msg_drv(pdata) FALSE
 #define printk(x,...) do { } while (0)
+#define DPRINTK(x,...) do { } while (0)
 
 #define netif_dbg(a, b, c, fmt, ...) \
     DBGPRINT(MP_TRACE, ("[%s,%d]:" fmt, __func__, __LINE__, __VA_ARGS__))
@@ -1474,14 +1555,16 @@ void fxgmac_suspend(struct fxgmac_pdata* pdata);
     DBGPRINT(MP_WARN, ("[%s,%d]:" fmt, __func__, __LINE__, __VA_ARGS__))
 
 #elif defined(LINUX)
-#define FXGMAC_DEBUG
 
 /* For debug prints */
 #ifdef FXGMAC_DEBUG
 #define FXGMAC_PR(fmt, args...) \
     pr_alert("[%s,%d]:" fmt, __func__, __LINE__, ## args)
+
+#define DPRINTK printk
 #else
 #define FXGMAC_PR(x...)		do { } while (0)
+#define DPRINTK(x...)
 #endif
 
 #else
@@ -1509,7 +1592,6 @@ extern bool gFxLpTestFlag;
 #endif
 
 #ifdef LINUX
-#ifdef HAVE_FXGMAC_DEBUG_FS
 #define IOC_MAGIC 'M'
 #define IOC_MAXNR (0x80 + 5)
 
@@ -1520,15 +1602,21 @@ extern bool gFxLpTestFlag;
 #define FUXI_DFS_IOCTL_DIAG_TX_PKT       0x10005
 #define FUXI_DFS_IOCTL_DIAG_RX_PKT       0x10006
 
+#define FXGMAC_EFUSE_UPDATE_LED_CFG                  0x10007
+#define FXGMAC_EFUSE_WRITE_LED                       0x10008
+#define FXGMAC_EFUSE_WRITE_PATCH_REG                 0x10009
+#define FXGMAC_EFUSE_WRITE_PATCH_PER_INDEX           0x1000A
+#define FXGMAC_EFUSE_WRITE_OOB                       0x1000B
+#define FXGMAC_EFUSE_LOAD                            0x1000C
+#define FXGMAC_EFUSE_READ_REGIONABC                  0x1000D
+#define FXGMAC_EFUSE_READ_PATCH_REG                  0x1000E
+#define FXGMAC_EFUSE_READ_PATCH_PER_INDEX            0x1000F
+#define FXGMAC_EFUSE_LED_TEST                        0x10010
+
 struct ext_command_buf {
     void* buf;
     u32 size_in;
     u32 size_out;
-};
-
-struct ext_command_data {
-    u32 val0;
-    u32 val1;
 };
 
 struct ext_command_mac {
@@ -1584,22 +1672,15 @@ typedef struct _fxgmac_test_packet {
     void*                    lowLevelReserved[4];                                                            
 } fxgmac_test_packet, *pfxgmac_test_packet;
 
+#ifdef HAVE_FXGMAC_DEBUG_FS
 void fxgmac_dbg_adapter_init(struct fxgmac_pdata *pdata);
 void fxgmac_dbg_adapter_exit(struct fxgmac_pdata *pdata);
-void fxgmac_dbg_init(void);
-void fxgmac_dbg_exit(void);
-void fxgmac_restart_dev(struct fxgmac_pdata *pdata);
-
-#define MAX_DBG_TEST_PKT 150
-extern struct sk_buff *fxgmac_test_skb_array[];
-extern volatile u32 fxgmac_test_skb_arr_in_index;
-extern volatile u32 fxgmac_test_skb_arr_out_index;
-
-extern bool fxgmac_test_tso_flag;
-extern u32 fxgmac_test_tso_seg_num;
-extern u32 fxgmac_test_last_tso_len;
-extern u32 fxgmac_test_packet_len;
+void fxgmac_dbg_init(struct fxgmac_pdata *pdata);
+void fxgmac_dbg_exit(struct fxgmac_pdata *pdata);
 #endif /* HAVE_FXGMAC_DEBUG_FS */
+
+void fxgmac_restart_dev(struct fxgmac_pdata *pdata);
+long fxgmac_dbg_netdev_ops_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 #endif 
 
 

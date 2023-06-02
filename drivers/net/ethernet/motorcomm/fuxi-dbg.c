@@ -40,33 +40,31 @@ void DbgPrintAddress(unsigned char* Address)
 
 void fxgmac_dump_buffer(unsigned char *skb, unsigned int len, int tx_rx)
 {
-	#define ZDbgPrintF(Level, ...)    AsciiPrint("fx-pat "  __VA_ARGS__);                                             \
+#define ZDbgPrintF(Level, ...)    AsciiPrint("fx-pat "  __VA_ARGS__);                                             \
 
-	//unsigned char buffer[128];
-	unsigned int i, j;
-	char * caption[3] = {	"Tx",
-							"Rx",
-							"Buffer"};
+    //unsigned char buffer[128];
+    unsigned int i, j;
+    char * caption[3] = {	"Tx",
+    						"Rx",
+    						"Buffer"};
 
-	if(tx_rx > 2) tx_rx = 2;
-	
-	ZDbgPrintF(MP_TRACE, " ************** Data dump start ****************\n");
-	ZDbgPrintF(MP_TRACE, " %a data of %d bytes\n", caption[tx_rx], len);
+    if(tx_rx > 2) tx_rx = 2;
 
-	for (i = 0; i < len; i += 32) {
-		unsigned int len_line = min(len - i, 32U);
+    ZDbgPrintF(MP_TRACE, " ************** Data dump start ****************\n");
+    ZDbgPrintF(MP_TRACE, " %a data of %d bytes\n", caption[tx_rx], len);
 
-		for(j = 0; j < len_line; j++)
-		{
-			AsciiPrint("%02x ", (u8)skb[i + j]);
-		}
-		AsciiPrint("\n");
-	}
+    for (i = 0; i < len; i += 32) {
+    	unsigned int len_line = min(len - i, 32U);
 
-	ZDbgPrintF(MP_TRACE, " ************** Data dump end ****************\n");
+    	for(j = 0; j < len_line; j++)
+    	{
+    		AsciiPrint("%02x ", (u8)skb[i + j]);
+    	}
+    	AsciiPrint("\n");
+    }
 
+    ZDbgPrintF(MP_TRACE, " ************** Data dump end ****************\n");
 }
-
 
 #elif defined(_WIN64) || defined(_WIN32)
 
@@ -276,31 +274,31 @@ DumpLine(
 
 void fxgmac_dump_buffer(unsigned char *skb, unsigned int len, int tx_rx)
 {
-	#define ZDbgPrintF(Level, ...) DbgPrint("fx-pat "  ##__VA_ARGS__);  
+    #define ZDbgPrintF(Level, ...) DbgPrint("fx-pat "  ##__VA_ARGS__);  
 
-	unsigned char buffer[128];
-	unsigned int i, j;
-	char * caption[3] = {	"Tx",
-							"Rx",
-							"Buffer"};
+    unsigned char buffer[128];
+    unsigned int i, j;
+    char * caption[3] = {	"Tx",
+    						"Rx",
+    						"Buffer"};
 
-	if(tx_rx > 2) tx_rx = 2;
-	
-	ZDbgPrintF(MP_TRACE, " ************** Data dump start ****************\n");
-	ZDbgPrintF(MP_TRACE, " %s data of %d bytes\n", caption[tx_rx], len);
+    if(tx_rx > 2) tx_rx = 2;
 
-	for (i = 0; i < len; i += 32) {
-		unsigned int len_line = min(len - i, 32U);
+    ZDbgPrintF(MP_TRACE, " ************** Data dump start ****************\n");
+    ZDbgPrintF(MP_TRACE, " %s data of %d bytes\n", caption[tx_rx], len);
 
-		for(j = 0; j < len_line; j++)
-		{
-			sprintf((char *)&buffer[j * 3], " %02x", (u8)skb[i + j]);
-		}
-		buffer[j * 3] = '\0';
-		ZDbgPrintF(MP_TRACE, "  %#06x: %s\n", i, buffer);
-	}
+    for (i = 0; i < len; i += 32) {
+    	unsigned int len_line = min(len - i, 32U);
 
-	ZDbgPrintF(MP_TRACE, " ************** Data dump end ****************\n");
+    	for(j = 0; j < len_line; j++)
+    	{
+    		sprintf((char *)&buffer[j * 3], " %02x", (u8)skb[i + j]);
+    	}
+    	buffer[j * 3] = '\0';
+    	ZDbgPrintF(MP_TRACE, "  %#06x: %s\n", i, buffer);
+    }
+
+    ZDbgPrintF(MP_TRACE, " ************** Data dump end ****************\n");
 
 }
 
@@ -474,7 +472,7 @@ DbgPrintOidName(
             MAKECASE(OID_RECEIVE_FILTER_SET_FILTER)
 #endif
 
-#if (NDIS_SUPPORT_NDIS630)
+#if (NDIS_SUPPORT_NDIS630 || NDIS_SUPPORT_NDIS680)
             /* NDIS QoS OIDs for NDIS 6.30 */
             MAKECASE(OID_QOS_PARAMETERS)
 #endif
