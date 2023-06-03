@@ -6,3 +6,5 @@ obj-$(CONFIG_AICDHD)   += aic8800/
 obj-$(CONFIG_WLAN_NXP) += wlan_src/
 obj-$(CONFIG_WLAN_RTL) += rtl8188eu/
 obj-$(CONFIG_WLAN_RTL) += rtl8822bu/
+obj-$(CONFIG_WLAN_RTL) += rtl8852be/
+obj-$(CONFIG_WLAN_RTL) += rtl8821cu/
