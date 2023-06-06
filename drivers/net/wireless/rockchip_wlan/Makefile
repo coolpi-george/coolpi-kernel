@@ -8,3 +8,5 @@ obj-$(CONFIG_WLAN_RTL) += rtl8188eu/
 obj-$(CONFIG_WLAN_RTL) += rtl8822bu/
 obj-$(CONFIG_WLAN_RTL) += rtl8852be/
 obj-$(CONFIG_WLAN_RTL) += rtl8821cu/
+obj-$(CONFIG_WLAN_RTL) += rtl8822ce/
+obj-$(CONFIG_WLAN_RTL) += rtl8821ce/
