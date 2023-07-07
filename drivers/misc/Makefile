@@ -4,7 +4,7 @@
 #
 
 obj-$(CONFIG_RK803)		+= rk803.o
-obj-y                           += tinker_mcu.o
+obj-$(CONFIG_TINKER_MCU) 	+= tinker_mcu.o
 obj-$(CONFIG_IBM_ASM)		+= ibmasm/
 obj-$(CONFIG_IBMVMC)		+= ibmvmc.o
 obj-$(CONFIG_AD525X_DPOT)	+= ad525x_dpot.o

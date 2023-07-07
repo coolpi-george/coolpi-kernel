@@ -42,10 +42,14 @@
 
 #include "panel-simple.h"
 
-
+#ifdef CONFIG_TINKER_MCU
 extern int tinker_mcu_set_bright(int bright);
 extern int tinker_mcu_screen_power_up(void);
+#endif
+
+#ifdef CONFIG_TOUCHSCREEN_FT5406
 extern void tinker_ft5406_start_polling(void);
+#endif
 
 struct panel_cmd_header {
 	u8 data_type;
@@ -511,11 +515,16 @@ static int panel_simple_prepare(struct drm_panel *panel)
 	unsigned int delay;
 	int err;
 	int hpd_asserted;
+#ifdef CONFIG_TINKER_MCU
 	printk("jx:enter panel simple prepare!!\n");
 	tinker_mcu_screen_power_up();
 	tinker_mcu_set_bright(200);
 	msleep(100);
+#endif
+
+#ifdef CONFIG_TOUCHSCREEN_FT5406
 	tinker_ft5406_start_polling();
+#endif
 	if (p->prepared)
 		return 0;
 
