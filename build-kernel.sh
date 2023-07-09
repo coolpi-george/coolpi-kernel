@@ -43,8 +43,16 @@ case "$BOARD" in
     txt_config_file="config_cpcm5_8uart.txt"
     txt_extconf_file="extlinux_cpcm5_8uart.conf"
     ;;
+  cpnano)
+    cfg="rv1106_cpnano_defconfig"
+    dtb="rv1106-cpnano.dtb"
+    txt_config_file="config_cpnano.txt"
+    txt_extconf_file="extlinux_cpnano.conf"
+    RV1106="1"
+    export ARCH=arm
+    ;;
   *)
-    echo "Usage: $0 {cp4b|cm5-evb|cm5-evb-v11|cm5-minipc|cm5-8uart}" >&2
+    echo "Usage: $0 {cpnano|cp4b|cm5-evb|cm5-evb-v11|cm5-minipc|cm5-8uart}" >&2
     exit 0
     ;;
 esac
@@ -53,21 +61,59 @@ for dtb_f in $dtb
 do
     rm -rf arch/arm64/boot/dts/rockchip/$dtb_f
 done
-make ARCH=arm64 LOCALVERSION= $cfg
-make ARCH=arm64 LOCALVERSION= -j8
-make ARCH=arm64 LOCALVERSION= modules -j8
-cp arch/arm64/boot/Image.gz vmlinuz
-cp arch/arm64/boot/Image Image
-for dtb_f in $dtb
-do
-    cp arch/arm64/boot/dts/rockchip/$dtb_f .
-done
 
-rm -rf out_modules
-mkdir -p out_modules
+if [ "$RV1106" == "1" ]; then
+    ARCH=`uname -m`
+    if [ "$ARCH" == "x86_64" ]; then
+        export CROSS_COMPILE=arm-rockchip830-linux-uclibcgnueabihf-
+        TOOLCHAIN_ARM32=$K_SRC/toolchain32uc/bin
+        export PATH=$TOOLCHAIN_ARM32:$PATH
+    fi
+    make ARCH=arm LOCALVERSION= $cfg
+    make ARCH=arm LOCALVERSION= -j8
+    cp arch/arm/boot/zImage vmlinuz
+    for dtb_f in $dtb
+    do
+        cp arch/arm/boot/dts/$dtb_f .
+    done
 
-cd $K_SRC
-make ARCH=arm64 modules_install INSTALL_MOD_PATH=out_modules
+    rm -rf out_modules
+    mkdir -p out_modules
+
+    cd $K_SRC
+    make ARCH=arm modules_install INSTALL_MOD_PATH=out_modules
+    rm -rf out
+    mkdir -p out/extlinux
+    cp vmlinuz out/
+    #cp demo-cfgs/cmdline.txt out/cmdline.txt
+    #cp demo-cfgs/$txt_config_file out/config.txt
+    cp demo-cfgs/$txt_extconf_file out/extlinux/extlinux.conf
+    cp demo-cfgs/initrd32.img out/initrd32.img
+else
+    make ARCH=arm64 LOCALVERSION= $cfg
+    make ARCH=arm64 LOCALVERSION= -j8
+    make ARCH=arm64 LOCALVERSION= modules -j8
+    cp arch/arm64/boot/Image.gz vmlinuz
+    cp arch/arm64/boot/Image Image
+    for dtb_f in $dtb
+    do
+        cp arch/arm64/boot/dts/rockchip/$dtb_f .
+    done
+
+    rm -rf out_modules
+    mkdir -p out_modules
+
+    cd $K_SRC
+    make ARCH=arm64 modules_install INSTALL_MOD_PATH=out_modules
+    rm -rf out
+    mkdir -p out/extlinux
+    cp vmlinuz out/
+    cp Image out/
+    cp demo-cfgs/cmdline.txt out/cmdline.txt
+    cp demo-cfgs/$txt_config_file out/config.txt
+    cp demo-cfgs/$txt_extconf_file out/extlinux/extlinux.conf
+    cp demo-cfgs/initrd.img out/initrd.img
+fi
 
 cd $K_SRC/out_modules/lib/modules/5.10.110
 unlink source
@@ -78,16 +124,10 @@ cd $K_SRC/out_modules/lib/
 tar -czf ../../modules.tar.gz *
 
 cd $K_SRC
-rm -rf out
-mkdir -p out/extlinux
-cp vmlinuz out/
-cp Image out/
 for dtb_f in $dtb
 do
     cp $dtb_f out/
 done
 cp modules.tar.gz out/
-cp demo-cfgs/$txt_config_file out/config.txt
-cp demo-cfgs/$txt_extconf_file out/extlinux/extlinux.conf
 
 exit 0
