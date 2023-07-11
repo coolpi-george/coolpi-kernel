@@ -10,7 +10,7 @@
 #include <dt-bindings/input/input.h>
 
 / {
-	model = "Rockchip RV1106G NANO Board";
+	model = "Rockchip RV1106G CoolPi NANO Board";
 	compatible = "rockchip,rv1106";
 
 	aliases {
@@ -108,6 +108,24 @@
 		gpio = <&gpio4 RK_PC1 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&sig_switch>;
+	};
+
+	hub_rst: hub-rst {
+		compatible = "regulator-fixed";
+		regulator-name = "hub_rst";
+		regulator-boot-on;
+		regulator-always-on;
+		enable-active-high;
+		gpio = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+	};
+
+	vcc3v3_mipi: vcc3v3-mipi {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_mipi";
+		regulator-boot-on;
+		regulator-always-on;
+		enable-active-high;
+		gpio = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
 	};
 };
 

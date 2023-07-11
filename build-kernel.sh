@@ -69,6 +69,9 @@ if [ "$RV1106" == "1" ]; then
         TOOLCHAIN_ARM32=$K_SRC/toolchain32uc/bin
         export PATH=$TOOLCHAIN_ARM32:$PATH
     fi
+    if [ "$ARCH" == "aarch64" ]; then
+        export CROSS_COMPILE=arm-linux-gnueabi-
+    fi
     make ARCH=arm LOCALVERSION= $cfg
     make ARCH=arm LOCALVERSION= -j8
     cp arch/arm/boot/zImage vmlinuz
