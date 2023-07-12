@@ -127,6 +127,33 @@
 		enable-active-high;
 		gpio = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
 	};
+
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_leds>;
+		status = "okay";
+
+		led1 {
+                        label = "Heartbeat";
+                        gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "heartbeat";
+                };
+
+                led2 {
+                        label = "act";
+                        gpios = <&gpio3 RK_PC7 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "netdev";
+                        default-state = "off";
+                };
+
+                led3 {
+                        label = "link";
+                        gpios = <&gpio3 RK_PD0 GPIO_ACTIVE_HIGH>;
+                        linux,default-trigger = "netdev";
+                        default-state = "off";
+                };
+        };
 };
 
 &fiq_debugger {
@@ -395,7 +422,15 @@
 &pinctrl {
 	signal-enable {
 		sig_switch: sig-siwtch {
-				rockchip,pins = <4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
+
+	led {
+                gpio_leds: gpio-leds {
+                        rockchip,pins = <4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_down>,
+                            		<3 RK_PC7 RK_FUNC_GPIO &pcfg_pull_down>,
+                            		<3 RK_PD0 RK_FUNC_GPIO &pcfg_pull_down>;
+                };
+        };
 };
