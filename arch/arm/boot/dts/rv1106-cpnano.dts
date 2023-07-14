@@ -8,6 +8,8 @@
 #include "rv1106.dtsi"
 #include "rv1106-amp.dtsi"
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/clock/rk618-cru.h>
+#include <dt-bindings/display/media-bus-format.h>
 
 / {
 	model = "Rockchip RV1106G CoolPi NANO Board";
@@ -110,6 +112,7 @@
 		pinctrl-0 = <&sig_switch>;
 	};
 
+#if 0
 	hub_rst: hub-rst {
 		compatible = "regulator-fixed";
 		regulator-name = "hub_rst";
@@ -118,6 +121,7 @@
 		enable-active-high;
 		gpio = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
 	};
+#endif
 
 	vcc3v3_mipi: vcc3v3-mipi {
 		compatible = "regulator-fixed";
@@ -135,25 +139,25 @@
 		status = "okay";
 
 		led1 {
-                        label = "Heartbeat";
-                        gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_HIGH>;
-                        linux,default-trigger = "heartbeat";
-                };
+			label = "run";
+			gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "heartbeat";
+		};
 
-                led2 {
-                        label = "act";
-                        gpios = <&gpio3 RK_PC7 GPIO_ACTIVE_HIGH>;
-                        linux,default-trigger = "netdev";
-                        default-state = "off";
-                };
+		led2 {
+			label = "act";
+			gpios = <&gpio3 RK_PC7 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "netdev";
+			default-state = "off";
+		};
 
-                led3 {
-                        label = "link";
-                        gpios = <&gpio3 RK_PD0 GPIO_ACTIVE_HIGH>;
-                        linux,default-trigger = "netdev";
-                        default-state = "off";
-                };
-        };
+		led3 {
+			label = "link";
+			gpios = <&gpio3 RK_PD0 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "netdev";
+			default-state = "off";
+		};
+	};
 };
 
 &fiq_debugger {
@@ -292,6 +296,64 @@
 
 &i2c1 {
 	status = "okay";
+	clock-frequency = <400000>;
+
+	rk618@50 {
+		compatible = "rockchip,rk618";
+		reg = <0x50>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rk618_int>;
+		clocks = <&cru I2S0_8CH_MCLKOUT>;
+		clock-names = "clkin";
+		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
+		assigned-clock-rates = <12280000>;
+		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
+		status = "disabled";
+
+		clock: cru {
+			compatible = "rockchip,rk618-cru";
+			//clocks = <&cru I2S0_8CH_MCLKOUT>, <&cru DCLK_VOPL>;
+			//clock-names = "clkin", "lcdc0_dclkp";
+			assigned-clocks = <&clock SCALER_PLLIN_CLK>,
+					  <&clock VIF_PLLIN_CLK>,
+					  <&clock SCALER_CLK>,
+					  <&clock VIF0_PRE_CLK>,
+					  <&clock CODEC_CLK>,
+					  <&clock DITHER_CLK>;
+			assigned-clock-parents = <&cru I2S0_8CH_MCLKOUT>,
+						 <&clock LCDC0_CLK>,
+						 <&clock SCALER_PLL_CLK>,
+						 <&clock VIF_PLL_CLK>,
+						 <&cru I2S0_8CH_MCLKOUT>,
+						 <&clock VIF0_CLK>;
+			#clock-cells = <1>;
+			status = "disabled";
+		};
+
+		hdmi {
+			compatible = "rockchip,rk618-hdmi";
+			clocks = <&clock HDMI_CLK>;
+			clock-names = "hdmi";
+			assigned-clocks = <&clock HDMI_CLK>;
+			assigned-clock-parents = <&clock VIF0_CLK>;
+			interrupt-parent = <&gpio0>;
+			interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+
+					hdmi_in_rgb: endpoint {
+						remote-endpoint = <&rgb_out_hdmi>;
+					};
+				};
+			};
+		};
+	};
 };
 
 &i2c2 {
@@ -300,7 +362,42 @@
 
 &i2s0_8ch {
 	#sound-dai-cells = <0>;
-	status = "okay";
+	status = "disabled";
+};
+
+&display_subsystem {
+    status = "disabled";
+};
+
+&rgb {
+    status = "disabled";
+    pinctrl-names = "default";
+    pinctrl-0 = <&lcd_pins>;
+
+	ports {
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			rgb_out_hdmi: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&hdmi_in_rgb>;
+			};
+		};
+	};
+};
+
+&rgb_in_vop {
+	status = "disabled";
+};
+
+&route_rgb {
+	status = "disabled";
+};
+
+&vop {
+	status = "disabled";
 };
 
 &mipi0_csi2 {
@@ -427,10 +524,20 @@
 	};
 
 	led {
-                gpio_leds: gpio-leds {
-                        rockchip,pins = <4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_down>,
-                            		<3 RK_PC7 RK_FUNC_GPIO &pcfg_pull_down>,
-                            		<3 RK_PD0 RK_FUNC_GPIO &pcfg_pull_down>;
-                };
-        };
+		gpio_leds: gpio-leds {
+			rockchip,pins = <4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_down>,
+							<3 RK_PC7 RK_FUNC_GPIO &pcfg_pull_down>,
+							<3 RK_PD0 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	rk618 {
+		rk618_reset: rk618-reeset {
+			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_output_high>;
+		};
+
+		rk618_int: rk618-int {
+			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
 };
