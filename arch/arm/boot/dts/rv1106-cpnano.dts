@@ -158,6 +158,32 @@
 			default-state = "off";
 		};
 	};
+
+	xin12m: xin12m {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <12288000>;
+		clock-output-names = "xin12m";
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		linux,cma {
+			compatible = "shared-dma-pool";
+			inactive;
+			reusable;
+			size = <0x1000000>;
+			linux,cma-default;
+		};
+
+		drm_logo: drm-logo@00000000 {
+			compatible = "rockchip,drm-logo";
+			reg = <0x0 0x0>;
+		};
+	};
 };
 
 &fiq_debugger {
@@ -303,31 +329,28 @@
 		reg = <0x50>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&rk618_int>;
-		clocks = <&cru I2S0_8CH_MCLKOUT>;
+		clocks = <&xin12m>;
 		clock-names = "clkin";
-		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
-		assigned-clock-rates = <12280000>;
 		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
-		status = "disabled";
+		status = "okay";
 
 		clock: cru {
 			compatible = "rockchip,rk618-cru";
-			//clocks = <&cru I2S0_8CH_MCLKOUT>, <&cru DCLK_VOPL>;
-			//clock-names = "clkin", "lcdc0_dclkp";
+			clocks = <&xin12m>;
+			clock-names = "clkin";
 			assigned-clocks = <&clock SCALER_PLLIN_CLK>,
 					  <&clock VIF_PLLIN_CLK>,
 					  <&clock SCALER_CLK>,
 					  <&clock VIF0_PRE_CLK>,
 					  <&clock CODEC_CLK>,
 					  <&clock DITHER_CLK>;
-			assigned-clock-parents = <&cru I2S0_8CH_MCLKOUT>,
+			assigned-clock-parents = <&xin12m>,
 						 <&clock LCDC0_CLK>,
 						 <&clock SCALER_PLL_CLK>,
 						 <&clock VIF_PLL_CLK>,
-						 <&cru I2S0_8CH_MCLKOUT>,
 						 <&clock VIF0_CLK>;
 			#clock-cells = <1>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		hdmi {
@@ -338,7 +361,7 @@
 			assigned-clock-parents = <&clock VIF0_CLK>;
 			interrupt-parent = <&gpio0>;
 			interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
-			status = "disabled";
+			status = "okay";
 
 			ports {
 				#address-cells = <1>;
@@ -360,19 +383,16 @@
 	status = "okay";
 };
 
-&i2s0_8ch {
-	#sound-dai-cells = <0>;
-	status = "disabled";
-};
 
 &display_subsystem {
-    status = "disabled";
+	logo-memory-region = <&drm_logo>;
+	status = "okay";
 };
 
 &rgb {
-    status = "disabled";
-    pinctrl-names = "default";
-    pinctrl-0 = <&lcd_pins>;
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&lcd_pins>;
 
 	ports {
 		port@1 {
@@ -389,15 +409,15 @@
 };
 
 &rgb_in_vop {
-	status = "disabled";
+	status = "okay";
 };
 
 &route_rgb {
-	status = "disabled";
+	status = "okay";
 };
 
 &vop {
-	status = "disabled";
+	status = "okay";
 };
 
 &mipi0_csi2 {
