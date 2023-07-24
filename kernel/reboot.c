@@ -384,7 +384,11 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
 		panic("cannot halt");
 
 	case LINUX_REBOOT_CMD_POWER_OFF:
+#ifdef CONFIG_COOLPI_NOTEBOOK
+		kernel_restart("recovery");
+#else
 		kernel_power_off();
+#endif
 		do_exit(0);
 		break;
 
@@ -492,7 +496,11 @@ static int __orderly_poweroff(bool force)
 		 * emergency shutdown?
 		 */
 		emergency_sync();
+#ifdef CONFIG_COOLPI_NOTEBOOK
+		kernel_restart("recovery");
+#else
 		kernel_power_off();
+#endif
 	}
 
 	return ret;
