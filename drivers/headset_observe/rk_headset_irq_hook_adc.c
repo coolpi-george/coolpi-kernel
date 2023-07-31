@@ -81,6 +81,9 @@ extern int rt5631_headset_mic_detect(bool headset_status);
 #if defined(CONFIG_SND_SOC_RT3261) || defined(CONFIG_SND_SOC_RT3224)
 extern int rt3261_headset_mic_detect(int jack_insert);
 #endif
+#ifdef CONFIG_SND_SOC_ES8316_CM5
+extern int es8316_headset_detect(int jack_insert);
+#endif
 
 
 /* headset private data */
@@ -164,7 +167,9 @@ static irqreturn_t headset_interrupt(int irq, void *dev_id)
 	pr_info("(headset in is %s)headset status is %s\n",
 		pdata->headset_insert_type ? "high level" : "low level",
 		headset_info->headset_status ? "in" : "out");
-
+	#ifdef CONFIG_SND_SOC_ES8316_CM5
+		es8316_headset_detect(headset_info->headset_status);
+	#endif
 	if (headset_info->headset_status == HEADSET_IN) {
 		if (pdata->chan != 0) {
 			/* detect Hook key */
@@ -432,7 +437,7 @@ int rk_headset_adc_probe(struct platform_device *pdev,
 		dev_err(&pdev->dev, "failed to register input device\n");
 		goto failed;
 	}
-	input_set_capability(headset->input_dev, EV_KEY, HOOK_KEY_CODE);
+	    input_set_capability(headset->input_dev, EV_KEY, KEY_VOLUMEUP);
 	if (pdata->headset_gpio) {
 		unsigned long irq_type;
 

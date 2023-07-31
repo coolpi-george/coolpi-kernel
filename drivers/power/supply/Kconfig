@@ -116,10 +116,15 @@ config BATTERY_CPCAP
 	  Say Y here to enable support for battery on Motorola
 	  phones and tablets such as droid 4.
 
+config COOLPI_NOTEBOOK
+	bool "Poweroff Command Extra"
+	default n
+
 config BATTERY_CW2015
 	tristate "CW2015 Battery driver"
 	depends on I2C
 	select REGMAP_I2C
+	select COOLPI_NOTEBOOK
 	help
 	  Say Y here to enable support for the cellwise cw2015
 	  battery fuel gauge (used in the Pinebook Pro & others)

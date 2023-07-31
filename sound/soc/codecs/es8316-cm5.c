@@ -1019,11 +1019,16 @@ int es8316_headset_detect(int jack_insert)
 
 	es8316->hp_inserted = jack_insert;
 
-	/*enable micbias and disable PA*/
+	/*Switching MIC channels*/
 	if (jack_insert) {
-		snd_soc_component_update_bits(es8316_component,
-				    ES8316_SYS_PDN_REG0D, 0x3f, 0);
+		snd_soc_component_write(es8316_component,
+				     ES8316_ADC_PDN_LINSEL_REG22, 0x30);
 		es8316_enable_spk(es8316, false);
+	}
+	else{
+		snd_soc_component_write(es8316_component,
+				     ES8316_ADC_PDN_LINSEL_REG22, 0x20);
+		es8316_enable_spk(es8316, true);
 	}
 
 	return 0;

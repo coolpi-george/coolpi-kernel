@@ -37,6 +37,12 @@ case "$BOARD" in
     txt_config_file="config_cpcm5_minipc.txt"
     txt_extconf_file="extlinux_cpcm5_minipc.conf"
     ;;
+  cm5-notebook)
+    cfg="rk3588_cpcm5_notebook_defconfig"
+    dtb="rk3588-cpcm5-notebook.dtb"
+    txt_config_file="config_cpcm5_notebook.txt"
+    txt_extconf_file="extlinux_cpcm5_notebook.conf"
+    ;;
   cm5-8uart)
     cfg="rk3588_cpcm5_defconfig"
     dtb="rk3588-cpcm5-8uart.dtb"
@@ -52,7 +58,7 @@ case "$BOARD" in
     export ARCH=arm
     ;;
   *)
-    echo "Usage: $0 {cpnano|cp4b|cm5-evb|cm5-evb-v11|cm5-minipc|cm5-8uart}" >&2
+    echo "Usage: $0 {cpnano|cp4b|cm5-evb|cm5-evb-v11|cm5-minipc|cm5-notebook|cm5-8uart}" >&2
     exit 0
     ;;
 esac
