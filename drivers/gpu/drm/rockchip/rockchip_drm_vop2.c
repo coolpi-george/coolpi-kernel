@@ -1630,14 +1630,14 @@ static void vop2_power_domain_off(struct vop2_power_domain *pd)
 {
 	struct vop2 *vop2 = pd->vop2;
 
-	dev_info(vop2->dev, "pd%d off\n", ffs(pd->data->id) - 1);
+	//dev_info(vop2->dev, "pd%d off\n", ffs(pd->data->id) - 1);
 	pd->on = false;
 	VOP_MODULE_SET(vop2, pd->data, pd, 1);
 }
 
 static void vop2_power_domain_get(struct vop2_power_domain *pd)
 {
-	dev_info(pd->vop2->dev, "pd%d get ref_count:%d\n", ffs(pd->data->id) - 1, pd->ref_count);
+	//dev_info(pd->vop2->dev, "pd%d get ref_count:%d\n", ffs(pd->data->id) - 1, pd->ref_count);
 	if (pd->parent)
 		vop2_power_domain_get(pd->parent);
 
@@ -1653,7 +1653,7 @@ static void vop2_power_domain_get(struct vop2_power_domain *pd)
 
 static void vop2_power_domain_put(struct vop2_power_domain *pd)
 {
-	dev_info(pd->vop2->dev, "pd%d put ref_count:%d\n", ffs(pd->data->id) - 1, pd->ref_count);
+	//dev_info(pd->vop2->dev, "pd%d put ref_count:%d\n", ffs(pd->data->id) - 1, pd->ref_count);
 	spin_lock(&pd->lock);
 
 	/*

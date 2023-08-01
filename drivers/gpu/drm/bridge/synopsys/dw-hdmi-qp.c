@@ -965,7 +965,7 @@ static int dw_hdmi_i2c_read(struct dw_hdmi_qp *hdmi,
 
 		stat = wait_for_completion_timeout(&i2c->cmp, HZ / 10);
 		if (!stat) {
-			dev_err(hdmi->dev, "i2c read time out!\n");
+			//dev_err(hdmi->dev, "i2c read time out!\n");
 			hdmi_writel(hdmi, 0x01, I2CM_CONTROL0);
 			return -EAGAIN;
 		}

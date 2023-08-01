@@ -120,8 +120,8 @@ static int read_gpio(int gpio)
 	for (i = 0; i < 3; i++) {
 		level = gpio_get_value(gpio);
 		if (level < 0) {
-			pr_warn("%s:get pin level again,pin=%d,i=%d\n",
-				__func__, gpio, i);
+			//pr_warn("%s:get pin level again,pin=%d,i=%d\n",
+			//	__func__, gpio, i);
 			msleep(1);
 			continue;
 		} else

@@ -417,6 +417,7 @@
 		pinctrl-0 = <&wifi_pwron>;
 	};
 
+#if 0
 	wireless_bluetooth: wireless-bluetooth {
 		compatible = "bluetooth-platdata";
 		clocks = <&hym8563>;
@@ -428,8 +429,9 @@
 		BT,reset_gpio    = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;
 		BT,wake_gpio     = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
 		BT,wake_host_irq = <&gpio3 RK_PB4 GPIO_ACTIVE_HIGH>;
-		status = "okay";
+		status = "disabled";
 	};
+#endif
 
 	i2c_mux: i2c-mux {
 		compatible = "i2c-gpio";
@@ -1050,12 +1052,12 @@
 
 &i2c6 {
 	status = "okay";
-	hym8563: hym8563@51 {
+	hym8563clk: hym8563@51 {
 		compatible = "haoyu,hym8563";
 		reg = <0x51>;
 		#clock-cells = <0>;
 		clock-frequency = <32768>;
-		clock-output-names = "hym8563";
+		clock-output-names = "hym8563clk";
 		pinctrl-names = "default";
 		pinctrl-0 = <&hym8563_int>;
 		interrupt-parent = <&gpio0>;
@@ -1155,6 +1157,21 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart7m1_xfer &uart7m1_ctsn>;
+
+	bluetooth {
+		compatible = "brcm,bcm43438-bt";
+		clocks = <&hym8563clk>;
+		clock-names = "ext_clock";
+		device-wakeup-gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
+		host-wakeup-gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_HIGH>;
+		shutdown-gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;
+		max-speed = <1500000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&bt_reset_gpio &bt_wake_gpio &bt_wake_host_irq &uart1m1_rtsn>;
+		vbat-supply = <&vcc_3v3_s0>;
+		vddio-supply = <&vcc_1v8_s0>;
+		status = "okay";
+	};
 };
 
 &display_subsystem {

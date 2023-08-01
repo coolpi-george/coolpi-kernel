@@ -125,8 +125,8 @@ static irqreturn_t headset_interrupt(int irq, void *dev_id)
 	for (i = 0; i < 3; i++) {
 		level = gpio_get_value(pdata->headset_gpio);
 		if (level < 0) {
-			pr_err("%s:get pin level again,pin=%d,i=%d\n",
-			       __func__, pdata->headset_gpio, i);
+			//pr_err("%s:get pin level again,pin=%d,i=%d\n",
+			//       __func__, pdata->headset_gpio, i);
 			msleep(1);
 			continue;
 		}
@@ -136,8 +136,8 @@ static irqreturn_t headset_interrupt(int irq, void *dev_id)
 		pr_err("%s:get pin level  err!\n", __func__);
 		goto out;
 	} else {
-		pr_err("%s:get pin level again, pin=%d,i=%d\n",
-		       __func__, pdata->headset_gpio, i);
+		//pr_err("%s:get pin level again, pin=%d,i=%d\n",
+		//       __func__, pdata->headset_gpio, i);
 	}
 
 	old_status = headset_info->headset_status;
@@ -164,9 +164,9 @@ static irqreturn_t headset_interrupt(int irq, void *dev_id)
 		goto out;
 	}
 
-	pr_info("(headset in is %s)headset status is %s\n",
-		pdata->headset_insert_type ? "high level" : "low level",
-		headset_info->headset_status ? "in" : "out");
+	//pr_info("(headset in is %s)headset status is %s\n",
+	//	pdata->headset_insert_type ? "high level" : "low level",
+	//	headset_info->headset_status ? "in" : "out");
 	#ifdef CONFIG_SND_SOC_ES8316_CM5
 		es8316_headset_detect(headset_info->headset_status);
 	#endif
