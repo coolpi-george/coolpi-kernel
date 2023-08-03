@@ -1163,7 +1163,7 @@
 		device-wakeup-gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
 		host-wakeup-gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_HIGH>;
 		shutdown-gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;
-		max-speed = <1500000>;
+		max-speed = <3000000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&bt_reset_gpio &bt_wake_gpio &bt_wake_host_irq &uart7m1_rtsn>;
 		vbat-supply = <&vcc_3v3_s0>;

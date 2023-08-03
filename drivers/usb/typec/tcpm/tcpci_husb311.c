@@ -199,7 +199,7 @@ static int husb311_probe(struct i2c_client *client,
 		return ret;
 	}
 
-	enable_irq_wake(client->irq);
+//	enable_irq_wake(client->irq);
 
 	return 0;
 }
