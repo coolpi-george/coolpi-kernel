@@ -814,6 +814,7 @@ static int bcm_suspend(struct device *dev)
 		if (!error)
 			bt_dev_dbg(bdev, "BCM irq: enabled");
 	}
+	bdev->set_shutdown(bdev, 0);
 
 unlock:
 	mutex_unlock(&bcm_device_lock);
@@ -846,6 +847,7 @@ static int bcm_resume(struct device *dev)
 	}
 
 	err = bcm_resume_device(dev);
+	bdev->set_shutdown(bdev, 1);
 
 unlock:
 	mutex_unlock(&bcm_device_lock);
@@ -855,7 +857,7 @@ unlock:
 		pm_runtime_set_active(dev);
 		pm_runtime_enable(dev);
 	}
-
+	
 	return 0;
 }
 #endif

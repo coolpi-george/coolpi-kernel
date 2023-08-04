@@ -15,7 +15,7 @@
 #include <dt-bindings/display/drm_mipi_dsi.h>
 #include <dt-bindings/display/rockchip_vop.h>
 #include <dt-bindings/sensor-dev.h>
-#include "rk3588-rk806-single.dtsi"
+#include "rk3588-rk806-single-nb.dtsi"
 #include "rk3588-cpu-swap.dtsi"
 
 / {
@@ -646,12 +646,10 @@
 };
 
 &u2phy2_host {
-	phy-supply = <&vcc5v0_host>;
 	status = "okay";
 };
 
 &u2phy3_host {
-	phy-supply = <&vcc5v0_host>;
 	status = "okay";
 };
 
@@ -1223,11 +1221,11 @@
 
 	usb {
 		vcc5v0_host1_en: vcc5v0-host1-en {
-			rockchip,pins = <1 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <1 RK_PD5 RK_FUNC_GPIO &pcfg_output_high>;
 		};
 
 		keyboard_en: keyboard-en {
-			rockchip,pins = <1 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <1 RK_PA7 RK_FUNC_GPIO &pcfg_output_high>;
 		};
 	};
 
