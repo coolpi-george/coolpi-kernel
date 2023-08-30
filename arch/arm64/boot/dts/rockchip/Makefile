@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+ifdef ALL_DTBS
 dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb-ddr3-v10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb-ddr3-v10-avb.dtb
@@ -160,6 +161,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-evb8-lp4x-v10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-rk806-single-v10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-v10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-v11.dtb
+endif
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-cp4.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-cp4-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-cp4-sfc.dtb

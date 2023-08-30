@@ -163,3 +163,4 @@ sphinx_*/
 
 /out_modules
 /Image
+*.deb

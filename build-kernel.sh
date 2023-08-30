@@ -12,6 +12,8 @@ export ARCH=arm64
 
 BOARD=$1
 
+GEN_DEBS="NO"
+
 case "$BOARD" in
   cp4b)
     cfg="rk3588s_cp4b_defconfig"
@@ -69,6 +71,7 @@ do
 done
 
 if [ "$RV1106" == "1" ]; then
+    GEN_DEBS="NO"
     ARCH=`uname -m`
     if [ "$ARCH" == "x86_64" ]; then
         export CROSS_COMPILE=arm-rockchip830-linux-uclibcgnueabihf-
@@ -127,8 +130,8 @@ fi
 cd $K_SRC/out_modules/lib/modules/5.10.110
 unlink source
 unlink build
-ln -sf /usr/src/5.10.110/ build
-ln -sf /usr/src/5.10.110/ source
+ln -sf /usr/src/linux-headers-5.10.110/ build
+ln -sf /usr/src/linux-headers-5.10.110/ source
 cd $K_SRC/out_modules/lib/
 tar -czf ../../modules.tar.gz *
 
@@ -138,5 +141,68 @@ do
     cp $dtb_f out/
 done
 cp modules.tar.gz out/
+
+case "$GEN_DEBS" in
+    [yY][eE][sS]|[yY])
+        echo "Create coolpi kernel deb packages..."
+	;;
+    *)
+	exit 0
+	;;
+esac
+
+KDEB_DIR=$K_SRC/.tmp
+rm -rf $KDEB_DIR
+mkdir -m 0755 -p $KDEB_DIR/DEBIAN
+cd $KDEB_DIR
+mkdir -p boot/firmware && cp -a $K_SRC/out/* boot/firmware/
+mkdir -p usr/lib && cp -a $K_SRC/out_modules/lib/modules usr/lib/
+cp $K_SRC/demo-cfgs/initrd.img boot/firmware/
+cat << EOF > $KDEB_DIR/DEBIAN/control
+Package: linux-image-5.10.110
+Source: linux-5.10.110
+Version: 100
+Architecture: arm64
+Maintainer: coolpi <coolpi@coolpi>
+Section: kernel
+Priority: optional
+Homepage: https://www.kernel.org/
+Description: Linux kernel, version 100
+ This package contains the Linux kernel, modules and corresponding other
+ files, version: 5.10.110.
+EOF
+cd $KDEB_DIR && dpkg-deb "--root-owner-group" --build . ..
+
+cd $K_SRC
+KHDEB_DIR=$K_SRC/.tmp_h
+HDR_DIR=$KHDEB_DIR/usr/src/linux-headers-5.10.110
+rm -rf $KHDEB_DIR
+mkdir -m 0755 -p $KHDEB_DIR/DEBIAN
+mkdir -p $HDR_DIR
+cat << EOF > $KHDEB_DIR/DEBIAN/control
+Package: linux-headers-5.10.110
+Source: linux-5.10.110
+Version: 100
+Architecture: arm64
+Maintainer: coolpi <coolpi@coolpi>
+Section: kernel
+Priority: optional
+Homepage: https://www.kernel.org/
+Description: Linux kernel headers, version 100
+ This package contains the Linux kernel, modules and corresponding other
+ files, version: 5.10.110.
+EOF
+(
+    cd $K_SRC
+    find . arch/arm64 -maxdepth 1 -name Makefile\*
+    find include scripts -type f -o -type l
+    find arch/arm64 -name Kbuild.platforms -o -name Platform
+    find $(find arch/arm64 -name include -o -name scripts -type d) -type f
+) > .hdrsrcfiles
+tar -c -f - -C $K_SRC -T $K_SRC/.hdrsrcfiles | tar -xf - -C $HDR_DIR
+cp $K_SRC/.config $HDR_DIR
+cp $K_SRC/Module.symvers $HDR_DIR
+rm $K_SRC/.hdrsrcfiles
+cd $KHDEB_DIR && dpkg-deb "--root-owner-group" --build . ..
 
 exit 0
