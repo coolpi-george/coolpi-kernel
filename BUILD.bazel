@@ -579,6 +579,72 @@ copy_to_dist_dir(
     log = "info",
 )
 
+_ROCKCHIP_MODULE_OUTS = [
+    # keep sorted
+]
+
+kernel_build(
+    name = "rockchip",
+    outs = [
+        "Image",
+        "System.map",
+        "modules.builtin",
+        "modules.builtin.modinfo",
+        "vmlinux",
+        "vmlinux.symvers",
+    ],
+    base_kernel = ":kernel_aarch64",
+    build_config = "build.config.rockchip",
+    collect_unstripped_modules = True,
+    kmi_symbol_list = "android/abi_gki_aarch64_rockchip",
+    make_goals = [
+        "Image",
+        "modules",
+    ],
+    module_outs = _ROCKCHIP_MODULE_OUTS,
+    strip_modules = True,
+#    visibility = ["//visibility:private"],
+)
+
+kernel_abi(
+    name = "rockchip_abi",
+    kernel_build = ":rockchip",
+#    kernel_modules = _ROCKCHIP_MODULE_OUTS,
+    kmi_symbol_list_add_only = True,
+)
+
+kernel_modules_install(
+    name = "rockchip_modules_install",
+    kernel_build = ":rockchip",
+)
+
+merged_kernel_uapi_headers(
+    name = "rockchip_merged_kernel_uapi_headers",
+    kernel_build = ":rockchip",
+)
+
+kernel_images(
+    name = "rockchip_images",
+    build_initramfs = True,
+    kernel_build = ":rockchip",
+    kernel_modules_install = ":rockchip_modules_install",
+)
+
+copy_to_dist_dir(
+    name = "rockchip_dist",
+    data = [
+        ":rockchip",
+        ":rockchip_images",
+        ":rockchip_modules_install",
+        ":rockchip_merged_kernel_uapi_headers",
+        ":kernel_aarch64",
+        ":kernel_aarch64_modules",
+        ":kernel_aarch64_additional_artifacts",
+    ],
+    dist_dir = "out/rockchip/dist",
+    flat = True,
+)
+
 _ROCKPI4_MODULE_OUTS = [
     # keep sorted
     "drivers/block/virtio_blk.ko",
