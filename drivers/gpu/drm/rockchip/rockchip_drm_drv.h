@@ -76,6 +76,7 @@ enum rockchip_drm_debug_category {
 	VOP_DEBUG_CFG_DONE	= BIT(3),
 	VOP_DEBUG_CLK		= BIT(4),
 	VOP_DEBUG_VSYNC		= BIT(7),
+	VOP_DEBUG_PIXEL_SHIFT	= BIT(8),
 };
 
 enum rk_if_color_depth {
@@ -338,6 +339,8 @@ struct rockchip_crtc_state {
 	int request_refresh_rate;
 	int max_refresh_rate;
 	int min_refresh_rate;
+	int shift_x;
+	int shift_y;
 };
 
 #define to_rockchip_crtc_state(s) \
@@ -486,6 +489,8 @@ struct rockchip_crtc_funcs {
 			    struct dmcfreq_vop_info *vop_bw_info);
 	void (*cancel_pending_vblank)(struct drm_crtc *crtc,
 				      struct drm_file *file_priv);
+	int (*sysfs_init)(struct device *dev, struct drm_crtc *crtc);
+	int (*sysfs_fini)(struct device *dev, struct drm_crtc *crtc);
 	int (*debugfs_init)(struct drm_minor *minor, struct drm_crtc *crtc);
 	int (*debugfs_dump)(struct drm_crtc *crtc, struct seq_file *s);
 	void (*regs_dump)(struct drm_crtc *crtc, struct seq_file *s);
@@ -571,6 +576,8 @@ struct rockchip_drm_private {
 	int aclk_adjust_frame_num;
 	struct drm_mm_node *clut_reserved_node;
 	struct loader_cubic_lut cubic_lut[ROCKCHIP_MAX_CRTC];
+
+	struct device *sysfs_devs[ROCKCHIP_MAX_CRTC];
 };
 
 struct rockchip_encoder {

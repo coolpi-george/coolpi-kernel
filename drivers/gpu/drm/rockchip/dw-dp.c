@@ -284,6 +284,7 @@ struct dw_dp_hdcp {
 	u8 hdcp_content_type;
 	bool hdcp2_encrypted;
 	bool hdcp_encrypted;
+	bool is_repeater;
 };
 
 struct drm_dp_link_caps {
@@ -356,7 +357,15 @@ struct dw_dp_sdp {
 	int stream_id;
 };
 
+enum gpio_hpd_state {
+	GPIO_STATE_IDLE,
+	GPIO_STATE_PLUG,
+	GPIO_STATE_UNPLUG,
+};
+
 struct dw_dp_hotplug {
+	struct delayed_work state_work;
+	enum gpio_hpd_state state;
 	bool long_hpd;
 	bool status;
 };
@@ -454,6 +463,9 @@ struct dw_dp {
 	DECLARE_BITMAP(sdp_reg_bank, SDP_REG_BANK_SIZE);
 
 	bool split_mode;
+	bool dual_connector_split;
+	bool left_display;
+
 	struct dw_dp *left;
 	struct dw_dp *right;
 
@@ -738,6 +750,7 @@ static int _dw_dp_hdcp2_enable(struct dw_dp *dp)
 
 static bool dw_dp_hdcp_capable(struct dw_dp *dp)
 {
+	struct dw_dp_hdcp *hdcp = &dp->hdcp;
 	int ret;
 	u8 bcaps;
 
@@ -746,6 +759,7 @@ static bool dw_dp_hdcp_capable(struct dw_dp *dp)
 		dev_err(dp->dev, "get hdcp capable failed:%d\n", ret);
 		return false;
 	}
+	hdcp->is_repeater = (bcaps & DP_BCAPS_REPEATER_PRESENT) ? true : false;
 
 	return bcaps & DP_BCAPS_HDCP_CAPABLE;
 }
@@ -765,11 +779,12 @@ static int _dw_dp_hdcp_disable(struct dw_dp *dp)
 
 static int _dw_dp_hdcp_enable(struct dw_dp *dp)
 {
-	unsigned long timeout = msecs_to_jiffies(1000);
+	unsigned long timeout;
 	int ret;
 	u8 rev;
 	struct dw_dp_hdcp *hdcp = &dp->hdcp;
 
+	timeout = msecs_to_jiffies(hdcp->is_repeater ? 5200 : 1000);
 	hdcp->status = HDCP_TX_1;
 
 	dw_dp_hdcp_rng_init(dp);
@@ -782,7 +797,7 @@ static int _dw_dp_hdcp_enable(struct dw_dp *dp)
 	if (ret < 0)
 		return ret;
 
-	if (rev >= DP_DPCD_REV_12)
+	if (rev > DP_DPCD_REV_12)
 		regmap_update_bits(dp->regmap, DPTX_HDCPCFG, DPCD12PLUS, DPCD12PLUS);
 
 	regmap_update_bits(dp->regmap, DPTX_HDCPCFG, ENABLE_HDCP | ENABLE_HDCP_13,
@@ -1412,7 +1427,7 @@ static int dw_dp_connector_get_modes(struct drm_connector *connector)
 	if (!di->bpc)
 		di->bpc = 8;
 
-	if (num_modes > 0 && dp->split_mode) {
+	if (num_modes > 0 && (dp->split_mode || dp->dual_connector_split)) {
 		struct drm_display_mode *mode;
 
 		di->width_mm *= 2;
@@ -2746,28 +2761,56 @@ static int dw_dp_video_enable(struct dw_dp *dp, struct dw_dp_video *video, int s
 	return 0;
 }
 
+static void dw_dp_gpio_hpd_state_work(struct work_struct *work)
+{
+	struct dw_dp_hotplug *hotplug = container_of(to_delayed_work(work), struct dw_dp_hotplug,
+						     state_work);
+	struct dw_dp *dp = container_of(hotplug, struct dw_dp, hotplug);
+
+	mutex_lock(&dp->irq_lock);
+	if (hotplug->state == GPIO_STATE_UNPLUG) {
+		dev_dbg(dp->dev, "hpd state unplug to idle\n");
+		dp->hotplug.long_hpd = true;
+		dp->hotplug.status = false;
+		dp->hotplug.state = GPIO_STATE_IDLE;
+		schedule_work(&dp->hpd_work);
+	}
+	mutex_unlock(&dp->irq_lock);
+}
+
 static irqreturn_t dw_dp_hpd_irq_handler(int irq, void *arg)
 {
 	struct dw_dp *dp = arg;
 	bool hpd = dw_dp_detect(dp);
 
+	dev_dbg(dp->dev, "trigger gpio to %s\n", hpd ? "high" : "low");
 	mutex_lock(&dp->irq_lock);
-
-	dp->hotplug.long_hpd = true;
-
-	if (dp->hotplug.status && !hpd) {
-		usleep_range(2000, 2001);
-
-		hpd = dw_dp_detect(dp);
-		if (hpd)
+	if (dp->hotplug.state == GPIO_STATE_IDLE) {
+		if (hpd) {
+			dev_dbg(dp->dev, "hpd state idle to plug\n");
+			dp->hotplug.long_hpd = true;
+			dp->hotplug.status = hpd;
+			dp->hotplug.state = GPIO_STATE_PLUG;
+			schedule_work(&dp->hpd_work);
+		}
+	} else if (dp->hotplug.state == GPIO_STATE_PLUG) {
+		if (!hpd) {
+			dev_dbg(dp->dev, "hpd state plug to unplug\n");
+			dp->hotplug.state = GPIO_STATE_UNPLUG;
+			schedule_delayed_work(&dp->hotplug.state_work, msecs_to_jiffies(2));
+		}
+	} else if (dp->hotplug.state == GPIO_STATE_UNPLUG) {
+		if (hpd) {
+			dev_dbg(dp->dev, "hpd state unplug to plug\n");
+			cancel_delayed_work_sync(&dp->hotplug.state_work);
 			dp->hotplug.long_hpd = false;
+			dp->hotplug.status = hpd;
+			dp->hotplug.state = GPIO_STATE_PLUG;
+			schedule_work(&dp->hpd_work);
+		}
 	}
-
-	dp->hotplug.status = hpd;
-
 	mutex_unlock(&dp->irq_lock);
 
-	schedule_work(&dp->hpd_work);
 
 	return IRQ_HANDLED;
 }
@@ -2828,6 +2871,7 @@ static void dw_dp_encoder_disable(struct drm_encoder *encoder)
 		s->output_if &= ~(VOP_OUTPUT_IF_DP0 | VOP_OUTPUT_IF_DP1);
 	else
 		s->output_if &= ~(dp->id ? VOP_OUTPUT_IF_DP1 : VOP_OUTPUT_IF_DP0);
+	s->output_if_left_panel &= ~(dp->id ? VOP_OUTPUT_IF_DP1 : VOP_OUTPUT_IF_DP0);
 }
 
 static void dw_dp_mode_fixup(struct dw_dp *dp, struct drm_display_mode *adjusted_mode)
@@ -2844,7 +2888,7 @@ static void dw_dp_mode_fixup(struct dw_dp *dp, struct drm_display_mode *adjusted
 	 * 3. the minimum hbp should be 16 pixel;
 	 */
 
-	if (dp->split_mode) {
+	if (dp->split_mode || dp->dual_connector_split) {
 		min_hbp *= 2;
 		min_hsync *= 2;
 		align_hfp *= 2;
@@ -2906,6 +2950,13 @@ static int dw_dp_encoder_atomic_check(struct drm_encoder *encoder,
 		s->output_flags |= ROCKCHIP_OUTPUT_DUAL_CHANNEL_LEFT_RIGHT_MODE;
 		s->output_flags |= dp->id ? ROCKCHIP_OUTPUT_DATA_SWAP : 0;
 		s->output_if |= VOP_OUTPUT_IF_DP0 | VOP_OUTPUT_IF_DP1;
+		s->output_if_left_panel |= dp->id ? VOP_OUTPUT_IF_DP1 : VOP_OUTPUT_IF_DP0;
+	} else if (dp->dual_connector_split) {
+		s->output_flags |= ROCKCHIP_OUTPUT_DUAL_CONNECTOR_SPLIT_MODE;
+		s->output_if |= dp->id ? VOP_OUTPUT_IF_DP1 : VOP_OUTPUT_IF_DP0;
+		if (dp->left_display)
+			s->output_if_left_panel |= dp->id ?
+					VOP_OUTPUT_IF_DP1 : VOP_OUTPUT_IF_DP0;
 	} else {
 		s->output_if |= dp->id ? VOP_OUTPUT_IF_DP1 : VOP_OUTPUT_IF_DP0;
 	}
@@ -3066,7 +3117,7 @@ dw_dp_bridge_mode_valid(struct drm_bridge *bridge,
 
 	drm_mode_copy(&m, mode);
 
-	if (dp->split_mode)
+	if (dp->split_mode || dp->dual_connector_split)
 		drm_mode_convert_to_origin_mode(&m);
 
 	if (info->color_formats & DRM_COLOR_FORMAT_YCBCR420 &&
@@ -4068,7 +4119,7 @@ static void dw_dp_bridge_atomic_pre_enable(struct drm_bridge *bridge,
 
 	drm_mode_copy(m, &crtc_state->adjusted_mode);
 
-	if (dp->split_mode)
+	if (dp->split_mode || dp->dual_connector_split)
 		drm_mode_convert_to_origin_mode(m);
 
 	if (dp->panel)
@@ -4150,9 +4201,6 @@ static void dw_dp_bridge_atomic_enable(struct drm_bridge *bridge,
 		return;
 	}
 
-	if (conn_state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED)
-		dw_dp_hdcp_enable(dp, conn_state->hdcp_content_type);
-
 	ret = dw_dp_video_enable(dp, &dp->video, 0);
 	if (ret < 0) {
 		dev_err(dp->dev, "failed to enable video: %d\n", ret);
@@ -4160,6 +4208,8 @@ static void dw_dp_bridge_atomic_enable(struct drm_bridge *bridge,
 	}
 
 	dw_dp_enable_vop_gate(dp, bridge->encoder->crtc, dp->id, true);
+	if (conn_state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED)
+		dw_dp_hdcp_enable(dp, conn_state->hdcp_content_type);
 
 	if (dp->panel)
 		drm_panel_enable(dp->panel);
@@ -4316,7 +4366,7 @@ static u32 *dw_dp_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
 	u32 *output_fmts;
 	unsigned int i, j = 0;
 
-	if (dp->split_mode)
+	if (dp->split_mode || dp->dual_connector_split)
 		drm_mode_convert_to_origin_mode(&mode);
 
 	if (dp->panel) {
@@ -5347,6 +5397,7 @@ static int dw_dp_probe(struct platform_device *pdev)
 
 	mutex_init(&dp->irq_lock);
 	INIT_WORK(&dp->hpd_work, dw_dp_hpd_work);
+	INIT_DELAYED_WORK(&dp->hotplug.state_work, dw_dp_gpio_hpd_state_work);
 	init_completion(&dp->complete);
 	init_completion(&dp->hdcp_complete);
 
@@ -5445,7 +5496,8 @@ static int dw_dp_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, dp);
 
-	if (device_property_read_bool(dev, "split-mode")) {
+	if (device_property_read_bool(dev, "split-mode") ||
+	    device_property_read_bool(dev, "rockchip,split-mode")) {
 		struct dw_dp *secondary = dw_dp_find_by_id(dev->driver, !dp->id);
 
 		if (!secondary)
@@ -5455,6 +5507,13 @@ static int dw_dp_probe(struct platform_device *pdev)
 		dp->split_mode = true;
 		secondary->left = dp;
 		secondary->split_mode = true;
+	}
+
+	if (device_property_read_bool(dev, "rockchip,dual-connector-split")) {
+		dp->dual_connector_split = true;
+
+		if (device_property_read_bool(dev, "rockchip,left-display"))
+			dp->left_display = true;
 	}
 
 	dw_dp_hdcp_init(dp);
@@ -5468,11 +5527,12 @@ static int dw_dp_remove(struct platform_device *pdev)
 
 	component_del(dp->dev, &dw_dp_component_ops);
 	cancel_work_sync(&dp->hpd_work);
+	cancel_delayed_work_sync(&dp->hotplug.state_work);
 
 	return 0;
 }
 
-static int __maybe_unused dw_dp_runtime_suspend(struct device *dev)
+static int dw_dp_runtime_suspend(struct device *dev)
 {
 	struct dw_dp *dp = dev_get_drvdata(dev);
 
@@ -5483,7 +5543,7 @@ static int __maybe_unused dw_dp_runtime_suspend(struct device *dev)
 	return 0;
 }
 
-static int __maybe_unused dw_dp_runtime_resume(struct device *dev)
+static int dw_dp_runtime_resume(struct device *dev)
 {
 	struct dw_dp *dp = dev_get_drvdata(dev);
 
@@ -5496,10 +5556,61 @@ static int __maybe_unused dw_dp_runtime_resume(struct device *dev)
 	return 0;
 }
 
+static int dw_dp_suspend_noirq(struct device *dev)
+{
+	struct dw_dp *dp = dev_get_drvdata(dev);
+
+	pm_runtime_force_suspend(dev);
+	if (dp->is_mst)
+		phy_power_off(dp->phy);
+
+	return 0;
+}
+
+static int dw_dp_resume_noirq(struct device *dev)
+{
+	struct dw_dp *dp = dev_get_drvdata(dev);
+
+	pm_runtime_force_resume(dev);
+	if (dp->is_mst)
+		phy_power_on(dp->phy);
+
+	return 0;
+}
+
+static int dw_dp_suspend(struct device *dev)
+{
+	struct dw_dp *dp = dev_get_drvdata(dev);
+
+	if (dp->is_mst)
+		drm_dp_mst_topology_mgr_suspend(&dp->mst_mgr);
+
+	return 0;
+}
+
+static int dw_dp_resume(struct device *dev)
+{
+	struct dw_dp *dp = dev_get_drvdata(dev);
+	int ret;
+
+	if (!dp->support_mst)
+		return 0;
+
+	ret = drm_dp_mst_topology_mgr_resume(&dp->mst_mgr, true);
+	if (ret) {
+		if (dp->is_mst)
+			phy_power_off(dp->phy);
+		dp->is_mst = false;
+		drm_dp_mst_topology_mgr_set_mst(&dp->mst_mgr, false);
+	}
+
+	return 0;
+}
+
 static const struct dev_pm_ops dw_dp_pm_ops = {
 	SET_RUNTIME_PM_OPS(dw_dp_runtime_suspend, dw_dp_runtime_resume, NULL)
-	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-				      pm_runtime_force_resume)
+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(dw_dp_suspend_noirq, dw_dp_resume_noirq)
+	SET_SYSTEM_SLEEP_PM_OPS(dw_dp_suspend, dw_dp_resume)
 };
 
 static const struct dw_dp_chip_data rk3588_dp[] = {
