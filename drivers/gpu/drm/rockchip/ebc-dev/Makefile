@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
-obj-$(CONFIG_ROCKCHIP_EBC_DEV)   += rkebc.o ebc_public.o
+obj-$(CONFIG_ROCKCHIP_EBC_DEV)   += rkebc.o ebc_public.o ebc_dma_buf.o
 obj-$(CONFIG_ROCKCHIP_EBC_DEV)   += epdlut/
 obj-$(CONFIG_ROCKCHIP_EBC_DEV)   += bufmanage/
 obj-$(CONFIG_ROCKCHIP_EBC_DEV)   += pmic/

@@ -2,6 +2,7 @@
 
 menuconfig ROCKCHIP_EBC_DEV
 	bool "Rockchip eBook Device Driver"
+	select DMA_SHARED_BUFFER
 	help
 	Rockchip eBook Device Dirver could help to driver the electronic ink screen.
 
