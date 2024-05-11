@@ -56,6 +56,29 @@ int ebc_buf_release(struct ebc_buf_s  *release_buf)
 	return BUF_SUCCESS;
 }
 
+int ebc_drop_one_dsp_buf(void)
+{
+	struct ebc_buf_s *temp_buf;
+	int temp_pos;
+
+	mutex_lock(&ebc_buf_info.dsp_buf_lock);
+	if (ebc_buf_info.dsp_buf_list) {
+		if (ebc_buf_info.dsp_buf_list->nb_elt > 0) {
+			temp_pos = ebc_buf_info.dsp_buf_list->nb_elt - 1;
+			temp_buf = (struct ebc_buf_s *)buf_list_get(ebc_buf_info.dsp_buf_list, temp_pos);
+			if (temp_buf->dropable == 0) {
+				buf_list_remove(ebc_buf_info.dsp_buf_list, temp_pos);
+				ebc_buf_release(temp_buf);
+				mutex_unlock(&ebc_buf_info.dsp_buf_lock);
+				return BUF_SUCCESS;
+			}
+		}
+	}
+	mutex_unlock(&ebc_buf_info.dsp_buf_lock);
+
+	return BUF_ERROR;
+}
+
 int ebc_add_to_dsp_buf_list(struct ebc_buf_s *dsp_buf)
 {
 	mutex_lock(&ebc_buf_info.dsp_buf_lock);
