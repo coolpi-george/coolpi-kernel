@@ -414,7 +414,7 @@ static const char * const hpf_cutoff_text[] = {
 static SOC_ENUM_SINGLE_DECL(hpf_cutoff_enum, PDM_V2_FILTER_CTRL,
 			    19, hpf_cutoff_text);
 
-static const DECLARE_TLV_DB_SCALE(pdm_v2_digtal_gain_tlv, -6525, 375, 0);
+static const DECLARE_TLV_DB_SCALE(pdm_v2_digtal_gain_tlv, -6563, 75, 0);
 
 static const struct snd_kcontrol_new rockchip_pdm_v2_controls[] = {
 	SOC_ENUM("Receive PATH3 Source Select", rpath3_enum),
@@ -723,9 +723,17 @@ static int rockchip_pdm_v2_probe(struct platform_device *pdev)
 
 	rockchip_pdm_v2_set_samplerate(pdm, PDM_V2_DEFAULT_RATE);
 	rockchip_pdm_v2_rxctrl(pdm, 0);
-	/* Set the default gain */
+	/*
+	 * Set the default gain 24dB, this parameter can get better
+	 * performance if the voice energy is lower. In other words this
+	 * can improve PDM IP SNR.
+	 *
+	 * So the applicable range of this is for sound intensity below 100dB.
+	 * If you want to record stronger sound intensity, you must set
+	 * PDM gain register but not soft gain-controller.
+	 */
 	regmap_update_bits(pdm->regmap, PDM_V2_FILTER_CTRL, PDM_V2_GAIN_CTRL_MSK,
-			   PDM_V2_GAIN_0DB);
+			   PDM_V2_GAIN_24DB);
 
 	ret = rockchip_pdm_v2_path_parse(pdm, node);
 	if (ret != 0 && ret != -ENOENT)
