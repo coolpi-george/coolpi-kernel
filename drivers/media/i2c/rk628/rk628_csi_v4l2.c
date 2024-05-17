@@ -383,6 +383,8 @@ static bool tx_5v_power_present(struct v4l2_subdev *sd)
 
 	ret = rk628_hdmirx_tx_5v_power_detect(csi->plugin_det_gpio);
 	v4l2_dbg(2, debug, sd, "%s: %d\n", __func__, ret);
+	if (csi->rk628->is_suspend)
+		ret = false;
 
 	return ret;
 }
@@ -2889,6 +2891,11 @@ static int rk628_csi_get_custom_ctrl(struct v4l2_ctrl *ctrl)
 	if (ctrl->id == RK_V4L2_CID_AUDIO_SAMPLING_RATE) {
 		ret = get_audio_sampling_rate(sd);
 		*ctrl->p_new.p_s32 = ret;
+	} else if (ctrl->id == RK_V4L2_CID_AUDIO_PRESENT) {
+		ret = tx_5v_power_present(sd) ? rk628_hdmirx_audio_present(csi->audio_info) : 0;
+		*ctrl->p_new.p_s32 = ret;
+	} else {
+		ret = -EINVAL;
 	}
 
 	return ret;
@@ -2911,6 +2918,7 @@ static const struct v4l2_ctrl_config rk628_csi_ctrl_audio_sampling_rate = {
 };
 
 static const struct v4l2_ctrl_config rk628_csi_ctrl_audio_present = {
+	.ops = &rk628_csi_custom_ctrl_ops,
 	.id = RK_V4L2_CID_AUDIO_PRESENT,
 	.name = "Audio present",
 	.type = V4L2_CTRL_TYPE_BOOLEAN,
@@ -3009,9 +3017,11 @@ static int rk628_csi_resume(struct device *dev)
 	rk628_cru_initialize(csi->rk628);
 	rk628_csi_initial(sd);
 	rk628_hdmirx_plugout(sd);
+	enable_irq(csi->plugin_irq);
 	enable_irq(csi->hdmirx_irq);
 	schedule_delayed_work(&csi->delayed_work_enable_hotplug,
 			     msecs_to_jiffies(500));
+	csi->rk628->is_suspend = false;
 
 	return 0;
 }
@@ -3024,6 +3034,9 @@ static int rk628_csi_suspend(struct device *dev)
 
 	v4l2_info(sd, "%s: suspend!\n", __func__);
 
+	csi->rk628->is_suspend = true;
+	rk628_hdmirx_plugout(sd);
+	disable_irq(csi->plugin_irq);
 	disable_irq(csi->hdmirx_irq);
 	cancel_delayed_work_sync(&csi->delayed_work_res_change);
 	cancel_delayed_work_sync(&csi->delayed_work_enable_hotplug);
@@ -3403,8 +3416,12 @@ static int rk628_csi_probe(struct i2c_client *client,
 	/* custom controls */
 	csi->audio_sampling_rate_ctrl = v4l2_ctrl_new_custom(&csi->hdl,
 			&rk628_csi_ctrl_audio_sampling_rate, NULL);
+	if (csi->audio_sampling_rate_ctrl)
+		csi->audio_sampling_rate_ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
 	csi->audio_present_ctrl = v4l2_ctrl_new_custom(&csi->hdl,
 			&rk628_csi_ctrl_audio_present, NULL);
+	if (csi->audio_present_ctrl)
+		csi->audio_present_ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
 
 	sd->ctrl_handler = &csi->hdl;
 	if (csi->hdl.error) {
