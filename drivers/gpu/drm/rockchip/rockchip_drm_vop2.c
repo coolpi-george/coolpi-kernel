@@ -5949,7 +5949,8 @@ static void vop2_win_atomic_update(struct vop2_win *win, struct drm_rect *src, s
 		if (!win->parent && !vop2_cluster_window(win))
 			VOP_WIN_SET(vop2, win, scale_engine_num, win->scale_engine_num);
 
-		if (!win->parent) {
+		/* Only esmart win0 and cluster win0 need to enter config vp id and win dly num */
+		if (!win->parent && !vop2_cluster_sub_window(win)) {
 			VOP_CTRL_SET(vop2, win_vp_id[win->phys_id], vp->id);
 			VOP_CTRL_SET(vop2, win_dly[win->phys_id], win->dly_num);
 		}
@@ -10151,12 +10152,23 @@ static void vop2_setup_alpha(struct vop2_video_port *vp,
 		pixel_alpha_en = is_alpha_support(fb->format->format);
 
 		alpha_config.src_premulti_en = premulti_en;
-		if (bottom_layer_alpha_en && i == 1) {/* Cd = Cs + (1 - As) * Cd * Agd */
+		if (bottom_layer_alpha_en && i == 1) {
+			/**
+			 * The data from cluster mix is always premultiplied alpha;
+			 * cluster layer or esmart layer[premulti_en = 1]
+			 *	Cd = Cs + (1 - As) * Cd * Agd
+			 * esmart layer[premulti_en = 0]
+			 *	Cd = As * Cs + (1 - As) * Cd * Agd
+			 **/
+			if (vop2_cluster_window(win))
+				alpha_config.src_premulti_en = true;
 			alpha_config.dst_premulti_en = false;
 			alpha_config.src_pixel_alpha_en = pixel_alpha_en;
 			alpha_config.src_glb_alpha_value =  vpstate->global_alpha;
 			alpha_config.dst_glb_alpha_value = dst_global_alpha;
 		} else if (vop2_cluster_window(win)) {/* Mix output data only have pixel alpha */
+			/* The data from cluster mix is always premultiplied alpha */
+			alpha_config.src_premulti_en = true;
 			alpha_config.dst_premulti_en = true;
 			alpha_config.src_pixel_alpha_en = true;
 			alpha_config.src_glb_alpha_value = 0xff;
@@ -10381,12 +10393,23 @@ static void vop3_setup_alpha(struct vop2_video_port *vp,
 		pixel_alpha_en = is_alpha_support(fb->format->format);
 
 		alpha_config.src_premulti_en = premulti_en;
-		if (bottom_layer_alpha_en && i == 1) {/* Cd = Cs + (1 - As) * Cd * Agd */
+		if (bottom_layer_alpha_en && i == 1) {
+			/**
+			 * The data from cluster mix is always premultiplied alpha;
+			 * cluster layer or esmart layer[premulti_en = 1]
+			 *	Cd = Cs + (1 - As) * Cd * Agd
+			 * esmart layer[premulti_en = 0]
+			 *	Cd = As * Cs + (1 - As) * Cd * Agd
+			 **/
+			if (vop2_cluster_window(win))
+				alpha_config.src_premulti_en = true;
 			alpha_config.dst_premulti_en = false;
 			alpha_config.src_pixel_alpha_en = pixel_alpha_en;
 			alpha_config.src_glb_alpha_value =  vpstate->global_alpha;
 			alpha_config.dst_glb_alpha_value = dst_global_alpha;
 		} else if (vop2_cluster_window(win)) {/* Mix output data only have pixel alpha */
+			/* The data from cluster mix is always premultiplied alpha */
+			alpha_config.src_premulti_en = true;
 			alpha_config.dst_premulti_en = true;
 			alpha_config.src_pixel_alpha_en = true;
 			alpha_config.src_glb_alpha_value = 0xff;
