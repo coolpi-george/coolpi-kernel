@@ -818,6 +818,8 @@
 		nvmem-cells = <&log_leakage>, <&logic_opp_info>;
 		nvmem-cell-names = "leakage", "opp-info";
 
+		rockchip,early-min-microvolt = <0 750000>; /* <vdd_ddr vdd_logic> */
+
 		rockchip,temp-hysteresis = <5000>;
 		rockchip,low-temp = <10000>;
 		rockchip,low-temp-min-volt = <750000>;
@@ -1326,6 +1328,7 @@
 			)
 			(0)
 		>;
+		power-domains = <&power RK3576_PD_USB>, <&power RK3576_PD_PHP>;
 	};
 
 	rockchip_system_monitor: rockchip-system-monitor {
@@ -2905,6 +2908,8 @@
 
 		nvmem-cells = <&log_leakage>;
 		nvmem-cell-names = "leakage";
+
+		rockchip,early-min-microvolt = <750000>; /* vdd_logic */
 
 		rockchip,init-freq = <702000>; /* KHz */
 

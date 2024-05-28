@@ -3454,6 +3454,33 @@ static const struct drm_encoder_helper_funcs dw_hdmi_rockchip_encoder_helper_fun
 	.mode_set = dw_hdmi_rockchip_encoder_mode_set,
 };
 
+/*
+ * Register child devices like audio/cec/hdcp at late_register stage
+ * to avoid register these devie at probe/bind(which may cause
+ * infinite loop of .probe() if a component is always defer)
+ *
+ * As these devices are not that critical, so we don't check
+ * the register results here, just give warning in it's register
+ * function if it failed, let the drm bringup.
+ */
+static int dw_hdmi_encoder_late_register(struct drm_encoder *encoder)
+{
+	struct rockchip_hdmi *hdmi = to_rockchip_hdmi(encoder);
+
+	if (hdmi->is_hdmi_qp) {
+		dw_hdmi_qp_register_audio(hdmi->hdmi_qp);
+		dw_hdmi_qp_register_cec(hdmi->hdmi_qp);
+		dw_hdmi_qp_register_hdcp(hdmi->hdmi_qp);
+	}
+
+	return 0;
+}
+
+static const struct drm_encoder_funcs dw_hdmi_rockchip_encoder_funcs = {
+	.destroy = drm_encoder_cleanup,
+	.late_register = dw_hdmi_encoder_late_register,
+};
+
 static void
 dw_hdmi_rockchip_genphy_disable(struct dw_hdmi *dw_hdmi, void *data)
 {
@@ -4112,7 +4139,9 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
 			return -EPROBE_DEFER;
 
 		drm_encoder_helper_add(encoder, &dw_hdmi_rockchip_encoder_helper_funcs);
-		drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
+		drm_encoder_init(drm, encoder, &dw_hdmi_rockchip_encoder_funcs,
+				 DRM_MODE_ENCODER_TMDS,
+				 NULL);
 	}
 
 	if (!plat_data->max_tmdsclk)

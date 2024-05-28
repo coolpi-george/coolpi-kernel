@@ -3482,17 +3482,35 @@ static void dw_dp_clear_vcpid_table(struct dw_dp *dp)
 
 static int dw_dp_initiate_mst_act(struct dw_dp *dp)
 {
-	int val, ret = 0;
+	int val, retries, ret = 0;
 
 	regmap_update_bits(dp->regmap, DPTX_CCTL, DPTX_CCTL_INITIATE_MST_ACT,
 			   FIELD_PREP(DPTX_CCTL_INITIATE_MST_ACT, 1));
 
 	ret = regmap_read_poll_timeout(dp->regmap, DPTX_CCTL, val,
-				       !FIELD_GET(DPTX_CCTL_INITIATE_MST_ACT, val), 200, 100000);
-	/* if hardware not auto clear this bit until timeout, manual clear it */
-	if (ret)
-		regmap_update_bits(dp->regmap, DPTX_CCTL, DPTX_CCTL_INITIATE_MST_ACT,
+				       !FIELD_GET(DPTX_CCTL_INITIATE_MST_ACT, val),
+				       200, 10000);
+	/*
+	 * if hardware not auto clear this bit until timeout, something may be
+	 * wrong with the act, it should be cleared manually and retry again
+	 */
+	if (ret) {
+		for (retries = 0; retries < 3; retries++) {
+			regmap_update_bits(dp->regmap, DPTX_CCTL, DPTX_CCTL_INITIATE_MST_ACT,
 				   FIELD_PREP(DPTX_CCTL_INITIATE_MST_ACT, 0));
+			usleep_range(2000, 2010);
+			dev_info(dp->dev, "act auto clear timeout, retry do it again\n");
+
+			regmap_update_bits(dp->regmap, DPTX_CCTL, DPTX_CCTL_INITIATE_MST_ACT,
+					   FIELD_PREP(DPTX_CCTL_INITIATE_MST_ACT, 1));
+
+			ret = regmap_read_poll_timeout(dp->regmap, DPTX_CCTL, val,
+						       !FIELD_GET(DPTX_CCTL_INITIATE_MST_ACT, val),
+						       200, 10000);
+			if (!ret)
+				break;
+		}
+	}
 
 	return ret;
 }
@@ -4573,7 +4591,7 @@ static void dw_dp_handle_test_request(struct dw_dp *dp)
 
 	switch (request) {
 	case DP_TEST_LINK_PHY_TEST_PATTERN:
-		dev_dbg(dp->dev, "PHY_PATTERN test requested\n");
+		dev_info(dp->dev, "PHY_PATTERN test requested\n");
 		response = dw_dp_autotest_phy_pattern(dp);
 		break;
 	default:
@@ -4626,13 +4644,13 @@ static void dw_dp_phy_pattern_update(struct dw_dp *dp)
 
 	switch (data->phy_pattern) {
 	case DP_PHY_TEST_PATTERN_NONE:
-		dev_dbg(dp->dev, "Disable Phy Test Pattern\n");
+		dev_info(dp->dev, "Disable Phy Test Pattern\n");
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 1));
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_NONE);
 		break;
 	case DP_PHY_TEST_PATTERN_D10_2:
-		dev_dbg(dp->dev, "Set D10.2 Phy Test Pattern\n");
+		dev_info(dp->dev, "Set D10.2 Phy Test Pattern\n");
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 1));
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_TPS_1);
@@ -4640,17 +4658,17 @@ static void dw_dp_phy_pattern_update(struct dw_dp *dp)
 	case DP_PHY_TEST_PATTERN_ERROR_COUNT:
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 0));
-		dev_dbg(dp->dev, "Set Error Count Phy Test Pattern\n");
+		dev_info(dp->dev, "Set Error Count Phy Test Pattern\n");
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_SERM);
 		break;
 	case DP_PHY_TEST_PATTERN_PRBS7:
-		dev_dbg(dp->dev, "Set PRBS7 Phy Test Pattern\n");
+		dev_info(dp->dev, "Set PRBS7 Phy Test Pattern\n");
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 1));
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_PBRS7);
 		break;
 	case DP_PHY_TEST_PATTERN_80BIT_CUSTOM:
-		dev_dbg(dp->dev, "Set 80Bit Custom Phy Test Pattern\n");
+		dev_info(dp->dev, "Set 80Bit Custom Phy Test Pattern\n");
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 1));
 		regmap_write(dp->regmap, DPTX_CUSTOMPAT0, 0x3e0f83e0);
@@ -4659,13 +4677,13 @@ static void dw_dp_phy_pattern_update(struct dw_dp *dp)
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_CUSTOM_80BIT);
 		break;
 	case DP_PHY_TEST_PATTERN_CP2520:
-		dev_dbg(dp->dev, "Set HBR2 compliance Phy Test Pattern\n");
+		dev_info(dp->dev, "Set HBR2 compliance Phy Test Pattern\n");
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 0));
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_CP2520_1);
 		break;
 	case DP_PHY_TEST_PATTERN_SEL_MASK:
-		dev_dbg(dp->dev, "Set TPS4  Phy Test Pattern\n");
+		dev_info(dp->dev, "Set TPS4  Phy Test Pattern\n");
 		regmap_update_bits(dp->regmap, DPTX_CCTL, SCRAMBLE_DIS,
 				   FIELD_PREP(SCRAMBLE_DIS, 0));
 		dw_dp_phy_set_pattern(dp, DPTX_PHY_PATTERN_TPS_4);
@@ -4700,7 +4718,7 @@ static void dw_dp_process_phy_request(struct dw_dp *dp)
 	dw_dp_phy_pattern_update(dp);
 	drm_dp_set_phy_test_pattern(&dp->aux, data, link_status[DP_DPCD_REV]);
 
-	dev_dbg(dp->dev, "phy test rate:%d, lane count:%d, ssc:%d, vs:%d, pe: %d\n",
+	dev_info(dp->dev, "phy test rate:%d, lane count:%d, ssc:%d, vs:%d, pe: %d\n",
 		 data->link_rate, data->num_lanes, spread, dp->link.train.adjust.voltage_swing[0],
 		 dp->link.train.adjust.pre_emphasis[0]);
 }
@@ -5110,6 +5128,128 @@ static void dw_dp_unregister_audio_driver(void *data)
 	}
 }
 
+static int dw_dp_single_audio_init(struct dw_dp *dp, struct dw_dp_audio *audio)
+{
+	int ret;
+
+	audio->extcon = devm_extcon_dev_allocate(dp->dev, dw_dp_cable);
+		if (IS_ERR(audio->extcon))
+			return dev_err_probe(dp->dev, PTR_ERR(audio->extcon),
+			       "failed to allocate extcon device\n");
+
+	ret = devm_extcon_dev_register(dp->dev, audio->extcon);
+	if (ret)
+		return dev_err_probe(dp->dev, ret, "failed to register extcon device\n");
+
+	ret = dw_dp_register_audio_driver(dp, audio);
+	if (ret)
+		return ret;
+
+	ret = devm_add_action_or_reset(dp->dev, dw_dp_unregister_audio_driver, audio);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
+static int dw_dp_audio_init(struct dw_dp *dp)
+{
+	struct dw_dp_audio *audio;
+	int i, ret;
+
+	audio = dp->audio;
+	ret = dw_dp_single_audio_init(dp, audio);
+	if (ret)
+		return ret;
+
+	if (!dp->support_mst)
+		return 0;
+
+	for (i = 1; i < dp->mst_port_num; i++) {
+		if (!of_device_is_available(dp->mst_enc[i].port_node))
+			continue;
+
+		audio = dp->mst_enc[i].audio;
+		ret = dw_dp_single_audio_init(dp, audio);
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+static int dw_dp_get_audio_clk(struct dw_dp *dp)
+{
+	struct dw_dp_audio *audio;
+	char clk_name[10];
+	int i;
+
+	audio = devm_kzalloc(dp->dev, sizeof(*audio), GFP_KERNEL);
+	if (!audio)
+		return -ENOMEM;
+
+	audio->id = 0;
+	dp->audio = audio;
+
+	audio->i2s_clk = devm_clk_get_optional(dp->dev, "i2s");
+	if (IS_ERR(audio->i2s_clk))
+		return dev_err_probe(dp->dev, PTR_ERR(audio->i2s_clk),
+				     "failed to get i2s clock\n");
+
+	audio->spdif_clk = devm_clk_get_optional(dp->dev, "spdif");
+	if (IS_ERR(audio->spdif_clk))
+		return dev_err_probe(dp->dev, PTR_ERR(audio->spdif_clk),
+				     "failed to get spdif clock\n");
+
+	if (!dp->support_mst)
+		return 0;
+
+	dp->mst_enc[0].audio = audio;
+
+	for (i = 1; i < dp->mst_port_num; i++) {
+		if (!of_device_is_available(dp->mst_enc[i].port_node))
+			continue;
+
+		audio = devm_kzalloc(dp->dev, sizeof(*audio), GFP_KERNEL);
+		if (!audio)
+			return -ENOMEM;
+
+		audio->id = i;
+
+		snprintf(clk_name, sizeof(clk_name), "i2s%d", i);
+		audio->i2s_clk = devm_clk_get_optional(dp->dev, clk_name);
+		if (IS_ERR(audio->i2s_clk))
+			return dev_err_probe(dp->dev, PTR_ERR(audio->i2s_clk),
+					     "failed to get i2s clock\n");
+
+		snprintf(clk_name, sizeof(clk_name), "spdif%d", i);
+		audio->spdif_clk = devm_clk_get_optional(dp->dev, clk_name);
+		if (IS_ERR(audio->spdif_clk))
+			return dev_err_probe(dp->dev, PTR_ERR(audio->spdif_clk),
+					     "failed to get spdif clock\n");
+		dp->mst_enc[i].audio = audio;
+	}
+
+	return 0;
+}
+
+static int dw_dp_encoder_late_register(struct drm_encoder *encoder)
+{
+	struct dw_dp *dp = encoder_to_dp(encoder);
+	int ret;
+
+	ret = dw_dp_audio_init(dp);
+	if (ret)
+		dev_warn(dp->dev, "audio init failed\n");
+
+	return 0;
+}
+
+static const struct drm_encoder_funcs dw_dp_encoder_funcs = {
+	.destroy = drm_encoder_cleanup,
+	.late_register = dw_dp_encoder_late_register,
+};
+
 static int dw_dp_bind(struct device *dev, struct device *master, void *data)
 {
 	struct dw_dp *dp = dev_get_drvdata(dev);
@@ -5133,7 +5273,8 @@ static int dw_dp_bind(struct device *dev, struct device *master, void *data)
 			port_node = dp->mst_enc[0].port_node;
 		else
 			port_node = dev->of_node;
-		drm_simple_encoder_init(drm_dev, encoder, DRM_MODE_ENCODER_TMDS);
+		drm_encoder_init(drm_dev, encoder, &dw_dp_encoder_funcs,
+				 DRM_MODE_ENCODER_TMDS, NULL);
 		drm_encoder_helper_add(encoder, &dw_dp_encoder_helper_funcs);
 
 		encoder->possible_crtcs =
@@ -5307,91 +5448,6 @@ static int dw_dp_get_port_node(struct dw_dp *dp)
 	return 0;
 }
 
-static int dw_dp_single_audio_init(struct dw_dp *dp, struct dw_dp_audio *audio)
-{
-	int ret;
-
-	audio->extcon = devm_extcon_dev_allocate(dp->dev, dw_dp_cable);
-		if (IS_ERR(audio->extcon))
-			return dev_err_probe(dp->dev, PTR_ERR(audio->extcon),
-			       "failed to allocate extcon device\n");
-
-	ret = devm_extcon_dev_register(dp->dev, audio->extcon);
-	if (ret)
-		return dev_err_probe(dp->dev, ret, "failed to register extcon device\n");
-
-	ret = dw_dp_register_audio_driver(dp, audio);
-	if (ret)
-		return ret;
-
-	ret = devm_add_action_or_reset(dp->dev, dw_dp_unregister_audio_driver, audio);
-	if (ret)
-		return ret;
-
-	return 0;
-}
-
-static int dw_dp_audio_init(struct dw_dp *dp)
-{
-	struct dw_dp_audio *audio;
-	char clk_name[10];
-	int i, ret;
-
-	audio = devm_kzalloc(dp->dev, sizeof(*audio), GFP_KERNEL);
-	if (!audio)
-		return -ENOMEM;
-
-	audio->id = 0;
-	ret = dw_dp_single_audio_init(dp, audio);
-	if (ret)
-		return ret;
-	dp->audio = audio;
-
-	audio->i2s_clk = devm_clk_get_optional(dp->dev, "i2s");
-	if (IS_ERR(audio->i2s_clk))
-		return dev_err_probe(dp->dev, PTR_ERR(audio->i2s_clk),
-				     "failed to get i2s clock\n");
-
-	audio->spdif_clk = devm_clk_get_optional(dp->dev, "spdif");
-	if (IS_ERR(audio->spdif_clk))
-		return dev_err_probe(dp->dev, PTR_ERR(audio->spdif_clk),
-				     "failed to get spdif clock\n");
-
-	if (!dp->support_mst)
-		return 0;
-
-	dp->mst_enc[0].audio = audio;
-
-	for (i = 1; i < dp->mst_port_num; i++) {
-		if (!of_device_is_available(dp->mst_enc[i].port_node))
-			continue;
-
-		audio = devm_kzalloc(dp->dev, sizeof(*audio), GFP_KERNEL);
-		if (!audio)
-			return -ENOMEM;
-
-		audio->id = i;
-		ret = dw_dp_single_audio_init(dp, audio);
-		if (ret)
-			return ret;
-
-		snprintf(clk_name, sizeof(clk_name), "i2s%d", i);
-		audio->i2s_clk = devm_clk_get_optional(dp->dev, clk_name);
-		if (IS_ERR(audio->i2s_clk))
-			return dev_err_probe(dp->dev, PTR_ERR(audio->i2s_clk),
-					     "failed to get i2s clock\n");
-
-		snprintf(clk_name, sizeof(clk_name), "spdif%d", i);
-		audio->spdif_clk = devm_clk_get_optional(dp->dev, clk_name);
-		if (IS_ERR(audio->spdif_clk))
-			return dev_err_probe(dp->dev, PTR_ERR(audio->spdif_clk),
-					     "failed to get spdif clock\n");
-		dp->mst_enc[i].audio = audio;
-	}
-
-	return 0;
-}
-
 static int dw_dp_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -5509,6 +5565,10 @@ static int dw_dp_probe(struct platform_device *pdev)
 		}
 	}
 
+	ret = dw_dp_get_audio_clk(dp);
+	if (ret)
+		return ret;
+
 	dp->irq = platform_get_irq(pdev, 0);
 	if (dp->irq < 0)
 		return dp->irq;
@@ -5520,10 +5580,6 @@ static int dw_dp_probe(struct platform_device *pdev)
 		dev_err(dev, "failed to request irq: %d\n", ret);
 		return ret;
 	}
-
-	ret = dw_dp_audio_init(dp);
-	if (ret)
-		return ret;
 
 	dp->bridge.of_node = dp->support_mst ? dp->mst_enc[0].port_node : dev->of_node;
 	dp->bridge.funcs = &dw_dp_bridge_funcs;
