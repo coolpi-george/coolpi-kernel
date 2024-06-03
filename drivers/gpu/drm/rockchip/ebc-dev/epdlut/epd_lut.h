@@ -25,6 +25,8 @@ enum epd_lut_type {
 	PVI_WF_MAX,
 
 	WF_TYPE_AUTO,	// like GC16, rk define
+	WF_TYPE_RK_GLR16, // for part regal mode
+	WF_TYPE_RK_GLD16, // for part regal mode
 	WF_TYPE_MAX,
 	WF_TYPE_GRAY16,
 };
