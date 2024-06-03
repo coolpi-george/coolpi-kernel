@@ -165,13 +165,14 @@ struct rga_dma_buffer {
 	struct dma_buf *dma_buf;
 	struct dma_buf_attachment *attach;
 	struct sg_table *sgt;
-	void *vmap_ptr;
+	void *vaddr;
 
 	struct iommu_domain *domain;
 
 	enum dma_data_direction dir;
 
 	dma_addr_t iova;
+	dma_addr_t dma_addr;
 	unsigned long size;
 	/*
 	 * The offset of the first page of the sgt.
@@ -268,7 +269,7 @@ struct rga_job {
 	struct rga_session *session;
 
 	struct rga_req rga_command_base;
-	uint32_t cmd_reg[32 * 8];
+	struct rga_dma_buffer *cmd_buf;
 	struct rga_full_csc full_csc;
 	struct rga_csc_clip full_csc_clip;
 	struct rga_pre_intr_info pre_intr_info;
