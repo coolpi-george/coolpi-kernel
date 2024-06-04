@@ -4849,6 +4849,17 @@ static void vop2_crtc_atomic_disable(struct drm_crtc *crtc,
 		goto out;
 	}
 
+	/*
+	 * Usperspace not commit new frame for long time will triggle driver enter
+	 * psr mode, If userspace directly close display at next time and without
+	 * any new frame commit, driver will not exit psr, at this case we need to
+	 * recover aclk here.
+	 */
+	if (vop2->aclk_rate_reset) {
+		clk_set_rate(vop2->aclk, vop2->aclk_current_freq);
+		vop2->aclk_rate_reset = false;
+	}
+
 	vop2_lock(vop2);
 	DRM_DEV_INFO(vop2->dev, "Crtc atomic disable vp%d\n", vp->id);
 	VOP_MODULE_SET(vop2, vp, almost_full_or_en, 0);
@@ -5914,9 +5925,18 @@ static void vop2_win_atomic_update(struct vop2_win *win, struct drm_rect *src, s
 		}
 	}
 
-	if (is_linear_10bit_yuv(fb->format->format) && actual_w & 0x3) {
-		DRM_WARN("vp%d %s actual_w[%d] should align as 4 pixel when is linear 10 bit yuv format\n", vp->id, win->name, actual_w);
-		actual_w = ALIGN_DOWN(actual_w, 4);
+	/*
+	 * At RK356X/RK3588/RK3562/RK3528 linear 10bit yuv format actual_w should align as 4 pixel,
+	 * from RK3576 linear 10bit yuv format actual_w should align as 2 pixel.
+	 */
+	if (is_linear_10bit_yuv(fb->format->format)) {
+		if (vop2->version < VOP_VERSION_RK3576 && actual_w & 0x3) {
+			DRM_WARN("vp%d %s actual_w[%d] should align as 4 pixel when is linear 10 bit yuv format\n", vp->id, win->name, actual_w);
+			actual_w = ALIGN_DOWN(actual_w, 4);
+		} else if (vop2->version >= VOP_VERSION_RK3576 && actual_w & 0x1) {
+			DRM_WARN("vp%d %s actual_w[%d] should align as 2 pixel when is linear 10 bit yuv format\n", vp->id, win->name, actual_w);
+			actual_w = ALIGN_DOWN(actual_w, 2);
+		}
 	}
 
 	act_info = (actual_h - 1) << 16 | ((actual_w - 1) & 0xffff);
@@ -7700,7 +7720,7 @@ static size_t vop2_crtc_bandwidth(struct drm_crtc *crtc,
 
 		act_w = drm_rect_width(&pstate->src) >> 16;
 		act_h = drm_rect_height(&pstate->src) >> 16;
-		if (pstate->fb->format->is_yuv && (act_w >= 3840 || act_h >= 3840))
+		if (pstate->fb->format->is_yuv && (act_w > 2560 || act_h > 2560))
 			vop_bw_info->plane_num_4k++;
 
 		bpp = rockchip_drm_get_bpp(pstate->fb->format);

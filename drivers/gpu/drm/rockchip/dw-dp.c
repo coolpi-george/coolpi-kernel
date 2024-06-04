@@ -418,12 +418,14 @@ struct dw_dp_mst_enc {
 	struct dw_dp_video video;
 	struct dw_dp_audio *audio;
 	struct device_node *port_node;
+	struct drm_bridge *next_bridge;
 
 	DECLARE_BITMAP(sdp_reg_bank, SDP_REG_BANK_SIZE);
 
 	struct dw_dp_mst_conn *mst_conn;
 	struct dw_dp *dp;
 	int stream_id;
+	int fix_port_num;
 	bool active;
 };
 
@@ -488,6 +490,7 @@ struct dw_dp {
 	bool is_loader_protect;
 	bool support_mst;
 	bool is_mst;
+	bool is_fix_port;
 	int mst_port_num;
 	int active_mst_links;
 	struct drm_dp_mst_topology_mgr mst_mgr;
@@ -1306,6 +1309,7 @@ static int dw_dp_mst_info_dump(struct seq_file *s, void *data)
 	struct dw_dp *dp = node->info_ent->data;
 	struct dw_dp_mst_conn *mst_conn;
 	struct drm_property_blob *path_blob;
+	int i;
 
 	if (dp->mst_mgr.cbs) {
 		drm_dp_mst_dump_topology(s, &dp->mst_mgr);
@@ -1321,6 +1325,17 @@ static int dw_dp_mst_info_dump(struct seq_file *s, void *data)
 				   (char *)path_blob->data);
 		}
 		seq_puts(s, "\n");
+		if (dp->is_fix_port) {
+			seq_puts(s, "\n*** Fix port info ***\n");
+			seq_puts(s, "stream id | port num\n");
+
+			for (i = 0; i < dp->mst_port_num; i++) {
+				if (!dp->mst_enc[i].dp)
+					continue;
+				seq_printf(s, "%-16d %d\n", dp->mst_enc[i].stream_id,
+					   dp->mst_enc[i].fix_port_num);
+			}
+		}
 	}
 
 	return 0;
@@ -3250,13 +3265,38 @@ static const struct drm_connector_funcs dw_dp_mst_connector_funcs = {
 	.early_unregister	= dw_dp_mst_connector_early_unregister,
 };
 
+static struct drm_bridge *dw_dp_mst_connector_get_bridge(struct dw_dp_mst_conn *mst_conn)
+{
+	struct dw_dp *dp = mst_conn->dp;
+	int i;
+
+	if (!dp->is_fix_port)
+		return NULL;
+
+	for (i = 0; i < dp->mst_port_num; i++)
+		if (dp->mst_enc[i].fix_port_num == mst_conn->port->port_num)
+			return dp->mst_enc[i].next_bridge;
+
+	return NULL;
+}
+
 static int dw_dp_mst_connector_get_modes(struct drm_connector *connector)
 {
 	struct dw_dp_mst_conn *mst_conn = container_of(connector,
 					  struct dw_dp_mst_conn, connector);
 	struct dw_dp *dp = mst_conn->dp;
+	struct drm_bridge *bridge;
 	struct edid *edid;
 	int num_modes = 0;
+
+	if (dp->is_fix_port) {
+		bridge = dw_dp_mst_connector_get_bridge(mst_conn);
+		if (bridge) {
+			num_modes = drm_bridge_get_modes(bridge, connector);
+			if (num_modes)
+				return num_modes;
+		}
+	}
 
 	edid = drm_dp_mst_get_edid(connector, &dp->mst_mgr, mst_conn->port);
 	if (edid) {
@@ -3924,6 +3964,8 @@ dw_dp_add_mst_connector(struct drm_dp_mst_topology_mgr *mgr, struct drm_dp_mst_p
 	for (i = 0; i < dp->mst_port_num; i++) {
 		if (!of_device_is_available(dp->mst_enc[i].port_node))
 			continue;
+		if (dp->is_fix_port && dp->mst_enc[i].fix_port_num != port->port_num)
+			continue;
 		ret = drm_connector_attach_encoder(&mst_conn->connector, &dp->mst_enc[i].encoder);
 		if (ret)
 			goto err;
@@ -3979,6 +4021,57 @@ dw_dp_create_fake_mst_encoders(struct dw_dp *dp)
 	return true;
 }
 
+static int dw_dp_mst_get_fix_port(struct dw_dp *dp)
+{
+	char *prop_name = "rockchip,mst-fixed-ports";
+	int elem_len, ret, i;
+	int elem_data[DPTX_MAX_STREAMS];
+
+	if (!device_property_present(dp->dev, prop_name))
+		return 0;
+
+	elem_len = device_property_count_u32(dp->dev, prop_name);
+	if (dp->mst_port_num != elem_len)
+		return -EINVAL;
+
+	ret = device_property_read_u32_array(dp->dev, prop_name, elem_data, elem_len);
+	if (ret)
+		return -EINVAL;
+
+	dp->is_fix_port = true;
+
+	for (i = 0; i < dp->mst_port_num; i++)
+		dp->mst_enc[i].fix_port_num = elem_data[i];
+
+	return 0;
+}
+
+static int dw_dp_mst_find_ext_bridges(struct dw_dp *dp)
+{
+	struct dw_dp_mst_enc *mst_enc;
+	int i, ret;
+
+	for (i = 0; i < dp->mst_port_num; i++) {
+		mst_enc = &dp->mst_enc[i];
+		if (!of_device_is_available(dp->mst_enc[i].port_node))
+			continue;
+		ret = drm_of_find_panel_or_bridge(mst_enc->port_node, 2, -1, NULL,
+						  &mst_enc->next_bridge);
+		if (ret < 0 && ret != -ENODEV)
+			return ret;
+
+		if (mst_enc->next_bridge) {
+			ret = drm_bridge_attach(&mst_enc->encoder, mst_enc->next_bridge, NULL, 0);
+			if (ret) {
+				DRM_DEV_ERROR(dp->dev, "failed to attach next bridge: %d\n", ret);
+				return ret;
+			}
+		}
+	}
+
+	return 0;
+}
+
 static int dw_dp_mst_encoder_init(struct dw_dp *dp, int conn_base_id)
 {
 	int ret;
@@ -3989,6 +4082,13 @@ static int dw_dp_mst_encoder_init(struct dw_dp *dp, int conn_base_id)
 	INIT_LIST_HEAD(&dp->mst_conn_list);
 	dp->mst_mgr.cbs = &mst_cbs;
 	dw_dp_create_fake_mst_encoders(dp);
+	ret = dw_dp_mst_get_fix_port(dp);
+	if (ret)
+		return ret;
+
+	ret = dw_dp_mst_find_ext_bridges(dp);
+	if (ret)
+		return ret;
 	ret = drm_dp_mst_topology_mgr_init(&dp->mst_mgr, dp->encoder.dev,
 					   &dp->aux, 16, dp->mst_port_num, conn_base_id);
 	if (ret)
@@ -4025,7 +4125,9 @@ static int dw_dp_connector_init(struct dw_dp *dp)
 
 	drm_connector_attach_encoder(connector, bridge->encoder);
 
-	dw_dp_mst_encoder_init(dp, connector->base.id);
+	ret = dw_dp_mst_encoder_init(dp, connector->base.id);
+	if (ret)
+		return ret;
 	prop = drm_property_create_enum(connector->dev, 0, RK_IF_PROP_COLOR_DEPTH,
 					color_depth_enum_list,
 					ARRAY_SIZE(color_depth_enum_list));
