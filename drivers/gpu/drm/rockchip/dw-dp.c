@@ -46,6 +46,7 @@
 
 #include "rockchip_drm_drv.h"
 #include "rockchip_drm_vop.h"
+#include "rockchip_dp_mst_aux_client.h"
 
 #define DPTX_VERSION_NUMBER			0x0000
 #define DPTX_VERSION_TYPE			0x0004
@@ -496,6 +497,7 @@ struct dw_dp {
 	struct drm_dp_mst_topology_mgr mst_mgr;
 	struct dw_dp_mst_enc mst_enc[DPTX_MAX_STREAMS];
 	struct list_head mst_conn_list;
+	struct rockchip_dp_aux_client *aux_client;
 
 	struct drm_info_list *debugfs_files;
 };
@@ -3123,6 +3125,17 @@ static ssize_t dw_dp_aux_transfer(struct drm_dp_aux *aux,
 	return ret;
 }
 
+static ssize_t dw_dp_sim_aux_transfer(struct drm_dp_aux *aux,
+				      struct drm_dp_aux_msg *msg)
+{
+	struct dw_dp *dp = container_of(aux, struct dw_dp, aux);
+
+	if (dp->aux_client && dp->aux_client->transfer)
+		return dp->aux_client->transfer(dp->aux_client, aux, msg);
+	else
+		return dw_dp_aux_transfer(aux, msg);
+}
+
 static enum drm_mode_status
 dw_dp_bridge_mode_valid(struct drm_bridge *bridge,
 			const struct drm_display_info *info,
@@ -3845,6 +3858,7 @@ static int dw_dp_mst_encoder_atomic_check(struct drm_encoder *encoder,
 	struct dw_dp_mst_conn *mst_conn = container_of(connector,
 						       struct dw_dp_mst_conn, connector);
 	struct drm_dp_mst_topology_state *mst_state;
+	struct drm_dp_mst_atomic_payload *payload;
 	int pbn, slot;
 
 	mst_state = drm_atomic_get_mst_topology_state(crtc_state->state, &dp->mst_mgr);
@@ -3904,6 +3918,14 @@ static int dw_dp_mst_encoder_atomic_check(struct drm_encoder *encoder,
 	}
 
 	drm_dp_mst_update_slots(mst_state, DP_CAP_ANSI_8B10B);
+
+	payload = drm_atomic_get_mst_payload_state(mst_state, mst_conn->port);
+	if (dp->aux_client && !payload->vcpi) {
+		payload->vcpi = mst_enc->stream_id + 1;
+		dev_info(dp->dev, "[MST PORT:%p] assigned VCPI #%d\n",
+			 payload->port, payload->vcpi);
+		mst_state->payload_mask |= BIT(payload->vcpi - 1);
+	}
 
 	return 0;
 }
@@ -5353,6 +5375,17 @@ static const struct drm_encoder_funcs dw_dp_encoder_funcs = {
 	.late_register = dw_dp_encoder_late_register,
 };
 
+static void dw_dp_mst_poll_hpd_irq(void *data)
+{
+	struct dw_dp *dp = data;
+
+	mutex_lock(&dp->irq_lock);
+	dp->hotplug.long_hpd = false;
+	mutex_unlock(&dp->irq_lock);
+
+	schedule_work(&dp->hpd_work);
+}
+
 static int dw_dp_bind(struct device *dev, struct device *master, void *data)
 {
 	struct dw_dp *dp = dev_get_drvdata(dev);
@@ -5400,6 +5433,12 @@ static int dw_dp_bind(struct device *dev, struct device *master, void *data)
 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
 		if (ret)
 			goto error_unregister_aux;
+	}
+
+	if (dp->aux_client) {
+		dp->aux_client->register_hpd_irq(dp->aux_client, dw_dp_mst_poll_hpd_irq, dp);
+		dp->aux_client->register_transfer(dp->aux_client, dw_dp_aux_transfer);
+		dp->aux.transfer = dw_dp_sim_aux_transfer;
 	}
 
 	pm_runtime_enable(dp->dev);
@@ -5683,6 +5722,11 @@ static int dw_dp_probe(struct platform_device *pdev)
 		dev_err(dev, "failed to request irq: %d\n", ret);
 		return ret;
 	}
+
+	dp->aux_client = rockchip_dp_get_aux_client(dev->of_node, "rockchip,mst-sim");
+	if (IS_ERR(dp->aux_client))
+		return dev_err_probe(dev, PTR_ERR(dp->aux_client),
+				     "failed to get dp aux_client\n");
 
 	dp->bridge.of_node = dp->support_mst ? dp->mst_enc[0].port_node : dev->of_node;
 	dp->bridge.funcs = &dw_dp_bridge_funcs;

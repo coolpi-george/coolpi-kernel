@@ -3769,9 +3769,6 @@ static void vop2_crtc_load_lut(struct drm_crtc *crtc)
 	if (!vop2->is_enabled || !vp->lut || !vop2->lut_regs)
 		return;
 
-	if (WARN_ON(!drm_modeset_is_locked(&crtc->mutex)))
-		return;
-
 	if (vop2->version == VOP_VERSION_RK3568) {
 		rk3568_crtc_load_lut(crtc);
 	} else {
@@ -6959,11 +6956,11 @@ static void vop2_crtc_csu_set_rate(struct drm_crtc *crtc)
 
 	aclk_rate = clk_get_rate(vop2->aclk);
 	dclk_rate = clk_get_rate(vp->dclk);
-	if (!dclk_rate)
+	if (!dclk_rate || !aclk_rate)
 		return;
 
-	/* aclk >= 1/2 * dclk */
-	csu_div = aclk_rate * 2 / dclk_rate;
+	/* aclk > 1/2 * dclk */
+	csu_div = (aclk_rate - 1) * 2 / dclk_rate;
 
 	rockchip_csu_set_div(vop2->csu_aclk, csu_div);
 }
