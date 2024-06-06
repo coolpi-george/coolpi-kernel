@@ -1179,8 +1179,10 @@ struct dwc3 {
 	struct clk		*bus_clk;
 	struct clk		*ref_clk;
 	struct clk		*susp_clk;
+#ifdef CONFIG_NO_GKI
 	struct clk		*utmi_clk;
 	struct clk		*pipe_clk;
+#endif
 
 	struct reset_control	*reset;
 

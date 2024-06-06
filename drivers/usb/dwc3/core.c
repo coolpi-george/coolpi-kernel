@@ -853,6 +853,7 @@ static int dwc3_clk_enable(struct dwc3 *dwc)
 	if (ret)
 		goto disable_ref_clk;
 
+#ifdef CONFIG_NO_GKI
 	ret = clk_prepare_enable(dwc->utmi_clk);
 	if (ret)
 		goto disable_susp_clk;
@@ -860,13 +861,16 @@ static int dwc3_clk_enable(struct dwc3 *dwc)
 	ret = clk_prepare_enable(dwc->pipe_clk);
 	if (ret)
 		goto disable_utmi_clk;
+#endif
 
 	return 0;
 
+#ifdef CONFIG_NO_GKI
 disable_utmi_clk:
 	clk_disable_unprepare(dwc->utmi_clk);
 disable_susp_clk:
 	clk_disable_unprepare(dwc->susp_clk);
+#endif
 disable_ref_clk:
 	clk_disable_unprepare(dwc->ref_clk);
 disable_bus_clk:
@@ -876,8 +880,10 @@ disable_bus_clk:
 
 static void dwc3_clk_disable(struct dwc3 *dwc)
 {
+#ifdef CONFIG_NO_GKI
 	clk_disable_unprepare(dwc->pipe_clk);
 	clk_disable_unprepare(dwc->utmi_clk);
+#endif
 	clk_disable_unprepare(dwc->susp_clk);
 	clk_disable_unprepare(dwc->ref_clk);
 	clk_disable_unprepare(dwc->bus_clk);
@@ -1852,6 +1858,7 @@ static int dwc3_get_clocks(struct dwc3 *dwc)
 		}
 	}
 
+#ifdef CONFIG_NO_GKI
 	/* specific to Rockchip RK3588 */
 	dwc->utmi_clk = devm_clk_get_optional(dev, "utmi");
 	if (IS_ERR(dwc->utmi_clk)) {
@@ -1865,6 +1872,7 @@ static int dwc3_get_clocks(struct dwc3 *dwc)
 		return dev_err_probe(dev, PTR_ERR(dwc->pipe_clk),
 				"could not get pipe clock\n");
 	}
+#endif
 
 	return 0;
 }
