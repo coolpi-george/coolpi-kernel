@@ -47,6 +47,11 @@
  *     1. unified use __v4l2_ctrl_handler_setup in the xxx_start_stream
  *     2. support subscribe hot plug detect v4l2 event
  *
+ * V3.06.00
+ *     1. support multi-channel information configuration
+ *     2. mode vc initialization when vc-array isn't configured
+ *     3. fix the issue of mutex deadlock during hot plug
+ *
  */
 #include <linux/clk.h>
 #include <linux/i2c.h>
@@ -74,7 +79,7 @@
 
 #include "maxim2c_api.h"
 
-#define DRIVER_VERSION			KERNEL_VERSION(3, 0x05, 0x00)
+#define DRIVER_VERSION			KERNEL_VERSION(3, 0x06, 0x00)
 
 #define MAXIM2C_NAME			"maxim2c"
 
@@ -143,23 +148,26 @@ static irqreturn_t maxim2c_hot_plug_detect_irq_handler(int irq, void *dev_id)
 	int lock_gpio_level = 0;
 
 	mutex_lock(&maxim2c->mutex);
-	if (maxim2c->streaming) {
-		lock_gpio_level = gpiod_get_value_cansleep(maxim2c->lock_gpio);
-		if (lock_gpio_level == 0) {
-			dev_info(dev, "serializer hot plug out\n");
+	if (maxim2c->streaming == 0) {
+		mutex_unlock(&maxim2c->mutex);
+		return IRQ_HANDLED;
+	}
 
-			maxim2c->hot_plug_state = MAXIM2C_HOT_PLUG_OUT;
-		} else {
-			dev_info(dev, "serializer hot plug in\n");
+	lock_gpio_level = gpiod_get_value_cansleep(maxim2c->lock_gpio);
+	if (lock_gpio_level == 0) {
+		dev_info(dev, "serializer hot plug out\n");
 
-			maxim2c->hot_plug_state = MAXIM2C_HOT_PLUG_IN;
-		}
+		maxim2c->hot_plug_state = MAXIM2C_HOT_PLUG_OUT;
+	} else {
+		dev_info(dev, "serializer hot plug in\n");
 
-		queue_delayed_work(maxim2c->hot_plug_work.state_check_wq,
-					&maxim2c->hot_plug_work.state_d_work,
-					msecs_to_jiffies(100));
+		maxim2c->hot_plug_state = MAXIM2C_HOT_PLUG_IN;
 	}
 	mutex_unlock(&maxim2c->mutex);
+
+	queue_delayed_work(maxim2c->hot_plug_work.state_check_wq,
+				&maxim2c->hot_plug_work.state_d_work,
+				msecs_to_jiffies(100));
 
 	return IRQ_HANDLED;
 }
@@ -226,6 +234,7 @@ static void maxim2c_hot_plug_state_check_work(struct work_struct *work)
 		maxim2c_hot_plug_event_report(maxim2c, curr_lock_state);
 		maxim2c->link_lock_state = curr_lock_state;
 	}
+	mutex_unlock(&maxim2c->mutex);
 
 	if (link_lock_change & MAXIM2C_LINK_MASK_A) {
 		link_id = MAXIM2C_LINK_ID_A;
@@ -287,8 +296,6 @@ static void maxim2c_hot_plug_state_check_work(struct work_struct *work)
 				&maxim2c->hot_plug_work.state_d_work,
 				msecs_to_jiffies(200));
 	}
-
-	mutex_unlock(&maxim2c->mutex);
 }
 
 int maxim2c_hot_plug_detect_work_start(maxim2c_t *maxim2c)
