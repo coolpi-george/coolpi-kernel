@@ -21,6 +21,9 @@
 #define FLEXBUS_TX_NUM			0x044
 #define FLEXBUS_TXWAT_START		0x048
 #define FLEXBUS_TXFIFO_DNUM		0x04C
+#define FLEXBUS_TX_CMD_LEN		0x058
+#define FLEXBUS_TX_CMD0			0x05C
+#define FLEXBUS_TX_CMD1			0x060
 #define FLEXBUS_RX_CTL			0x080
 #define FLEXBUS_RX_NUM			0x084
 #define FLEXBUS_RXFIFO_DNUM		0x088
@@ -60,6 +63,14 @@
 #define FLEXBUS_RX_FREE_MODE		(BIT(16 + 1) | BIT(1))
 #define FLEXBUS_TX_FREE_MODE		(BIT(16) | BIT(0))
 
+/* Bit fields in COM_CTL */
+#define FLEXBUS_TX_AND_RX		0x0
+#define FLEXBUS_TX_ONLY			0x1
+#define FLEXBUS_RX_ONLY			0x2
+#define FLEXBUS_TX_THEN_RX		0x3
+#define FLEXBUS_SCLK_SHARE		BIT(2)
+#define FLEXBUS_TX_USE_RX		BIT(3)
+
 /* Bit fields in SLAVE_MODE */
 #define FLEXBUS_DVP_SEL			BIT(1)
 #define FLEXBUS_CLK1_IN			BIT(0)
@@ -70,8 +81,13 @@
 #define FLEXBUS_CPHA			BIT(2)
 #define FLEXBUS_DFS_SHIFT		0
 
+/* Bit fields in TX_CTL */
+#define FLEXBUS_TX_CTL_MSB		BIT(13)
+
 /* Bit fields in RX_CTL */
+#define FLEXBUS_RX_CTL_MSB		BIT(15)
 #define FLEXBUS_AUTOPAD			BIT(14)
+#define FLEXBUS_RXD_DY			BIT(5)
 
 /* Bit fields in DMA_WAT_INT */
 #define FLEXBUS_SRC_WAT_LVL_MASK	0x3
