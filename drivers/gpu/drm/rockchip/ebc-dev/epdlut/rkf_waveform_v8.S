@@ -2357,6 +2357,31 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 	.xword	0
 .Ldebug_loc18:
+	.xword	.Lfunc_begin2-.Lfunc_begin0
+	.xword	.Ltmp77-.Lfunc_begin0
+	.hword	1
+	.byte	84
+	.xword	.Ltmp77-.Lfunc_begin0
+	.xword	.Ltmp78-.Lfunc_begin0
+	.hword	4
+	.byte	243
+	.byte	1
+	.byte	84
+	.byte	159
+	.xword	.Ltmp112-.Lfunc_begin0
+	.xword	.Ltmp113-.Lfunc_begin0
+	.hword	1
+	.byte	84
+	.xword	.Ltmp113-.Lfunc_begin0
+	.xword	.Ltmp114-.Lfunc_begin0
+	.hword	4
+	.byte	243
+	.byte	1
+	.byte	84
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc19:
 	.xword	.Ltmp57-.Lfunc_begin0
 	.xword	.Ltmp79-.Lfunc_begin0
 	.hword	3
@@ -2395,7 +2420,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	80
 	.xword	0
 	.xword	0
-.Ldebug_loc19:
+.Ldebug_loc20:
 	.xword	.Ltmp57-.Lfunc_begin0
 	.xword	.Ltmp192-.Lfunc_begin0
 	.hword	3
@@ -2408,7 +2433,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	81
 	.xword	0
 	.xword	0
-.Ldebug_loc20:
+.Ldebug_loc21:
 	.xword	.Ltmp85-.Lfunc_begin0
 	.xword	.Ltmp88-.Lfunc_begin0
 	.hword	2
@@ -2446,7 +2471,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc21:
+.Ldebug_loc22:
 	.xword	.Ltmp85-.Lfunc_begin0
 	.xword	.Ltmp88-.Lfunc_begin0
 	.hword	3
@@ -2502,25 +2527,25 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc22:
-	.xword	.Ltmp85-.Lfunc_begin0
-	.xword	.Ltmp96-.Lfunc_begin0
-	.hword	1
-	.byte	102
-	.xword	.Ltmp114-.Lfunc_begin0
-	.xword	.Ltmp133-.Lfunc_begin0
-	.hword	1
-	.byte	102
-	.xword	.Ltmp154-.Lfunc_begin0
-	.xword	.Ltmp167-.Lfunc_begin0
-	.hword	1
-	.byte	102
-	.xword	0
-	.xword	0
 .Ldebug_loc23:
 	.xword	.Ltmp85-.Lfunc_begin0
 	.xword	.Ltmp96-.Lfunc_begin0
 	.hword	1
+	.byte	102
+	.xword	.Ltmp114-.Lfunc_begin0
+	.xword	.Ltmp133-.Lfunc_begin0
+	.hword	1
+	.byte	102
+	.xword	.Ltmp154-.Lfunc_begin0
+	.xword	.Ltmp167-.Lfunc_begin0
+	.hword	1
+	.byte	102
+	.xword	0
+	.xword	0
+.Ldebug_loc24:
+	.xword	.Ltmp85-.Lfunc_begin0
+	.xword	.Ltmp96-.Lfunc_begin0
+	.hword	1
 	.byte	88
 	.xword	.Ltmp114-.Lfunc_begin0
 	.xword	.Ltmp133-.Lfunc_begin0
@@ -2532,7 +2557,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc24:
+.Ldebug_loc25:
 	.xword	.Ltmp99-.Lfunc_begin0
 	.xword	.Ltmp102-.Lfunc_begin0
 	.hword	3
@@ -2588,7 +2613,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc25:
+.Ldebug_loc26:
 	.xword	.Ltmp99-.Lfunc_begin0
 	.xword	.Ltmp102-.Lfunc_begin0
 	.hword	2
@@ -2608,7 +2633,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc26:
+.Ldebug_loc27:
 	.xword	.Ltmp99-.Lfunc_begin0
 	.xword	.Ltmp111-.Lfunc_begin0
 	.hword	1
@@ -2623,7 +2648,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	102
 	.xword	0
 	.xword	0
-.Ldebug_loc27:
+.Ldebug_loc28:
 	.xword	.Ltmp99-.Lfunc_begin0
 	.xword	.Ltmp111-.Lfunc_begin0
 	.hword	1
@@ -2634,7 +2659,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc28:
+.Ldebug_loc29:
 	.xword	.Lfunc_begin3-.Lfunc_begin0
 	.xword	.Ltmp204-.Lfunc_begin0
 	.hword	1
@@ -2653,71 +2678,71 @@ rkf_wf_get_lut.sftemp:
 	.byte	99
 	.xword	0
 	.xword	0
-.Ldebug_loc29:
-	.xword	.Lfunc_begin3-.Lfunc_begin0
-	.xword	.Ltmp218-.Lfunc_begin0
-	.hword	1
-	.byte	81
-	.xword	.Ltmp218-.Lfunc_begin0
-	.xword	.Ltmp271-.Lfunc_begin0
-	.hword	4
-	.byte	243
-	.byte	1
-	.byte	81
-	.byte	159
-	.xword	.Ltmp272-.Lfunc_begin0
-	.xword	.Ltmp360-.Lfunc_begin0
-	.hword	1
-	.byte	81
-	.xword	.Ltmp360-.Lfunc_begin0
-	.xword	.Ltmp370-.Lfunc_begin0
-	.hword	4
-	.byte	243
-	.byte	1
-	.byte	81
-	.byte	159
-	.xword	.Ltmp371-.Lfunc_begin0
-	.xword	.Lfunc_end3-.Lfunc_begin0
-	.hword	4
-	.byte	243
-	.byte	1
-	.byte	81
-	.byte	159
-	.xword	0
-	.xword	0
 .Ldebug_loc30:
 	.xword	.Lfunc_begin3-.Lfunc_begin0
-	.xword	.Ltmp224-.Lfunc_begin0
+	.xword	.Ltmp218-.Lfunc_begin0
 	.hword	1
-	.byte	82
-	.xword	.Ltmp224-.Lfunc_begin0
+	.byte	81
+	.xword	.Ltmp218-.Lfunc_begin0
 	.xword	.Ltmp271-.Lfunc_begin0
 	.hword	4
 	.byte	243
 	.byte	1
-	.byte	82
+	.byte	81
 	.byte	159
 	.xword	.Ltmp272-.Lfunc_begin0
-	.xword	.Ltmp362-.Lfunc_begin0
+	.xword	.Ltmp360-.Lfunc_begin0
 	.hword	1
-	.byte	82
-	.xword	.Ltmp362-.Lfunc_begin0
+	.byte	81
+	.xword	.Ltmp360-.Lfunc_begin0
 	.xword	.Ltmp370-.Lfunc_begin0
 	.hword	4
 	.byte	243
 	.byte	1
-	.byte	82
+	.byte	81
 	.byte	159
 	.xword	.Ltmp371-.Lfunc_begin0
 	.xword	.Lfunc_end3-.Lfunc_begin0
 	.hword	4
 	.byte	243
 	.byte	1
-	.byte	82
+	.byte	81
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc31:
+	.xword	.Lfunc_begin3-.Lfunc_begin0
+	.xword	.Ltmp224-.Lfunc_begin0
+	.hword	1
+	.byte	82
+	.xword	.Ltmp224-.Lfunc_begin0
+	.xword	.Ltmp271-.Lfunc_begin0
+	.hword	4
+	.byte	243
+	.byte	1
+	.byte	82
+	.byte	159
+	.xword	.Ltmp272-.Lfunc_begin0
+	.xword	.Ltmp362-.Lfunc_begin0
+	.hword	1
+	.byte	82
+	.xword	.Ltmp362-.Lfunc_begin0
+	.xword	.Ltmp370-.Lfunc_begin0
+	.hword	4
+	.byte	243
+	.byte	1
+	.byte	82
+	.byte	159
+	.xword	.Ltmp371-.Lfunc_begin0
+	.xword	.Lfunc_end3-.Lfunc_begin0
+	.hword	4
+	.byte	243
+	.byte	1
+	.byte	82
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc32:
 	.xword	.Ltmp202-.Lfunc_begin0
 	.xword	.Ltmp270-.Lfunc_begin0
 	.hword	3
@@ -2752,7 +2777,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	100
 	.xword	0
 	.xword	0
-.Ldebug_loc32:
+.Ldebug_loc33:
 	.xword	.Ltmp207-.Lfunc_begin0
 	.xword	.Ltmp209-.Lfunc_begin0
 	.hword	1
@@ -2763,7 +2788,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc33:
+.Ldebug_loc34:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp210-.Lfunc_begin0
 	.hword	2
@@ -2775,7 +2800,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc34:
+.Ldebug_loc35:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp225-.Lfunc_begin0
 	.hword	3
@@ -2784,14 +2809,14 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc35:
+.Ldebug_loc36:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp224-.Lfunc_begin0
 	.hword	1
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc36:
+.Ldebug_loc37:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp223-.Lfunc_begin0
 	.hword	2
@@ -2807,7 +2832,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	102
 	.xword	0
 	.xword	0
-.Ldebug_loc37:
+.Ldebug_loc38:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp221-.Lfunc_begin0
 	.hword	2
@@ -2823,7 +2848,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	100
 	.xword	0
 	.xword	0
-.Ldebug_loc38:
+.Ldebug_loc39:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp220-.Lfunc_begin0
 	.hword	2
@@ -2839,7 +2864,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	104
 	.xword	0
 	.xword	0
-.Ldebug_loc39:
+.Ldebug_loc40:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp227-.Lfunc_begin0
 	.hword	12
@@ -2895,14 +2920,14 @@ rkf_wf_get_lut.sftemp:
 	.byte	8
 	.xword	0
 	.xword	0
-.Ldebug_loc40:
+.Ldebug_loc41:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp224-.Lfunc_begin0
 	.hword	1
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc41:
+.Ldebug_loc42:
 	.xword	.Ltmp208-.Lfunc_begin0
 	.xword	.Ltmp271-.Lfunc_begin0
 	.hword	1
@@ -2913,7 +2938,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	99
 	.xword	0
 	.xword	0
-.Ldebug_loc42:
+.Ldebug_loc43:
 	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp211-.Lfunc_begin0
 	.hword	3
@@ -2926,7 +2951,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc43:
+.Ldebug_loc44:
 	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp215-.Lfunc_begin0
 	.hword	3
@@ -2935,7 +2960,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc44:
+.Ldebug_loc45:
 	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp220-.Lfunc_begin0
 	.hword	2
@@ -2947,7 +2972,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	104
 	.xword	0
 	.xword	0
-.Ldebug_loc45:
+.Ldebug_loc46:
 	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp216-.Lfunc_begin0
 	.hword	2
@@ -2955,7 +2980,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc46:
+.Ldebug_loc47:
 	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp219-.Lfunc_begin0
 	.hword	2
@@ -2963,21 +2988,13 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc47:
+.Ldebug_loc48:
 	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp215-.Lfunc_begin0
 	.hword	4
 	.byte	120
 	.byte	148
 	.byte	1
-	.byte	159
-	.xword	0
-	.xword	0
-.Ldebug_loc48:
-	.xword	.Ltmp210-.Lfunc_begin0
-	.xword	.Ltmp225-.Lfunc_begin0
-	.hword	2
-	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
@@ -2990,12 +3007,10 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 	.xword	0
 .Ldebug_loc50:
-	.xword	.Ltmp223-.Lfunc_begin0
+	.xword	.Ltmp210-.Lfunc_begin0
 	.xword	.Ltmp225-.Lfunc_begin0
-	.hword	4
-	.byte	16
-	.byte	192
-	.byte	27
+	.hword	2
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
@@ -3005,11 +3020,21 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	16
 	.byte	192
-	.byte	25
+	.byte	27
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc52:
+	.xword	.Ltmp223-.Lfunc_begin0
+	.xword	.Ltmp225-.Lfunc_begin0
+	.hword	4
+	.byte	16
+	.byte	192
+	.byte	25
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc53:
 	.xword	.Ltmp223-.Lfunc_begin0
 	.xword	.Ltmp224-.Lfunc_begin0
 	.hword	2
@@ -3025,18 +3050,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	101
 	.xword	0
 	.xword	0
-.Ldebug_loc53:
+.Ldebug_loc54:
 	.xword	.Ltmp223-.Lfunc_begin0
 	.xword	.Ltmp232-.Lfunc_begin0
 	.hword	1
 	.byte	104
-	.xword	0
-	.xword	0
-.Ldebug_loc54:
-	.xword	.Ltmp223-.Lfunc_begin0
-	.xword	.Ltmp225-.Lfunc_begin0
-	.hword	1
-	.byte	102
 	.xword	0
 	.xword	0
 .Ldebug_loc55:
@@ -3048,34 +3066,16 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 .Ldebug_loc56:
 	.xword	.Ltmp223-.Lfunc_begin0
-	.xword	.Ltmp232-.Lfunc_begin0
+	.xword	.Ltmp225-.Lfunc_begin0
 	.hword	1
 	.byte	102
 	.xword	0
 	.xword	0
 .Ldebug_loc57:
-	.xword	.Ltmp228-.Lfunc_begin0
-	.xword	.Ltmp230-.Lfunc_begin0
-	.hword	15
-	.byte	120
-	.byte	0
-	.byte	16
-	.byte	128
-	.byte	248
-	.byte	1
-	.byte	26
-	.byte	16
-	.byte	255
-	.byte	255
-	.byte	255
-	.byte	255
-	.byte	15
-	.byte	26
-	.byte	159
-	.xword	.Ltmp230-.Lfunc_begin0
-	.xword	.Ltmp231-.Lfunc_begin0
+	.xword	.Ltmp223-.Lfunc_begin0
+	.xword	.Ltmp232-.Lfunc_begin0
 	.hword	1
-	.byte	80
+	.byte	102
 	.xword	0
 	.xword	0
 .Ldebug_loc58:
@@ -3104,13 +3104,38 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 	.xword	0
 .Ldebug_loc59:
+	.xword	.Ltmp228-.Lfunc_begin0
+	.xword	.Ltmp230-.Lfunc_begin0
+	.hword	15
+	.byte	120
+	.byte	0
+	.byte	16
+	.byte	128
+	.byte	248
+	.byte	1
+	.byte	26
+	.byte	16
+	.byte	255
+	.byte	255
+	.byte	255
+	.byte	255
+	.byte	15
+	.byte	26
+	.byte	159
+	.xword	.Ltmp230-.Lfunc_begin0
+	.xword	.Ltmp231-.Lfunc_begin0
+	.hword	1
+	.byte	80
+	.xword	0
+	.xword	0
+.Ldebug_loc60:
 	.xword	.Ltmp234-.Lfunc_begin0
 	.xword	.Ltmp236-.Lfunc_begin0
 	.hword	1
 	.byte	91
 	.xword	0
 	.xword	0
-.Ldebug_loc60:
+.Ldebug_loc61:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	3
@@ -3426,7 +3451,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc61:
+.Ldebug_loc62:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	3
@@ -3439,7 +3464,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	96
 	.xword	0
 	.xword	0
-.Ldebug_loc62:
+.Ldebug_loc63:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	3
@@ -3448,7 +3473,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc63:
+.Ldebug_loc64:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	3
@@ -3469,7 +3494,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc64:
+.Ldebug_loc65:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	3
@@ -3499,7 +3524,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc65:
+.Ldebug_loc66:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	3
@@ -3512,7 +3537,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc66:
+.Ldebug_loc67:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp231-.Lfunc_begin0
 	.hword	2
@@ -3524,14 +3549,14 @@ rkf_wf_get_lut.sftemp:
 	.byte	80
 	.xword	0
 	.xword	0
-.Ldebug_loc67:
+.Ldebug_loc68:
 	.xword	.Ltmp227-.Lfunc_begin0
 	.xword	.Ltmp237-.Lfunc_begin0
 	.hword	1
 	.byte	101
 	.xword	0
 	.xword	0
-.Ldebug_loc68:
+.Ldebug_loc69:
 	.xword	.Ltmp230-.Lfunc_begin0
 	.xword	.Ltmp232-.Lfunc_begin0
 	.hword	4
@@ -3541,7 +3566,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc69:
+.Ldebug_loc70:
 	.xword	.Ltmp230-.Lfunc_begin0
 	.xword	.Ltmp232-.Lfunc_begin0
 	.hword	4
@@ -3551,7 +3576,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc70:
+.Ldebug_loc71:
 	.xword	.Ltmp239-.Lfunc_begin0
 	.xword	.Ltmp240-.Lfunc_begin0
 	.hword	3
@@ -3568,14 +3593,14 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc71:
+.Ldebug_loc72:
 	.xword	.Ltmp249-.Lfunc_begin0
 	.xword	.Ltmp266-.Lfunc_begin0
 	.hword	1
 	.byte	97
 	.xword	0
 	.xword	0
-.Ldebug_loc72:
+.Ldebug_loc73:
 	.xword	.Ltmp274-.Lfunc_begin0
 	.xword	.Ltmp276-.Lfunc_begin0
 	.hword	1
@@ -3586,7 +3611,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc73:
+.Ldebug_loc74:
 	.xword	.Ltmp275-.Lfunc_begin0
 	.xword	.Ltmp277-.Lfunc_begin0
 	.hword	2
@@ -3598,7 +3623,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc74:
+.Ldebug_loc75:
 	.xword	.Ltmp275-.Lfunc_begin0
 	.xword	.Ltmp285-.Lfunc_begin0
 	.hword	3
@@ -3607,19 +3632,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc75:
+.Ldebug_loc76:
 	.xword	.Ltmp275-.Lfunc_begin0
 	.xword	.Ltmp285-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc76:
-	.xword	.Ltmp275-.Lfunc_begin0
-	.xword	.Ltmp285-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc77:
@@ -3641,18 +3658,26 @@ rkf_wf_get_lut.sftemp:
 .Ldebug_loc79:
 	.xword	.Ltmp275-.Lfunc_begin0
 	.xword	.Ltmp285-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	48
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc80:
 	.xword	.Ltmp275-.Lfunc_begin0
 	.xword	.Ltmp285-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc81:
+	.xword	.Ltmp275-.Lfunc_begin0
+	.xword	.Ltmp285-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc82:
 	.xword	.Ltmp277-.Lfunc_begin0
 	.xword	.Ltmp278-.Lfunc_begin0
 	.hword	3
@@ -3665,7 +3690,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc82:
+.Ldebug_loc83:
 	.xword	.Ltmp277-.Lfunc_begin0
 	.xword	.Ltmp282-.Lfunc_begin0
 	.hword	3
@@ -3674,17 +3699,9 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc83:
-	.xword	.Ltmp277-.Lfunc_begin0
-	.xword	.Ltmp285-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
-	.xword	0
-	.xword	0
 .Ldebug_loc84:
 	.xword	.Ltmp277-.Lfunc_begin0
-	.xword	.Ltmp283-.Lfunc_begin0
+	.xword	.Ltmp285-.Lfunc_begin0
 	.hword	2
 	.byte	48
 	.byte	159
@@ -3692,7 +3709,7 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 .Ldebug_loc85:
 	.xword	.Ltmp277-.Lfunc_begin0
-	.xword	.Ltmp284-.Lfunc_begin0
+	.xword	.Ltmp283-.Lfunc_begin0
 	.hword	2
 	.byte	48
 	.byte	159
@@ -3700,21 +3717,19 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 .Ldebug_loc86:
 	.xword	.Ltmp277-.Lfunc_begin0
-	.xword	.Ltmp282-.Lfunc_begin0
-	.hword	4
-	.byte	120
-	.byte	212
-	.byte	3
+	.xword	.Ltmp284-.Lfunc_begin0
+	.hword	2
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc87:
 	.xword	.Ltmp277-.Lfunc_begin0
-	.xword	.Ltmp285-.Lfunc_begin0
+	.xword	.Ltmp282-.Lfunc_begin0
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	14
+	.byte	3
 	.byte	159
 	.xword	0
 	.xword	0
@@ -3724,11 +3739,21 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	3
+	.byte	14
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc89:
+	.xword	.Ltmp277-.Lfunc_begin0
+	.xword	.Ltmp285-.Lfunc_begin0
+	.hword	4
+	.byte	120
+	.byte	212
+	.byte	3
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc90:
 	.xword	.Ltmp287-.Lfunc_begin0
 	.xword	.Ltmp289-.Lfunc_begin0
 	.hword	1
@@ -3739,7 +3764,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc90:
+.Ldebug_loc91:
 	.xword	.Ltmp288-.Lfunc_begin0
 	.xword	.Ltmp290-.Lfunc_begin0
 	.hword	2
@@ -3751,7 +3776,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc91:
+.Ldebug_loc92:
 	.xword	.Ltmp288-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
 	.hword	3
@@ -3760,19 +3785,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc92:
+.Ldebug_loc93:
 	.xword	.Ltmp288-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc93:
-	.xword	.Ltmp288-.Lfunc_begin0
-	.xword	.Ltmp295-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc94:
@@ -3795,25 +3812,33 @@ rkf_wf_get_lut.sftemp:
 	.xword	.Ltmp288-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
 	.hword	2
-	.byte	50
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc97:
 	.xword	.Ltmp288-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	50
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc98:
 	.xword	.Ltmp288-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc99:
+	.xword	.Ltmp288-.Lfunc_begin0
+	.xword	.Ltmp295-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc100:
 	.xword	.Ltmp290-.Lfunc_begin0
 	.xword	.Ltmp291-.Lfunc_begin0
 	.hword	3
@@ -3826,20 +3851,12 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc100:
+.Ldebug_loc101:
 	.xword	.Ltmp290-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
 	.hword	3
 	.byte	17
 	.byte	0
-	.byte	159
-	.xword	0
-	.xword	0
-.Ldebug_loc101:
-	.xword	.Ltmp290-.Lfunc_begin0
-	.xword	.Ltmp295-.Lfunc_begin0
-	.hword	2
-	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
@@ -3862,10 +3879,8 @@ rkf_wf_get_lut.sftemp:
 .Ldebug_loc104:
 	.xword	.Ltmp290-.Lfunc_begin0
 	.xword	.Ltmp295-.Lfunc_begin0
-	.hword	4
-	.byte	120
-	.byte	212
-	.byte	1
+	.hword	2
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
@@ -3875,7 +3890,7 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	6
+	.byte	1
 	.byte	159
 	.xword	0
 	.xword	0
@@ -3885,11 +3900,21 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	1
+	.byte	6
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc107:
+	.xword	.Ltmp290-.Lfunc_begin0
+	.xword	.Ltmp295-.Lfunc_begin0
+	.hword	4
+	.byte	120
+	.byte	212
+	.byte	1
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc108:
 	.xword	.Ltmp297-.Lfunc_begin0
 	.xword	.Ltmp299-.Lfunc_begin0
 	.hword	1
@@ -3900,7 +3925,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc108:
+.Ldebug_loc109:
 	.xword	.Ltmp298-.Lfunc_begin0
 	.xword	.Ltmp300-.Lfunc_begin0
 	.hword	2
@@ -3912,7 +3937,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc109:
+.Ldebug_loc110:
 	.xword	.Ltmp298-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
 	.hword	3
@@ -3921,19 +3946,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc110:
+.Ldebug_loc111:
 	.xword	.Ltmp298-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc111:
-	.xword	.Ltmp298-.Lfunc_begin0
-	.xword	.Ltmp305-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc112:
@@ -3956,25 +3973,33 @@ rkf_wf_get_lut.sftemp:
 	.xword	.Ltmp298-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
 	.hword	2
-	.byte	50
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc115:
 	.xword	.Ltmp298-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	50
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc116:
 	.xword	.Ltmp298-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc117:
+	.xword	.Ltmp298-.Lfunc_begin0
+	.xword	.Ltmp305-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc118:
 	.xword	.Ltmp300-.Lfunc_begin0
 	.xword	.Ltmp301-.Lfunc_begin0
 	.hword	3
@@ -3987,20 +4012,12 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc118:
+.Ldebug_loc119:
 	.xword	.Ltmp300-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
 	.hword	3
 	.byte	17
 	.byte	0
-	.byte	159
-	.xword	0
-	.xword	0
-.Ldebug_loc119:
-	.xword	.Ltmp300-.Lfunc_begin0
-	.xword	.Ltmp305-.Lfunc_begin0
-	.hword	2
-	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
@@ -4023,10 +4040,8 @@ rkf_wf_get_lut.sftemp:
 .Ldebug_loc122:
 	.xword	.Ltmp300-.Lfunc_begin0
 	.xword	.Ltmp305-.Lfunc_begin0
-	.hword	4
-	.byte	120
-	.byte	212
-	.byte	1
+	.hword	2
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
@@ -4036,7 +4051,7 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	6
+	.byte	1
 	.byte	159
 	.xword	0
 	.xword	0
@@ -4046,11 +4061,21 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	1
+	.byte	6
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc125:
+	.xword	.Ltmp300-.Lfunc_begin0
+	.xword	.Ltmp305-.Lfunc_begin0
+	.hword	4
+	.byte	120
+	.byte	212
+	.byte	1
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc126:
 	.xword	.Ltmp309-.Lfunc_begin0
 	.xword	.Ltmp311-.Lfunc_begin0
 	.hword	1
@@ -4061,7 +4086,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc126:
+.Ldebug_loc127:
 	.xword	.Ltmp310-.Lfunc_begin0
 	.xword	.Ltmp312-.Lfunc_begin0
 	.hword	2
@@ -4073,7 +4098,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc127:
+.Ldebug_loc128:
 	.xword	.Ltmp310-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	3
@@ -4082,19 +4107,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc128:
+.Ldebug_loc129:
 	.xword	.Ltmp310-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc129:
-	.xword	.Ltmp310-.Lfunc_begin0
-	.xword	.Ltmp320-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc130:
@@ -4117,25 +4134,33 @@ rkf_wf_get_lut.sftemp:
 	.xword	.Ltmp310-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	2
-	.byte	51
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc133:
 	.xword	.Ltmp310-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	51
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc134:
 	.xword	.Ltmp310-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc135:
+	.xword	.Ltmp310-.Lfunc_begin0
+	.xword	.Ltmp320-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc136:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp313-.Lfunc_begin0
 	.hword	3
@@ -4148,7 +4173,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc136:
+.Ldebug_loc137:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp317-.Lfunc_begin0
 	.hword	3
@@ -4157,7 +4182,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc137:
+.Ldebug_loc138:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	2
@@ -4165,7 +4190,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc138:
+.Ldebug_loc139:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp318-.Lfunc_begin0
 	.hword	2
@@ -4173,7 +4198,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc139:
+.Ldebug_loc140:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp319-.Lfunc_begin0
 	.hword	2
@@ -4181,7 +4206,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc140:
+.Ldebug_loc141:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp317-.Lfunc_begin0
 	.hword	4
@@ -4191,7 +4216,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc141:
+.Ldebug_loc142:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	4
@@ -4201,7 +4226,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc142:
+.Ldebug_loc143:
 	.xword	.Ltmp312-.Lfunc_begin0
 	.xword	.Ltmp320-.Lfunc_begin0
 	.hword	4
@@ -4211,7 +4236,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc143:
+.Ldebug_loc144:
 	.xword	.Ltmp322-.Lfunc_begin0
 	.xword	.Ltmp324-.Lfunc_begin0
 	.hword	1
@@ -4222,7 +4247,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc144:
+.Ldebug_loc145:
 	.xword	.Ltmp323-.Lfunc_begin0
 	.xword	.Ltmp325-.Lfunc_begin0
 	.hword	2
@@ -4234,7 +4259,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc145:
+.Ldebug_loc146:
 	.xword	.Ltmp323-.Lfunc_begin0
 	.xword	.Ltmp333-.Lfunc_begin0
 	.hword	3
@@ -4243,19 +4268,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc146:
+.Ldebug_loc147:
 	.xword	.Ltmp323-.Lfunc_begin0
 	.xword	.Ltmp333-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc147:
-	.xword	.Ltmp323-.Lfunc_begin0
-	.xword	.Ltmp333-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc148:
@@ -4278,25 +4295,33 @@ rkf_wf_get_lut.sftemp:
 	.xword	.Ltmp323-.Lfunc_begin0
 	.xword	.Ltmp333-.Lfunc_begin0
 	.hword	2
-	.byte	52
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc151:
 	.xword	.Ltmp323-.Lfunc_begin0
 	.xword	.Ltmp333-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	52
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc152:
 	.xword	.Ltmp323-.Lfunc_begin0
 	.xword	.Ltmp333-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc153:
+	.xword	.Ltmp323-.Lfunc_begin0
+	.xword	.Ltmp333-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc154:
 	.xword	.Ltmp325-.Lfunc_begin0
 	.xword	.Ltmp326-.Lfunc_begin0
 	.hword	3
@@ -4309,7 +4334,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc154:
+.Ldebug_loc155:
 	.xword	.Ltmp325-.Lfunc_begin0
 	.xword	.Ltmp330-.Lfunc_begin0
 	.hword	3
@@ -4318,17 +4343,9 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc155:
-	.xword	.Ltmp325-.Lfunc_begin0
-	.xword	.Ltmp333-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
-	.xword	0
-	.xword	0
 .Ldebug_loc156:
 	.xword	.Ltmp325-.Lfunc_begin0
-	.xword	.Ltmp331-.Lfunc_begin0
+	.xword	.Ltmp333-.Lfunc_begin0
 	.hword	2
 	.byte	48
 	.byte	159
@@ -4336,7 +4353,7 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 .Ldebug_loc157:
 	.xword	.Ltmp325-.Lfunc_begin0
-	.xword	.Ltmp332-.Lfunc_begin0
+	.xword	.Ltmp331-.Lfunc_begin0
 	.hword	2
 	.byte	48
 	.byte	159
@@ -4344,21 +4361,19 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 .Ldebug_loc158:
 	.xword	.Ltmp325-.Lfunc_begin0
-	.xword	.Ltmp330-.Lfunc_begin0
-	.hword	4
-	.byte	120
-	.byte	212
-	.byte	2
+	.xword	.Ltmp332-.Lfunc_begin0
+	.hword	2
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc159:
 	.xword	.Ltmp325-.Lfunc_begin0
-	.xword	.Ltmp333-.Lfunc_begin0
+	.xword	.Ltmp330-.Lfunc_begin0
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	10
+	.byte	2
 	.byte	159
 	.xword	0
 	.xword	0
@@ -4368,11 +4383,21 @@ rkf_wf_get_lut.sftemp:
 	.hword	4
 	.byte	120
 	.byte	212
-	.byte	2
+	.byte	10
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc161:
+	.xword	.Ltmp325-.Lfunc_begin0
+	.xword	.Ltmp333-.Lfunc_begin0
+	.hword	4
+	.byte	120
+	.byte	212
+	.byte	2
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc162:
 	.xword	.Ltmp335-.Lfunc_begin0
 	.xword	.Ltmp337-.Lfunc_begin0
 	.hword	1
@@ -4383,7 +4408,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc162:
+.Ldebug_loc163:
 	.xword	.Ltmp336-.Lfunc_begin0
 	.xword	.Ltmp338-.Lfunc_begin0
 	.hword	2
@@ -4395,7 +4420,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc163:
+.Ldebug_loc164:
 	.xword	.Ltmp336-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	3
@@ -4404,19 +4429,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc164:
+.Ldebug_loc165:
 	.xword	.Ltmp336-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc165:
-	.xword	.Ltmp336-.Lfunc_begin0
-	.xword	.Ltmp346-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc166:
@@ -4439,25 +4456,33 @@ rkf_wf_get_lut.sftemp:
 	.xword	.Ltmp336-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	2
-	.byte	53
+	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc169:
 	.xword	.Ltmp336-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	53
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc170:
 	.xword	.Ltmp336-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc171:
+	.xword	.Ltmp336-.Lfunc_begin0
+	.xword	.Ltmp346-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc172:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp339-.Lfunc_begin0
 	.hword	3
@@ -4470,7 +4495,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc172:
+.Ldebug_loc173:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp343-.Lfunc_begin0
 	.hword	3
@@ -4479,7 +4504,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc173:
+.Ldebug_loc174:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	2
@@ -4487,7 +4512,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc174:
+.Ldebug_loc175:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp344-.Lfunc_begin0
 	.hword	2
@@ -4495,7 +4520,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc175:
+.Ldebug_loc176:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp345-.Lfunc_begin0
 	.hword	2
@@ -4503,7 +4528,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc176:
+.Ldebug_loc177:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp343-.Lfunc_begin0
 	.hword	4
@@ -4513,7 +4538,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc177:
+.Ldebug_loc178:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	4
@@ -4523,7 +4548,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc178:
+.Ldebug_loc179:
 	.xword	.Ltmp338-.Lfunc_begin0
 	.xword	.Ltmp346-.Lfunc_begin0
 	.hword	4
@@ -4533,7 +4558,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc179:
+.Ldebug_loc180:
 	.xword	.Ltmp348-.Lfunc_begin0
 	.xword	.Ltmp350-.Lfunc_begin0
 	.hword	1
@@ -4544,7 +4569,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	82
 	.xword	0
 	.xword	0
-.Ldebug_loc180:
+.Ldebug_loc181:
 	.xword	.Ltmp349-.Lfunc_begin0
 	.xword	.Ltmp351-.Lfunc_begin0
 	.hword	2
@@ -4556,7 +4581,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	88
 	.xword	0
 	.xword	0
-.Ldebug_loc181:
+.Ldebug_loc182:
 	.xword	.Ltmp349-.Lfunc_begin0
 	.xword	.Ltmp358-.Lfunc_begin0
 	.hword	3
@@ -4565,19 +4590,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc182:
+.Ldebug_loc183:
 	.xword	.Ltmp349-.Lfunc_begin0
 	.xword	.Ltmp358-.Lfunc_begin0
 	.hword	1
 	.byte	82
-	.xword	0
-	.xword	0
-.Ldebug_loc183:
-	.xword	.Ltmp349-.Lfunc_begin0
-	.xword	.Ltmp358-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc184:
@@ -4599,18 +4616,26 @@ rkf_wf_get_lut.sftemp:
 .Ldebug_loc186:
 	.xword	.Ltmp349-.Lfunc_begin0
 	.xword	.Ltmp358-.Lfunc_begin0
-	.hword	1
-	.byte	82
+	.hword	2
+	.byte	48
+	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc187:
 	.xword	.Ltmp349-.Lfunc_begin0
 	.xword	.Ltmp358-.Lfunc_begin0
 	.hword	1
-	.byte	99
+	.byte	82
 	.xword	0
 	.xword	0
 .Ldebug_loc188:
+	.xword	.Ltmp349-.Lfunc_begin0
+	.xword	.Ltmp358-.Lfunc_begin0
+	.hword	1
+	.byte	99
+	.xword	0
+	.xword	0
+.Ldebug_loc189:
 	.xword	.Ltmp351-.Lfunc_begin0
 	.xword	.Ltmp352-.Lfunc_begin0
 	.hword	3
@@ -4623,7 +4648,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	89
 	.xword	0
 	.xword	0
-.Ldebug_loc189:
+.Ldebug_loc190:
 	.xword	.Ltmp351-.Lfunc_begin0
 	.xword	.Ltmp356-.Lfunc_begin0
 	.hword	3
@@ -4632,17 +4657,9 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc190:
-	.xword	.Ltmp351-.Lfunc_begin0
-	.xword	.Ltmp358-.Lfunc_begin0
-	.hword	2
-	.byte	48
-	.byte	159
-	.xword	0
-	.xword	0
 .Ldebug_loc191:
 	.xword	.Ltmp351-.Lfunc_begin0
-	.xword	.Ltmp357-.Lfunc_begin0
+	.xword	.Ltmp358-.Lfunc_begin0
 	.hword	2
 	.byte	48
 	.byte	159
@@ -4650,13 +4667,21 @@ rkf_wf_get_lut.sftemp:
 	.xword	0
 .Ldebug_loc192:
 	.xword	.Ltmp351-.Lfunc_begin0
-	.xword	.Ltmp358-.Lfunc_begin0
+	.xword	.Ltmp357-.Lfunc_begin0
 	.hword	2
 	.byte	48
 	.byte	159
 	.xword	0
 	.xword	0
 .Ldebug_loc193:
+	.xword	.Ltmp351-.Lfunc_begin0
+	.xword	.Ltmp358-.Lfunc_begin0
+	.hword	2
+	.byte	48
+	.byte	159
+	.xword	0
+	.xword	0
+.Ldebug_loc194:
 	.xword	.Ltmp351-.Lfunc_begin0
 	.xword	.Ltmp356-.Lfunc_begin0
 	.hword	4
@@ -4666,7 +4691,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc194:
+.Ldebug_loc195:
 	.xword	.Ltmp351-.Lfunc_begin0
 	.xword	.Ltmp358-.Lfunc_begin0
 	.hword	4
@@ -4676,7 +4701,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc195:
+.Ldebug_loc196:
 	.xword	.Ltmp351-.Lfunc_begin0
 	.xword	.Ltmp358-.Lfunc_begin0
 	.hword	4
@@ -4686,7 +4711,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc196:
+.Ldebug_loc197:
 	.xword	.Lfunc_begin4-.Lfunc_begin0
 	.xword	.Ltmp378-.Lfunc_begin0
 	.hword	3
@@ -4699,7 +4724,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	90
 	.xword	0
 	.xword	0
-.Ldebug_loc197:
+.Ldebug_loc198:
 	.xword	.Lfunc_begin4-.Lfunc_begin0
 	.xword	.Ltmp378-.Lfunc_begin0
 	.hword	2
@@ -4733,7 +4758,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc198:
+.Ldebug_loc199:
 	.xword	.Lfunc_begin4-.Lfunc_begin0
 	.xword	.Ltmp378-.Lfunc_begin0
 	.hword	2
@@ -4826,7 +4851,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc199:
+.Ldebug_loc200:
 	.xword	.Ltmp378-.Lfunc_begin0
 	.xword	.Ltmp379-.Lfunc_begin0
 	.hword	2
@@ -4858,7 +4883,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	159
 	.xword	0
 	.xword	0
-.Ldebug_loc200:
+.Ldebug_loc201:
 	.xword	.Ltmp382-.Lfunc_begin0
 	.xword	.Ltmp385-.Lfunc_begin0
 	.hword	2
@@ -5748,11 +5773,11 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.hword	610
 
-	.word	568
+	.word	584
 
 	.byte	3
 	.word	.Linfo_string3
-	.word	458
+	.word	474
 	.byte	2
 	.hword	612
 	.byte	9
@@ -5760,7 +5785,7 @@ rkf_wf_get_lut.sftemp:
 	.xword	rkf_wf_get_lut.stype
 	.byte	3
 	.word	.Linfo_string21
-	.word	568
+	.word	584
 	.byte	2
 	.hword	613
 	.byte	9
@@ -5771,80 +5796,86 @@ rkf_wf_get_lut.sftemp:
 	.word	.Linfo_string104
 	.byte	2
 	.hword	610
-	.word	4558
+	.word	4574
 	.byte	4
 	.word	.Ldebug_loc15
 	.word	.Linfo_string137
 	.byte	2
 	.hword	610
-	.word	458
+	.word	474
 	.byte	4
 	.word	.Ldebug_loc16
 	.word	.Linfo_string147
 	.byte	2
 	.hword	610
-	.word	568
+	.word	584
 	.byte	4
 	.word	.Ldebug_loc17
 	.word	.Linfo_string148
 	.byte	2
 	.hword	610
-	.word	568
-	.byte	5
+	.word	584
+	.byte	4
 	.word	.Ldebug_loc18
+	.word	.Linfo_string149
+	.byte	2
+	.hword	610
+	.word	584
+	.byte	5
+	.word	.Ldebug_loc19
 	.word	.Linfo_string89
 	.byte	2
 	.hword	615
-	.word	568
+	.word	584
 	.byte	5
-	.word	.Ldebug_loc19
-	.word	.Linfo_string149
+	.word	.Ldebug_loc20
+	.word	.Linfo_string150
 	.byte	2
 	.hword	614
-	.word	568
+	.word	584
 	.byte	6
-	.word	1660
+	.word	1676
 	.word	.Ldebug_ranges3
 	.byte	2
 	.hword	655
 	.byte	4
 	.byte	7
-	.word	.Ldebug_loc23
-	.word	1673
+	.word	.Ldebug_loc24
+	.word	1689
 	.byte	7
-	.word	.Ldebug_loc22
-	.word	1685
-	.byte	8
-	.word	.Ldebug_loc20
-	.word	1697
+	.word	.Ldebug_loc23
+	.word	1701
 	.byte	8
 	.word	.Ldebug_loc21
-	.word	1709
+	.word	1713
+	.byte	8
+	.word	.Ldebug_loc22
+	.word	1725
 	.byte	0
 	.byte	6
-	.word	1722
+	.word	1738
 	.word	.Ldebug_ranges4
 	.byte	2
 	.hword	657
 	.byte	4
 	.byte	7
-	.word	.Ldebug_loc27
-	.word	1735
+	.word	.Ldebug_loc28
+	.word	1751
 	.byte	7
-	.word	.Ldebug_loc26
-	.word	1747
-	.byte	8
-	.word	.Ldebug_loc24
-	.word	1759
+	.word	.Ldebug_loc27
+	.word	1763
 	.byte	8
 	.word	.Ldebug_loc25
-	.word	1771
+	.word	1775
+	.byte	8
+	.word	.Ldebug_loc26
+	.word	1787
 	.byte	0
 	.byte	9
-	.word	1784
+	.word	1800
 	.xword	.Ltmp77
 	.byte	10
-	.word	1803
+	.word	1819
 	.xword	.Ltmp79
 	.byte	11
 	.byte	1
@@ -5866,7 +5897,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	0
 	.byte	0
 	.byte	10
-	.word	4183
+	.word	4199
 	.xword	.Ltmp82
 	.byte	11
 	.byte	1
@@ -5882,13 +5913,13 @@ rkf_wf_get_lut.sftemp:
 	.byte	0
 	.byte	0
 	.byte	9
-	.word	1784
+	.word	1800
 	.xword	.Ltmp189
 	.byte	9
-	.word	4360
+	.word	4376
 	.xword	.Ltmp191
 	.byte	10
-	.word	1803
+	.word	1819
 	.xword	.Ltmp193
 	.byte	11
 	.byte	1
@@ -5904,7 +5935,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	0
 	.byte	0
 	.byte	10
-	.word	4183
+	.word	4199
 	.xword	.Ltmp196
 	.byte	11
 	.byte	1
@@ -5921,7 +5952,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	0
 	.byte	0
 	.byte	12
-	.word	561
+	.word	577
 	.word	.Linfo_string20
 	.byte	4
 	.byte	1
@@ -5982,14 +6013,14 @@ rkf_wf_get_lut.sftemp:
 	.byte	4
 	.byte	15
 	.word	.Linfo_string23
-	.word	596
+	.word	612
 	.byte	2
 	.byte	55
 	.byte	9
 	.byte	3
 	.xword	global_waveform
 	.byte	16
-	.word	601
+	.word	617
 	.byte	17
 	.word	.Linfo_string47
 	.hword	2388
@@ -5997,135 +6028,135 @@ rkf_wf_get_lut.sftemp:
 	.byte	30
 	.byte	18
 	.word	.Linfo_string24
-	.word	568
+	.word	584
 	.byte	2
 	.byte	31
 	.byte	0
 	.byte	18
 	.word	.Linfo_string25
-	.word	875
+	.word	891
 	.byte	2
 	.byte	32
 	.byte	4
 	.byte	18
 	.word	.Linfo_string28
-	.word	875
+	.word	891
 	.byte	2
 	.byte	33
 	.byte	20
 	.byte	18
 	.word	.Linfo_string29
-	.word	875
+	.word	891
 	.byte	2
 	.byte	34
 	.byte	36
 	.byte	18
 	.word	.Linfo_string30
-	.word	875
+	.word	891
 	.byte	2
 	.byte	35
 	.byte	52
 	.byte	18
 	.word	.Linfo_string31
-	.word	875
+	.word	891
 	.byte	2
 	.byte	36
 	.byte	68
 	.byte	18
 	.word	.Linfo_string32
-	.word	901
+	.word	917
 	.byte	2
 	.byte	37
 	.byte	84
 	.byte	18
 	.word	.Linfo_string33
-	.word	901
+	.word	917
 	.byte	2
 	.byte	38
 	.byte	148
 	.byte	18
 	.word	.Linfo_string34
-	.word	901
+	.word	917
 	.byte	2
 	.byte	39
 	.byte	212
 	.byte	19
 	.word	.Linfo_string35
-	.word	901
+	.word	917
 	.byte	2
 	.byte	40
 	.hword	276
 	.byte	19
 	.word	.Linfo_string36
-	.word	901
+	.word	917
 	.byte	2
 	.byte	41
 	.hword	340
 	.byte	19
 	.word	.Linfo_string37
-	.word	901
+	.word	917
 	.byte	2
 	.byte	42
 	.hword	404
 	.byte	19
 	.word	.Linfo_string38
-	.word	901
+	.word	917
 	.byte	2
 	.byte	43
 	.hword	468
 	.byte	19
 	.word	.Linfo_string39
-	.word	901
+	.word	917
 	.byte	2
 	.byte	44
 	.hword	532
 	.byte	19
 	.word	.Linfo_string40
-	.word	913
+	.word	929
 	.byte	2
 	.byte	45
 	.hword	596
 	.byte	19
 	.word	.Linfo_string41
-	.word	913
+	.word	929
 	.byte	2
 	.byte	46
 	.hword	852
 	.byte	19
 	.word	.Linfo_string42
-	.word	913
+	.word	929
 	.byte	2
 	.byte	47
 	.hword	1108
 	.byte	19
 	.word	.Linfo_string43
-	.word	913
+	.word	929
 	.byte	2
 	.byte	48
 	.hword	1364
 	.byte	19
 	.word	.Linfo_string44
-	.word	913
+	.word	929
 	.byte	2
 	.byte	49
 	.hword	1620
 	.byte	19
 	.word	.Linfo_string45
-	.word	913
+	.word	929
 	.byte	2
 	.byte	50
 	.hword	1876
 	.byte	19
 	.word	.Linfo_string46
-	.word	913
+	.word	929
 	.byte	2
 	.byte	51
 	.hword	2132
 	.byte	0
 	.byte	20
-	.word	887
+	.word	903
 	.byte	21
-	.word	894
+	.word	910
 	.byte	16
 	.byte	0
 	.byte	14
@@ -6137,33 +6168,33 @@ rkf_wf_get_lut.sftemp:
 	.byte	8
 	.byte	7
 	.byte	20
-	.word	887
+	.word	903
 	.byte	21
-	.word	894
+	.word	910
 	.byte	64
 	.byte	0
 	.byte	20
-	.word	561
+	.word	577
 	.byte	21
-	.word	894
+	.word	910
 	.byte	64
 	.byte	0
 	.byte	15
 	.word	.Linfo_string48
-	.word	946
+	.word	962
 	.byte	2
 	.byte	56
 	.byte	9
 	.byte	3
 	.xword	crc32_table
 	.byte	20
-	.word	561
+	.word	577
 	.byte	23
-	.word	894
+	.word	910
 	.hword	256
 	.byte	0
 	.byte	12
-	.word	561
+	.word	577
 	.word	.Linfo_string56
 	.byte	4
 	.byte	2
@@ -6191,7 +6222,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	6
 	.byte	0
 	.byte	24
-	.word	561
+	.word	577
 	.byte	4
 	.byte	3
 	.byte	10
@@ -6203,7 +6234,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	1
 	.byte	0
 	.byte	25
-	.word	561
+	.word	577
 	.word	.Linfo_string64
 	.byte	4
 	.byte	4
@@ -6225,63 +6256,63 @@ rkf_wf_get_lut.sftemp:
 	.byte	3
 	.byte	0
 	.byte	16
-	.word	1084
+	.word	1100
 	.byte	26
-	.word	887
+	.word	903
 	.byte	16
-	.word	1094
+	.word	1110
 	.byte	27
-	.word	1105
+	.word	1121
 	.word	.Linfo_string66
 	.byte	6
 	.byte	21
 	.byte	27
-	.word	561
+	.word	577
 	.word	.Linfo_string65
 	.byte	5
 	.byte	27
 	.byte	16
-	.word	887
+	.word	903
 	.byte	16
-	.word	1126
+	.word	1142
 	.byte	14
 	.word	.Linfo_string67
 	.byte	8
 	.byte	1
 	.byte	16
-	.word	1138
+	.word	1154
 	.byte	26
-	.word	1126
+	.word	1142
 	.byte	27
-	.word	561
+	.word	577
 	.word	.Linfo_string68
 	.byte	7
 	.byte	148
 	.byte	16
-	.word	561
+	.word	577
 	.byte	28
 	.byte	29
 	.word	.Linfo_string69
 	.byte	2
 	.byte	91
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	30
 	.word	.Linfo_string70
 	.byte	2
 	.byte	91
-	.word	1184
+	.word	1200
 	.byte	0
 	.byte	16
-	.word	1189
+	.word	1205
 	.byte	27
-	.word	1200
+	.word	1216
 	.word	.Linfo_string72
 	.byte	6
 	.byte	17
 	.byte	27
-	.word	1126
+	.word	1142
 	.word	.Linfo_string71
 	.byte	5
 	.byte	21
@@ -6290,51 +6321,51 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.byte	101
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	30
 	.word	.Linfo_string74
 	.byte	2
 	.byte	101
-	.word	596
+	.word	612
 	.byte	31
 	.word	.Linfo_string75
 	.byte	2
 	.byte	103
-	.word	1094
+	.word	1110
 	.byte	31
 	.word	.Linfo_string76
 	.byte	2
 	.byte	104
-	.word	1094
+	.word	1110
 	.byte	0
 	.byte	29
 	.word	.Linfo_string77
 	.byte	2
 	.byte	78
 
-	.word	561
+	.word	577
 	.byte	1
 	.byte	30
 	.word	.Linfo_string78
 	.byte	2
 	.byte	78
-	.word	1121
+	.word	1137
 	.byte	30
 	.word	.Linfo_string79
 	.byte	2
 	.byte	78
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string80
 	.byte	2
 	.byte	81
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string81
 	.byte	2
 	.byte	80
-	.word	561
+	.word	577
 	.byte	0
 	.byte	32
 	.word	.Linfo_string82
@@ -6346,32 +6377,32 @@ rkf_wf_get_lut.sftemp:
 	.word	.Linfo_string83
 	.byte	2
 	.byte	58
-	.word	561
+	.word	577
 	.byte	30
 	.word	.Linfo_string84
 	.byte	2
 	.byte	58
-	.word	1154
+	.word	1170
 	.byte	31
 	.word	.Linfo_string81
 	.byte	2
 	.byte	60
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string85
 	.byte	2
 	.byte	61
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string80
 	.byte	2
 	.byte	62
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string86
 	.byte	2
 	.byte	60
-	.word	561
+	.word	577
 	.byte	0
 	.byte	33
 	.xword	.Lfunc_begin0
@@ -6383,71 +6414,71 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.byte	127
 
-	.word	568
+	.word	584
 
 	.byte	34
 	.word	.Ldebug_loc0
 	.word	.Linfo_string144
 	.byte	2
 	.byte	127
-	.word	1159
+	.word	1175
 	.byte	35
 	.word	.Ldebug_loc1
 	.word	.Linfo_string145
 	.byte	2
 	.byte	130
-	.word	596
+	.word	612
 	.byte	35
 	.word	.Ldebug_loc2
 	.word	.Linfo_string146
 	.byte	2
 	.byte	129
-	.word	568
+	.word	584
 	.byte	36
-	.word	1160
+	.word	1176
 	.word	.Ldebug_ranges0
 	.byte	2
 	.byte	135
 	.byte	8
 	.byte	7
 	.word	.Ldebug_loc3
-	.word	1172
+	.word	1188
 	.byte	0
 	.byte	36
-	.word	1211
+	.word	1227
 	.word	.Ldebug_ranges1
 	.byte	2
 	.byte	141
 	.byte	8
 	.byte	7
 	.word	.Ldebug_loc4
-	.word	1223
+	.word	1239
 	.byte	8
 	.word	.Ldebug_loc5
-	.word	1234
+	.word	1250
 	.byte	8
 	.word	.Ldebug_loc6
-	.word	1245
+	.word	1261
 	.byte	36
-	.word	1257
+	.word	1273
 	.word	.Ldebug_ranges2
 	.byte	2
 	.byte	110
 	.byte	13
 	.byte	7
 	.word	.Ldebug_loc10
-	.word	1269
+	.word	1285
 	.byte	7
 	.word	.Ldebug_loc9
-	.word	1280
+	.word	1296
 	.byte	8
 	.word	.Ldebug_loc7
-	.word	1291
+	.word	1307
 	.byte	8
 	.word	.Ldebug_loc8
-	.word	1302
+	.word	1318
 	.byte	37
-	.word	1314
+	.word	1330
 	.xword	.Ltmp16
 	.word	.Ltmp37-.Ltmp16
 	.byte	2
@@ -6455,20 +6486,20 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.byte	38
 	.ascii	"\267\233\204&"
-	.word	1322
+	.word	1338
 	.byte	39
 	.byte	1
 	.byte	92
-	.word	1344
+	.word	1360
 	.byte	8
 	.word	.Ldebug_loc11
-	.word	1355
+	.word	1371
 	.byte	8
 	.word	.Ldebug_loc12
-	.word	1366
+	.word	1382
 	.byte	8
 	.word	.Ldebug_loc13
-	.word	1377
+	.word	1393
 	.byte	0
 	.byte	0
 	.byte	0
@@ -6483,63 +6514,63 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.byte	160
 
-	.word	1079
+	.word	1095
 
 	.byte	41
 	.word	.Linfo_string87
 	.byte	2
 	.hword	532
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	42
 	.word	.Linfo_string88
 	.byte	2
 	.hword	532
-	.word	1184
+	.word	1200
 	.byte	42
 	.word	.Linfo_string89
 	.byte	2
 	.hword	532
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string90
 	.byte	2
 	.hword	535
-	.word	1184
+	.word	1200
 	.byte	43
 	.word	.Linfo_string91
 	.byte	2
 	.hword	534
-	.word	568
+	.word	584
 	.byte	0
 	.byte	41
 	.word	.Linfo_string92
 	.byte	2
 	.hword	566
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	42
 	.word	.Linfo_string88
 	.byte	2
 	.hword	566
-	.word	1184
+	.word	1200
 	.byte	42
 	.word	.Linfo_string89
 	.byte	2
 	.hword	566
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string91
 	.byte	2
 	.hword	568
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string90
 	.byte	2
 	.hword	569
-	.word	1184
+	.word	1200
 	.byte	0
 	.byte	44
 	.word	.Linfo_string93
@@ -6549,10 +6580,10 @@ rkf_wf_get_lut.sftemp:
 
 
 	.byte	45
-	.word	1797
+	.word	1813
 	.byte	0
 	.byte	16
-	.word	1802
+	.word	1818
 	.byte	46
 	.byte	47
 	.xword	.Lfunc_begin3
@@ -6564,159 +6595,159 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.hword	465
 
-	.word	568
+	.word	584
 	.byte	4
-	.word	.Ldebug_loc28
+	.word	.Ldebug_loc29
 	.word	.Linfo_string104
 	.byte	2
 	.hword	465
-	.word	4558
+	.word	4574
 	.byte	4
-	.word	.Ldebug_loc29
+	.word	.Ldebug_loc30
 	.word	.Linfo_string137
 	.byte	2
 	.hword	465
-	.word	458
+	.word	474
 	.byte	4
-	.word	.Ldebug_loc30
+	.word	.Ldebug_loc31
 	.word	.Linfo_string147
 	.byte	2
 	.hword	465
-	.word	568
+	.word	584
 	.byte	5
-	.word	.Ldebug_loc31
+	.word	.Ldebug_loc32
 	.word	.Linfo_string89
 	.byte	2
 	.hword	467
-	.word	568
+	.word	584
 	.byte	6
-	.word	4472
+	.word	4488
 	.word	.Ldebug_ranges5
 	.byte	2
 	.hword	472
 	.byte	15
 	.byte	7
-	.word	.Ldebug_loc41
-	.word	4485
+	.word	.Ldebug_loc42
+	.word	4501
 	.byte	7
-	.word	.Ldebug_loc40
-	.word	4497
-	.byte	8
-	.word	.Ldebug_loc36
-	.word	4509
+	.word	.Ldebug_loc41
+	.word	4513
 	.byte	8
 	.word	.Ldebug_loc37
-	.word	4521
+	.word	4525
 	.byte	8
 	.word	.Ldebug_loc38
-	.word	4533
+	.word	4537
 	.byte	8
 	.word	.Ldebug_loc39
-	.word	4545
+	.word	4549
+	.byte	8
+	.word	.Ldebug_loc40
+	.word	4561
 	.byte	6
-	.word	4371
+	.word	4387
 	.word	.Ldebug_ranges6
 	.byte	2
 	.hword	329
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc35
-	.word	4383
+	.word	.Ldebug_loc36
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc35
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc34
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc33
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc44
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc45
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc46
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc48
-	.word	4449
+	.word	.Ldebug_loc47
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc49
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc50
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges7
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc47
-	.word	4632
+	.word	.Ldebug_loc48
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc32
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc42
-	.word	4654
+	.word	.Ldebug_loc33
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc43
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc44
+	.word	4681
 	.byte	48
 	.xword	.Ltmp207
 	.word	.Ltmp209-.Ltmp207
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	49
 	.byte	0
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	6
-	.word	4855
+	.word	4871
 	.word	.Ldebug_ranges8
 	.byte	2
 	.hword	334
 	.byte	15
 	.byte	7
-	.word	.Ldebug_loc53
-	.word	4867
+	.word	.Ldebug_loc54
+	.word	4883
 	.byte	7
-	.word	.Ldebug_loc56
-	.word	4878
+	.word	.Ldebug_loc57
+	.word	4894
 	.byte	8
-	.word	.Ldebug_loc52
-	.word	4889
+	.word	.Ldebug_loc53
+	.word	4905
 	.byte	36
-	.word	4817
+	.word	4833
 	.word	.Ldebug_ranges9
 	.byte	2
 	.byte	245
 	.byte	8
 	.byte	7
-	.word	.Ldebug_loc55
-	.word	4830
+	.word	.Ldebug_loc56
+	.word	4846
 	.byte	7
-	.word	.Ldebug_loc51
-	.word	4842
+	.word	.Ldebug_loc52
+	.word	4858
 	.byte	6
-	.word	4725
+	.word	4741
 	.word	.Ldebug_ranges10
 	.byte	4
 	.hword	689
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc54
-	.word	4738
+	.word	.Ldebug_loc55
+	.word	4754
 	.byte	7
-	.word	.Ldebug_loc50
-	.word	4750
+	.word	.Ldebug_loc51
+	.word	4766
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	4901
+	.word	4917
 	.xword	.Ltmp220
 	.word	.Ltmp221-.Ltmp220
 	.byte	2
@@ -6725,690 +6756,690 @@ rkf_wf_get_lut.sftemp:
 	.byte	51
 	.byte	1
 	.byte	104
-	.word	4913
+	.word	4929
 	.byte	0
 	.byte	6
-	.word	4925
+	.word	4941
 	.word	.Ldebug_ranges11
 	.byte	2
 	.hword	341
 	.byte	17
 	.byte	8
-	.word	.Ldebug_loc59
-	.word	4948
-	.byte	8
 	.word	.Ldebug_loc60
-	.word	4960
+	.word	4964
 	.byte	8
 	.word	.Ldebug_loc61
-	.word	4972
+	.word	4976
 	.byte	8
 	.word	.Ldebug_loc62
-	.word	4984
+	.word	4988
 	.byte	8
 	.word	.Ldebug_loc63
-	.word	4996
+	.word	5000
 	.byte	8
 	.word	.Ldebug_loc64
-	.word	5008
+	.word	5012
 	.byte	8
 	.word	.Ldebug_loc65
-	.word	5020
+	.word	5024
 	.byte	8
 	.word	.Ldebug_loc66
-	.word	5032
+	.word	5036
 	.byte	8
 	.word	.Ldebug_loc67
-	.word	5044
+	.word	5048
+	.byte	8
+	.word	.Ldebug_loc68
+	.word	5060
 	.byte	6
-	.word	4817
+	.word	4833
 	.word	.Ldebug_ranges12
 	.byte	2
 	.hword	265
 	.byte	10
 	.byte	7
-	.word	.Ldebug_loc58
-	.word	4830
+	.word	.Ldebug_loc59
+	.word	4846
 	.byte	7
-	.word	.Ldebug_loc69
-	.word	4842
+	.word	.Ldebug_loc70
+	.word	4858
 	.byte	6
-	.word	4725
+	.word	4741
 	.word	.Ldebug_ranges13
 	.byte	4
 	.hword	689
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc57
-	.word	4738
+	.word	.Ldebug_loc58
+	.word	4754
 	.byte	7
-	.word	.Ldebug_loc68
-	.word	4750
+	.word	.Ldebug_loc69
+	.word	4766
 	.byte	0
 	.byte	0
 	.byte	52
 	.word	.Ldebug_ranges14
 	.byte	8
-	.word	.Ldebug_loc70
-	.word	5057
-	.byte	8
 	.word	.Ldebug_loc71
-	.word	5069
+	.word	5073
+	.byte	8
+	.word	.Ldebug_loc72
+	.word	5085
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5083
+	.word	5099
 	.xword	.Ltmp272
 	.word	.Ltmp285-.Ltmp272
 	.byte	2
 	.hword	508
 	.byte	15
 	.byte	7
-	.word	.Ldebug_loc80
-	.word	5096
+	.word	.Ldebug_loc81
+	.word	5112
 	.byte	7
-	.word	.Ldebug_loc79
-	.word	5108
-	.byte	8
-	.word	.Ldebug_loc76
-	.word	5120
+	.word	.Ldebug_loc80
+	.word	5124
 	.byte	8
 	.word	.Ldebug_loc77
-	.word	5132
+	.word	5136
 	.byte	8
 	.word	.Ldebug_loc78
-	.word	5144
+	.word	5148
+	.byte	8
+	.word	.Ldebug_loc79
+	.word	5160
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp272
 	.word	.Ltmp285-.Ltmp272
 	.byte	2
 	.hword	377
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc75
-	.word	4383
+	.word	.Ldebug_loc76
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc75
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc74
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc73
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc83
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc84
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc85
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc87
-	.word	4449
+	.word	.Ldebug_loc86
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc88
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc89
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges15
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc86
-	.word	4632
+	.word	.Ldebug_loc87
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc72
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc81
-	.word	4654
+	.word	.Ldebug_loc73
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc82
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc83
+	.word	4681
 	.byte	48
 	.xword	.Ltmp274
 	.word	.Ltmp276-.Ltmp274
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5157
+	.word	5173
 	.xword	.Ltmp285
 	.word	.Ltmp295-.Ltmp285
 	.byte	2
 	.hword	502
 	.byte	15
 	.byte	7
+	.word	.Ldebug_loc99
+	.word	5186
+	.byte	7
 	.word	.Ldebug_loc98
-	.word	5170
+	.word	5198
 	.byte	7
 	.word	.Ldebug_loc97
-	.word	5182
-	.byte	7
-	.word	.Ldebug_loc96
-	.word	5194
-	.byte	8
-	.word	.Ldebug_loc93
-	.word	5206
+	.word	5210
 	.byte	8
 	.word	.Ldebug_loc94
-	.word	5218
+	.word	5222
 	.byte	8
 	.word	.Ldebug_loc95
-	.word	5230
+	.word	5234
+	.byte	8
+	.word	.Ldebug_loc96
+	.word	5246
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp285
 	.word	.Ltmp295-.Ltmp285
 	.byte	2
 	.hword	358
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc92
-	.word	4383
+	.word	.Ldebug_loc93
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc92
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc91
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc90
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc101
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc102
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc103
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc105
-	.word	4449
+	.word	.Ldebug_loc104
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc106
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc107
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges16
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc104
-	.word	4632
+	.word	.Ldebug_loc105
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc89
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc99
-	.word	4654
+	.word	.Ldebug_loc90
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc100
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc101
+	.word	4681
 	.byte	48
 	.xword	.Ltmp287
 	.word	.Ltmp289-.Ltmp287
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5157
+	.word	5173
 	.xword	.Ltmp295
 	.word	.Ltmp305-.Ltmp295
 	.byte	2
 	.hword	478
 	.byte	15
 	.byte	7
+	.word	.Ldebug_loc117
+	.word	5186
+	.byte	7
 	.word	.Ldebug_loc116
-	.word	5170
+	.word	5198
 	.byte	7
 	.word	.Ldebug_loc115
-	.word	5182
-	.byte	7
-	.word	.Ldebug_loc114
-	.word	5194
-	.byte	8
-	.word	.Ldebug_loc111
-	.word	5206
+	.word	5210
 	.byte	8
 	.word	.Ldebug_loc112
-	.word	5218
+	.word	5222
 	.byte	8
 	.word	.Ldebug_loc113
-	.word	5230
+	.word	5234
+	.byte	8
+	.word	.Ldebug_loc114
+	.word	5246
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp295
 	.word	.Ltmp305-.Ltmp295
 	.byte	2
 	.hword	358
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc110
-	.word	4383
+	.word	.Ldebug_loc111
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc110
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc109
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc108
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc119
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc120
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc121
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc123
-	.word	4449
+	.word	.Ldebug_loc122
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc124
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc125
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges17
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc122
-	.word	4632
+	.word	.Ldebug_loc123
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc107
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc117
-	.word	4654
+	.word	.Ldebug_loc108
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc118
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc119
+	.word	4681
 	.byte	48
 	.xword	.Ltmp297
 	.word	.Ltmp299-.Ltmp297
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5157
+	.word	5173
 	.xword	.Ltmp307
 	.word	.Ltmp320-.Ltmp307
 	.byte	2
 	.hword	484
 	.byte	15
 	.byte	7
+	.word	.Ldebug_loc135
+	.word	5186
+	.byte	7
 	.word	.Ldebug_loc134
-	.word	5170
+	.word	5198
 	.byte	7
 	.word	.Ldebug_loc133
-	.word	5182
-	.byte	7
-	.word	.Ldebug_loc132
-	.word	5194
-	.byte	8
-	.word	.Ldebug_loc129
-	.word	5206
+	.word	5210
 	.byte	8
 	.word	.Ldebug_loc130
-	.word	5218
+	.word	5222
 	.byte	8
 	.word	.Ldebug_loc131
-	.word	5230
+	.word	5234
+	.byte	8
+	.word	.Ldebug_loc132
+	.word	5246
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp307
 	.word	.Ltmp320-.Ltmp307
 	.byte	2
 	.hword	358
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc128
-	.word	4383
+	.word	.Ldebug_loc129
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc128
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc127
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc126
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc137
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc138
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc139
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc141
-	.word	4449
+	.word	.Ldebug_loc140
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc142
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc143
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges18
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc140
-	.word	4632
+	.word	.Ldebug_loc141
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc125
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc135
-	.word	4654
+	.word	.Ldebug_loc126
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc136
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc137
+	.word	4681
 	.byte	48
 	.xword	.Ltmp309
 	.word	.Ltmp311-.Ltmp309
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5157
+	.word	5173
 	.xword	.Ltmp320
 	.word	.Ltmp333-.Ltmp320
 	.byte	2
 	.hword	490
 	.byte	15
 	.byte	7
+	.word	.Ldebug_loc153
+	.word	5186
+	.byte	7
 	.word	.Ldebug_loc152
-	.word	5170
+	.word	5198
 	.byte	7
 	.word	.Ldebug_loc151
-	.word	5182
-	.byte	7
-	.word	.Ldebug_loc150
-	.word	5194
-	.byte	8
-	.word	.Ldebug_loc147
-	.word	5206
+	.word	5210
 	.byte	8
 	.word	.Ldebug_loc148
-	.word	5218
+	.word	5222
 	.byte	8
 	.word	.Ldebug_loc149
-	.word	5230
+	.word	5234
+	.byte	8
+	.word	.Ldebug_loc150
+	.word	5246
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp320
 	.word	.Ltmp333-.Ltmp320
 	.byte	2
 	.hword	358
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc146
-	.word	4383
+	.word	.Ldebug_loc147
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc146
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc145
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc144
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc155
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc156
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc157
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc159
-	.word	4449
+	.word	.Ldebug_loc158
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc160
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc161
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges19
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc158
-	.word	4632
+	.word	.Ldebug_loc159
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc143
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc153
-	.word	4654
+	.word	.Ldebug_loc144
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc154
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc155
+	.word	4681
 	.byte	48
 	.xword	.Ltmp322
 	.word	.Ltmp324-.Ltmp322
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5157
+	.word	5173
 	.xword	.Ltmp333
 	.word	.Ltmp346-.Ltmp333
 	.byte	2
 	.hword	496
 	.byte	15
 	.byte	7
+	.word	.Ldebug_loc171
+	.word	5186
+	.byte	7
 	.word	.Ldebug_loc170
-	.word	5170
+	.word	5198
 	.byte	7
 	.word	.Ldebug_loc169
-	.word	5182
-	.byte	7
-	.word	.Ldebug_loc168
-	.word	5194
-	.byte	8
-	.word	.Ldebug_loc165
-	.word	5206
+	.word	5210
 	.byte	8
 	.word	.Ldebug_loc166
-	.word	5218
+	.word	5222
 	.byte	8
 	.word	.Ldebug_loc167
-	.word	5230
+	.word	5234
+	.byte	8
+	.word	.Ldebug_loc168
+	.word	5246
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp333
 	.word	.Ltmp346-.Ltmp333
 	.byte	2
 	.hword	358
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc164
-	.word	4383
+	.word	.Ldebug_loc165
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc164
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc163
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc162
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc173
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc174
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc175
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc177
-	.word	4449
+	.word	.Ldebug_loc176
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc178
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc179
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges20
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc176
-	.word	4632
+	.word	.Ldebug_loc177
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc161
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc171
-	.word	4654
+	.word	.Ldebug_loc162
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc172
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc173
+	.word	4681
 	.byte	48
 	.xword	.Ltmp335
 	.word	.Ltmp337-.Ltmp335
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	50
-	.word	5243
+	.word	5259
 	.xword	.Ltmp346
 	.word	.Ltmp358-.Ltmp346
 	.byte	2
 	.hword	520
 	.byte	15
 	.byte	7
-	.word	.Ldebug_loc187
-	.word	5256
+	.word	.Ldebug_loc188
+	.word	5272
 	.byte	7
-	.word	.Ldebug_loc186
-	.word	5268
-	.byte	8
-	.word	.Ldebug_loc183
-	.word	5280
+	.word	.Ldebug_loc187
+	.word	5284
 	.byte	8
 	.word	.Ldebug_loc184
-	.word	5292
+	.word	5296
 	.byte	8
 	.word	.Ldebug_loc185
-	.word	5304
+	.word	5308
+	.byte	8
+	.word	.Ldebug_loc186
+	.word	5320
 	.byte	50
-	.word	4371
+	.word	4387
 	.xword	.Ltmp346
 	.word	.Ltmp358-.Ltmp346
 	.byte	2
 	.hword	435
 	.byte	9
 	.byte	7
-	.word	.Ldebug_loc182
-	.word	4383
+	.word	.Ldebug_loc183
+	.word	4399
 	.byte	7
+	.word	.Ldebug_loc182
+	.word	4410
+	.byte	8
 	.word	.Ldebug_loc181
-	.word	4394
-	.byte	8
-	.word	.Ldebug_loc180
-	.word	4405
-	.byte	8
-	.word	.Ldebug_loc190
-	.word	4416
+	.word	4421
 	.byte	8
 	.word	.Ldebug_loc191
-	.word	4427
+	.word	4432
 	.byte	8
 	.word	.Ldebug_loc192
-	.word	4438
+	.word	4443
 	.byte	8
-	.word	.Ldebug_loc194
-	.word	4449
+	.word	.Ldebug_loc193
+	.word	4454
 	.byte	8
 	.word	.Ldebug_loc195
-	.word	4460
+	.word	4465
+	.byte	8
+	.word	.Ldebug_loc196
+	.word	4476
 	.byte	36
-	.word	4620
+	.word	4636
 	.word	.Ldebug_ranges21
 	.byte	2
 	.byte	228
 	.byte	7
 	.byte	7
-	.word	.Ldebug_loc193
-	.word	4632
+	.word	.Ldebug_loc194
+	.word	4648
 	.byte	7
-	.word	.Ldebug_loc179
-	.word	4643
-	.byte	8
-	.word	.Ldebug_loc188
-	.word	4654
+	.word	.Ldebug_loc180
+	.word	4659
 	.byte	8
 	.word	.Ldebug_loc189
-	.word	4665
+	.word	4670
+	.byte	8
+	.word	.Ldebug_loc190
+	.word	4681
 	.byte	48
 	.xword	.Ltmp348
 	.word	.Ltmp350-.Ltmp348
 	.byte	49
 	.byte	50
-	.word	4701
+	.word	4717
 	.byte	39
 	.byte	1
 	.byte	90
-	.word	4712
+	.word	4728
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	0
 	.byte	10
-	.word	1784
+	.word	1800
 	.xword	.Ltmp270
 	.byte	11
 	.byte	1
@@ -7418,7 +7449,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	0
 	.byte	0
 	.byte	10
-	.word	1784
+	.word	1800
 	.xword	.Ltmp372
 	.byte	11
 	.byte	1
@@ -7438,64 +7469,64 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.hword	447
 
-	.word	568
+	.word	584
 	.byte	53
 	.byte	1
 	.byte	80
 	.word	.Linfo_string105
 	.byte	2
 	.hword	447
-	.word	4558
+	.word	4574
 	.byte	53
 	.byte	1
 	.byte	81
 	.word	.Linfo_string88
 	.byte	2
 	.hword	447
-	.word	1184
+	.word	1200
 	.byte	53
 	.byte	1
 	.byte	82
 	.word	.Linfo_string89
 	.byte	2
 	.hword	447
-	.word	568
+	.word	584
 	.byte	5
-	.word	.Ldebug_loc196
+	.word	.Ldebug_loc197
 	.word	.Linfo_string81
 	.byte	2
 	.hword	449
-	.word	568
-	.byte	5
-	.word	.Ldebug_loc197
-	.word	.Linfo_string150
-	.byte	2
-	.hword	450
-	.word	1094
+	.word	584
 	.byte	5
 	.word	.Ldebug_loc198
 	.word	.Linfo_string151
 	.byte	2
 	.hword	450
-	.word	1094
-	.byte	48
-	.xword	.Ltmp378
-	.word	.Ltmp418-.Ltmp378
+	.word	1110
 	.byte	5
 	.word	.Ldebug_loc199
 	.word	.Linfo_string152
 	.byte	2
-	.hword	453
-	.word	1154
+	.hword	450
+	.word	1110
 	.byte	48
-	.xword	.Ltmp384
-	.word	.Ltmp416-.Ltmp384
+	.xword	.Ltmp378
+	.word	.Ltmp418-.Ltmp378
 	.byte	5
 	.word	.Ldebug_loc200
 	.word	.Linfo_string153
 	.byte	2
+	.hword	453
+	.word	1170
+	.byte	48
+	.xword	.Ltmp384
+	.word	.Ltmp416-.Ltmp384
+	.byte	5
+	.word	.Ldebug_loc201
+	.word	.Linfo_string154
+	.byte	2
 	.hword	456
-	.word	1189
+	.word	1205
 	.byte	0
 	.byte	0
 	.byte	0
@@ -7504,7 +7535,7 @@ rkf_wf_get_lut.sftemp:
 	.byte	1
 	.byte	49
 
-	.word	568
+	.word	584
 
 
 	.byte	29
@@ -7512,89 +7543,89 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.byte	186
 
-	.word	1133
+	.word	1149
 	.byte	1
 	.byte	30
 	.word	.Linfo_string96
 	.byte	2
 	.byte	186
-	.word	568
+	.word	584
 	.byte	30
 	.word	.Linfo_string97
 	.byte	2
 	.byte	186
-	.word	568
+	.word	584
 	.byte	31
 	.word	.Linfo_string74
 	.byte	2
 	.byte	188
-	.word	596
+	.word	612
 	.byte	31
 	.word	.Linfo_string98
 	.byte	2
 	.byte	193
-	.word	1159
+	.word	1175
 	.byte	31
 	.word	.Linfo_string99
 	.byte	2
 	.byte	192
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string100
 	.byte	2
 	.byte	191
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string101
 	.byte	2
 	.byte	189
-	.word	1154
+	.word	1170
 	.byte	31
 	.word	.Linfo_string102
 	.byte	2
 	.byte	190
-	.word	1116
+	.word	1132
 	.byte	0
 	.byte	41
 	.word	.Linfo_string103
 	.byte	2
 	.hword	321
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	42
 	.word	.Linfo_string104
 	.byte	2
 	.hword	321
-	.word	4558
+	.word	4574
 	.byte	42
 	.word	.Linfo_string96
 	.byte	2
 	.hword	321
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string24
 	.byte	2
 	.hword	326
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string89
 	.byte	2
 	.hword	325
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string98
 	.byte	2
 	.hword	324
-	.word	1133
+	.word	1149
 	.byte	43
 	.word	.Linfo_string107
 	.byte	2
 	.hword	323
-	.word	4563
+	.word	4579
 	.byte	0
 	.byte	16
-	.word	4563
+	.word	4579
 	.byte	55
 	.word	.Linfo_string106
 	.byte	32
@@ -7602,27 +7633,27 @@ rkf_wf_get_lut.sftemp:
 	.byte	34
 	.byte	18
 	.word	.Linfo_string89
-	.word	561
+	.word	577
 	.byte	1
 	.byte	35
 	.byte	0
 	.byte	18
 	.word	.Linfo_string105
-	.word	1154
+	.word	1170
 	.byte	1
 	.byte	36
 	.byte	8
 	.byte	18
 	.word	.Linfo_string88
-	.word	4608
+	.word	4624
 	.byte	1
 	.byte	37
 	.byte	16
 	.byte	0
 	.byte	20
-	.word	1184
+	.word	1200
 	.byte	21
-	.word	894
+	.word	910
 	.byte	2
 	.byte	0
 	.byte	29
@@ -7630,51 +7661,51 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.byte	168
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	30
 	.word	.Linfo_string101
 	.byte	2
 	.byte	168
-	.word	1116
+	.word	1132
 	.byte	30
 	.word	.Linfo_string96
 	.byte	2
 	.byte	168
-	.word	568
+	.word	584
 	.byte	31
 	.word	.Linfo_string81
 	.byte	2
 	.byte	171
-	.word	568
+	.word	584
 	.byte	31
 	.word	.Linfo_string109
 	.byte	2
 	.byte	170
-	.word	568
+	.word	584
 	.byte	56
 	.byte	31
 	.word	.Linfo_string110
 	.byte	2
 	.byte	173
-	.word	568
+	.word	584
 	.byte	31
 	.word	.Linfo_string111
 	.byte	2
 	.byte	173
-	.word	568
+	.word	584
 	.byte	0
 	.byte	56
 	.byte	31
 	.word	.Linfo_string112
 	.byte	2
 	.byte	174
-	.word	568
+	.word	584
 	.byte	31
 	.word	.Linfo_string113
 	.byte	2
 	.byte	174
-	.word	568
+	.word	584
 	.byte	0
 	.byte	0
 	.byte	41
@@ -7682,38 +7713,38 @@ rkf_wf_get_lut.sftemp:
 	.byte	4
 	.hword	539
 
-	.word	1159
+	.word	1175
 	.byte	1
 	.byte	42
 	.word	.Linfo_string115
 	.byte	4
 	.hword	539
-	.word	4777
+	.word	4793
 	.byte	42
 	.word	.Linfo_string120
 	.byte	4
 	.hword	539
-	.word	1143
+	.word	1159
 	.byte	56
 	.byte	43
 	.word	.Linfo_string121
 	.byte	4
 	.hword	543
-	.word	561
+	.word	577
 	.byte	0
 	.byte	0
 	.byte	27
-	.word	4788
+	.word	4804
 	.word	.Linfo_string119
 	.byte	7
 	.byte	55
 	.byte	27
-	.word	4799
+	.word	4815
 	.word	.Linfo_string118
 	.byte	8
 	.byte	72
 	.byte	27
-	.word	4810
+	.word	4826
 	.word	.Linfo_string117
 	.byte	8
 	.byte	16
@@ -7726,123 +7757,123 @@ rkf_wf_get_lut.sftemp:
 	.byte	4
 	.hword	687
 
-	.word	1159
+	.word	1175
 	.byte	1
 	.byte	42
 	.word	.Linfo_string115
 	.byte	4
 	.hword	687
-	.word	4777
+	.word	4793
 	.byte	42
 	.word	.Linfo_string120
 	.byte	4
 	.hword	687
-	.word	1143
+	.word	1159
 	.byte	0
 	.byte	29
 	.word	.Linfo_string123
 	.byte	2
 	.byte	240
 
-	.word	1154
+	.word	1170
 	.byte	1
 	.byte	30
 	.word	.Linfo_string98
 	.byte	2
 	.byte	240
-	.word	1133
+	.word	1149
 	.byte	30
 	.word	.Linfo_string24
 	.byte	2
 	.byte	241
-	.word	561
+	.word	577
 	.byte	31
 	.word	.Linfo_string124
 	.byte	2
 	.byte	243
-	.word	1121
+	.word	1137
 	.byte	0
 	.byte	29
 	.word	.Linfo_string125
 	.byte	2
 	.byte	235
 
-	.word	1126
+	.word	1142
 	.byte	1
 	.byte	30
 	.word	.Linfo_string98
 	.byte	2
 	.byte	235
-	.word	1133
+	.word	1149
 	.byte	0
 	.byte	29
 	.word	.Linfo_string126
 	.byte	2
 	.byte	254
 
-	.word	1154
+	.word	1170
 	.byte	1
 	.byte	30
 	.word	.Linfo_string107
 	.byte	2
 	.byte	254
-	.word	4558
+	.word	4574
 	.byte	43
 	.word	.Linfo_string127
 	.byte	2
 	.hword	260
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string128
 	.byte	2
 	.hword	259
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string129
 	.byte	2
 	.hword	258
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string130
 	.byte	2
 	.hword	257
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string131
 	.byte	2
 	.hword	257
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string86
 	.byte	2
 	.hword	257
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string81
 	.byte	2
 	.hword	257
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string132
 	.byte	2
 	.hword	256
-	.word	1154
+	.word	1170
 	.byte	43
 	.word	.Linfo_string133
 	.byte	2
 	.hword	256
-	.word	1154
+	.word	1170
 	.byte	56
 	.byte	43
 	.word	.Linfo_string96
 	.byte	2
 	.hword	272
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string134
 	.byte	2
 	.hword	273
-	.word	568
+	.word	584
 	.byte	0
 	.byte	0
 	.byte	41
@@ -7850,104 +7881,104 @@ rkf_wf_get_lut.sftemp:
 	.byte	2
 	.hword	370
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	42
 	.word	.Linfo_string104
 	.byte	2
 	.hword	370
-	.word	4558
+	.word	4574
 	.byte	42
 	.word	.Linfo_string96
 	.byte	2
 	.hword	370
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string24
 	.byte	2
 	.hword	374
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string89
 	.byte	2
 	.hword	373
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string98
 	.byte	2
 	.hword	372
-	.word	1133
+	.word	1149
 	.byte	0
 	.byte	41
 	.word	.Linfo_string136
 	.byte	2
 	.hword	351
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	42
 	.word	.Linfo_string104
 	.byte	2
 	.hword	351
-	.word	4558
+	.word	4574
 	.byte	42
 	.word	.Linfo_string96
 	.byte	2
 	.hword	351
-	.word	568
+	.word	584
 	.byte	42
 	.word	.Linfo_string137
 	.byte	2
 	.hword	351
-	.word	959
+	.word	975
 	.byte	43
 	.word	.Linfo_string24
 	.byte	2
 	.hword	355
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string89
 	.byte	2
 	.hword	354
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string98
 	.byte	2
 	.hword	353
-	.word	1133
+	.word	1149
 	.byte	0
 	.byte	41
 	.word	.Linfo_string138
 	.byte	2
 	.hword	429
 
-	.word	568
+	.word	584
 	.byte	1
 	.byte	42
 	.word	.Linfo_string104
 	.byte	2
 	.hword	429
-	.word	4558
+	.word	4574
 	.byte	42
 	.word	.Linfo_string96
 	.byte	2
 	.hword	429
-	.word	568
+	.word	584
 	.byte	43
 	.word	.Linfo_string24
 	.byte	2
 	.hword	433
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string89
 	.byte	2
 	.hword	432
-	.word	561
+	.word	577
 	.byte	43
 	.word	.Linfo_string98
 	.byte	2
 	.hword	431
-	.word	1133
+	.word	1149
 	.byte	0
 	.byte	0
 .Ldebug_info_end0:
@@ -8414,14 +8445,16 @@ rkf_wf_get_lut.sftemp:
 .Linfo_string148:
 	.asciz	"pic"
 .Linfo_string149:
-	.asciz	"overlay_lut"
+	.asciz	"regal_pix"
 .Linfo_string150:
-	.asciz	"old_gray"
+	.asciz	"overlay_lut"
 .Linfo_string151:
-	.asciz	"new_gray"
+	.asciz	"old_gray"
 .Linfo_string152:
-	.asciz	"lut_data"
+	.asciz	"new_gray"
 .Linfo_string153:
+	.asciz	"lut_data"
+.Linfo_string154:
 	.asciz	"pix0"
 	.ident	"Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)"
 	.section	".note.GNU-stack","",@progbits

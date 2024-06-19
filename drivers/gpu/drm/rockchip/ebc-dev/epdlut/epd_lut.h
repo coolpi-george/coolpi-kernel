@@ -43,7 +43,7 @@ struct epd_lut_data {
 int epd_lut_from_mem_init(void *waveform);
 int epd_lut_from_file_init(struct device *dev, void *waveform, int size);
 const char *epd_lut_get_wf_version(void);
-int epd_lut_get(struct epd_lut_data *output, enum epd_lut_type lut_type, int temperture, int pic);
+int epd_lut_get(struct epd_lut_data *output, enum epd_lut_type lut_type, int temperture, int pic, int regal_pix);
 
 //you can change overlay lut mode here
 int epd_overlay_lut(void);
@@ -53,12 +53,12 @@ int epd_overlay_lut(void);
  */
 int pvi_wf_input(void *waveform_file);
 const char *pvi_wf_get_version(void);
-int pvi_wf_get_lut(struct epd_lut_data *output, enum epd_lut_type lut_type, int temperture, int pic);
+int pvi_wf_get_lut(struct epd_lut_data *output, enum epd_lut_type lut_type, int temperture, int pic, int regal_pix);
 
 /*
  * RKF Waveform Interfaces
  */
 int rkf_wf_input(void *waveform_file);
 const char *rkf_wf_get_version(void);
-int rkf_wf_get_lut(struct epd_lut_data *output, enum epd_lut_type lut_type, int temperture, int pic);
+int rkf_wf_get_lut(struct epd_lut_data *output, enum epd_lut_type lut_type, int temperture, int pic, int regal_pix);
 #endif
