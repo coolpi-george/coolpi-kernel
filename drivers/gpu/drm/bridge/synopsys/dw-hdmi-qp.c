@@ -4277,10 +4277,13 @@ void dw_hdmi_qp_resume(struct device *dev, struct dw_hdmi_qp *hdmi)
 
 	mutex_unlock(&hdmi->mutex);
 
+	if (hdmi->phy.ops->setup_hpd)
+		hdmi->phy.ops->setup_hpd(hdmi, hdmi->phy.data);
+
 	result = hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
 	if (result == connector_status_connected) {
 		mutex_lock(&hdmi->connector.dev->mode_config.mutex);
-		dw_hdmi_connector_get_modes(&hdmi->connector);
+		drm_helper_probe_single_connector_modes(&hdmi->connector, 9000, 9000);
 		mutex_unlock(&hdmi->connector.dev->mode_config.mutex);
 	}
 }
