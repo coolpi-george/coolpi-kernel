@@ -382,7 +382,6 @@ struct vop2_plane_state {
 	unsigned long offset;
 	int pdaf_data_type;
 	bool async_commit;
-	struct vop_dump_list *planlist;
 
 	struct drm_property_blob *dci_data;
 };
@@ -1973,6 +1972,12 @@ static void vop2_power_domain_put(struct vop2_power_domain *pd)
 		vop2_power_domain_put(pd->parent);
 }
 
+static void vop2_power_domain_put_sync(struct vop2_power_domain *pd)
+{
+	vop2_power_domain_put(pd);
+	vop2_wait_power_domain_off(pd);
+}
+
 /*
  * Called if the pd ref_count reach 0 after 2.5
  * seconds.
@@ -2620,14 +2625,22 @@ static uint32_t vop2_afbc_transform_offset(struct vop2 *vop2, struct vop2_plane_
 
 	if (is_vop3(vop2) && vop2->version != VOP_VERSION_RK3528) {
 		uint32_t vir_height = fb->height;
-		u8 block_w;
+		u8 block_w, block_h;
 
-		if (IS_ROCKCHIP_RFBC_MOD(fb->modifier))
+		if (IS_ROCKCHIP_RFBC_MOD(fb->modifier)) {
 			block_w = 64;
-		else if (fb->modifier & AFBC_FORMAT_MOD_BLOCK_SIZE_32x8)
+			block_h = 4;
+		} else if (fb->modifier & AFBC_FORMAT_MOD_BLOCK_SIZE_32x8) {
 			block_w = 32;
-		else
+			block_h = 8;
+		} else {
 			block_w = 16;
+			block_h = 16;
+		}
+		if (!IS_ALIGNED(vir_height, block_h)) {
+			DRM_WARN("FBC fb vir height[%d] should aligned as block height[%d]", vir_height, block_h);
+			vir_height = ALIGN(vir_height, block_h);
+		}
 
 		if (vpstate->xmirror_en) {
 			transform_tmp = ALIGN(act_xoffset + width, block_w);
@@ -2636,11 +2649,14 @@ static uint32_t vop2_afbc_transform_offset(struct vop2 *vop2, struct vop2_plane_
 			transform_xoffset = act_xoffset % block_w;
 		}
 
+		if (vpstate->afbc_half_block_en)
+			block_h /= 2;
+
 		if (vpstate->ymirror_en) {
 			transform_tmp = vir_height - act_yoffset - height;
-			transform_yoffset = transform_tmp % 4;
+			transform_yoffset = transform_tmp % block_h;
 		} else {
-			transform_yoffset = act_yoffset % 4;
+			transform_yoffset = act_yoffset % block_h;
 		}
 
 		return (transform_xoffset & 0x3f) | ((transform_yoffset & 0x3f) << 16);
@@ -4382,6 +4398,41 @@ static void vop2_initial(struct drm_crtc *crtc)
 		 * immediately.
 		 */
 		VOP_CTRL_SET(vop2, if_ctrl_cfg_done_imd, 1);
+
+		/* Close dynamic turn on/off rk3588 PD_ESMART and keep esmart pd on when enable */
+		if (vop2->version == VOP_VERSION_RK3588) {
+			struct vop2_power_domain *esmart_pd = vop2_find_pd_by_id(vop2, VOP2_PD_ESMART);
+
+			if (vop2_power_domain_status(esmart_pd))
+				esmart_pd->on = true;
+			else
+				vop2_power_domain_on(esmart_pd);
+
+			if (vop2->data->nr_dscs) {
+				struct vop2_dsc *dsc;
+				int i = 0;
+
+				for (i = 0; i < vop2->data->nr_dscs; i++) {
+					dsc = &vop2->dscs[i];
+
+					if (!dsc->pd)
+						continue;
+
+					if (!vop2_power_domain_status(dsc->pd))
+						continue;
+
+					dsc->enabled = VOP_MODULE_GET(vop2, dsc, dsc_en);
+
+					if (dsc->enabled) {
+						dsc->attach_vp_id = VOP_MODULE_GET(vop2, dsc,
+										   dsc_port_sel);
+						dsc->pd->vp_mask = BIT(dsc->attach_vp_id);
+						dsc->pd->on = true;
+						dsc->pd->ref_count++;
+					}
+				}
+			}
+		}
 		vop2_layer_map_initial(vop2, current_vp_id);
 		vop2_axi_irqs_enable(vop2);
 		vop2->is_enabled = true;
@@ -4987,12 +5038,14 @@ static void vop2_crtc_atomic_disable(struct drm_crtc *crtc,
 		if (dual_channel) {
 			vop2_power_domain_put(vop2->dscs[0].pd);
 			vop2_power_domain_put(vop2->dscs[1].pd);
+			vop2_wait_power_domain_off(vop2->dscs[0].pd);
+			vop2_wait_power_domain_off(vop2->dscs[1].pd);
 			vop2->dscs[0].pd->vp_mask = 0;
 			vop2->dscs[1].pd->vp_mask = 0;
 			vop2->dscs[0].attach_vp_id = -1;
 			vop2->dscs[1].attach_vp_id = -1;
 		} else {
-			vop2_power_domain_put(vop2->dscs[vcstate->dsc_id].pd);
+			vop2_power_domain_put_sync(vop2->dscs[vcstate->dsc_id].pd);
 			vop2->dscs[vcstate->dsc_id].pd->vp_mask = 0;
 			vop2->dscs[vcstate->dsc_id].attach_vp_id = -1;
 		}
@@ -5614,10 +5667,6 @@ static void vop2_plane_atomic_disable(struct drm_plane *plane, struct drm_atomic
 	struct drm_crtc *crtc;
 	struct vop2_video_port *vp;
 
-#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
-	struct vop2_plane_state *vpstate = to_vop2_plane_state(plane->state);
-#endif
-
 	rockchip_drm_dbg(vop2->dev, VOP_DEBUG_PLANE, "%s disable %s\n",
 			 win->name, current->comm);
 
@@ -5641,11 +5690,6 @@ static void vop2_plane_atomic_disable(struct drm_plane *plane, struct drm_atomic
 		vop2_win_disable(win->splice_win, false);
 		vp->enabled_win_mask &= ~BIT(win->splice_win->phys_id);
 	}
-
-#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
-	kfree(vpstate->planlist);
-	vpstate->planlist = NULL;
-#endif
 
 	spin_unlock(&vop2->reg_lock);
 }
@@ -5799,20 +5843,6 @@ static void rk3588_vop2_win_cfg_axi(struct vop2_win *win)
 		VOP_WIN_SET(vop2, win, axi_id, win->axi_id);
 	VOP_WIN_SET(vop2, win, axi_yrgb_id, win->axi_yrgb_id);
 	VOP_WIN_SET(vop2, win, axi_uv_id, win->axi_uv_id);
-}
-
-static const char *modifier_to_string(uint64_t modifier)
-{
-	switch (modifier) {
-	case DRM_FORMAT_MOD_ROCKCHIP_TILED(ROCKCHIP_TILED_BLOCK_SIZE_8x8):
-		return "[TILE_8x8]";
-	case DRM_FORMAT_MOD_ROCKCHIP_TILED(ROCKCHIP_TILED_BLOCK_SIZE_4x4_MODE0):
-		return "[TILE_4x4_M0]";
-	case DRM_FORMAT_MOD_ROCKCHIP_TILED(ROCKCHIP_TILED_BLOCK_SIZE_4x4_MODE1):
-		return "[TILE_4x4_M1]";
-	default:
-		return drm_is_afbc(modifier) ? "[AFBC]" : IS_ROCKCHIP_RFBC_MOD(modifier) ? "[RFBC]" : "";
-	}
 }
 
 static void vop3_dci_config(struct vop2_win *win, struct vop2_plane_state *vpstate)
@@ -6064,7 +6094,7 @@ static void vop2_win_atomic_update(struct vop2_win *win, struct drm_rect *src, s
 			 vp->id, win->name,
 			 actual_w, actual_h, src->x1 >> 16, src->y1 >> 16,
 			 dsp_w, dsp_h, dsp_stx, dsp_sty, vpstate->zpos,
-			 &fb->format->format, modifier_to_string(fb->modifier),
+			 &fb->format->format, rockchip_drm_modifier_to_string(fb->modifier),
 			 &vpstate->yrgb_mst, vpstate->fb_size, current->comm);
 
 	if (vop2->version != VOP_VERSION_RK3568)
@@ -6281,29 +6311,6 @@ static void vop2_plane_atomic_update(struct drm_plane *plane, struct drm_atomic_
 	struct drm_rect right_wsrc;
 	struct drm_rect right_wdst;
 
-#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
-	struct drm_rect *psrc = &vpstate->src;
-	bool AFBC_flag = false;
-	struct vop_dump_list *planlist;
-	unsigned long num_pages;
-	struct page **pages;
-	struct drm_gem_object *obj;
-	struct rockchip_gem_object *rk_obj;
-
-	num_pages = 0;
-	pages = NULL;
-	obj = fb->obj[0];
-	rk_obj = to_rockchip_obj(obj);
-	if (rk_obj) {
-		num_pages = rk_obj->num_pages;
-		pages = rk_obj->pages;
-	}
-	if (rockchip_afbc(plane, fb->modifier))
-		AFBC_flag = true;
-	else
-		AFBC_flag = false;
-#endif
-
 	/*
 	 * can't update plane when vop2 is disabled.
 	 */
@@ -6341,7 +6348,7 @@ static void vop2_plane_atomic_update(struct drm_plane *plane, struct drm_atomic_
 				 drm_rect_width(&vpstate->dest), drm_rect_height(&vpstate->dest),
 				 vpstate->dest.x1, vpstate->dest.y1, vpstate->zpos,
 				 &fb->format->format,
-				 modifier_to_string(fb->modifier), &vpstate->yrgb_mst,
+				 rockchip_drm_modifier_to_string(fb->modifier), &vpstate->yrgb_mst,
 				 vpstate->fb_size, current->comm);
 
 		vop2_calc_drm_rect_for_splice(vpstate, &wsrc, &wdst, &right_wsrc, &right_wdst);
@@ -6355,34 +6362,6 @@ static void vop2_plane_atomic_update(struct drm_plane *plane, struct drm_atomic_
 	vop2_win_atomic_update(win, &wsrc, &wdst, pstate);
 
 	vop2->is_iommu_needed = true;
-#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
-	kfree(vpstate->planlist);
-	vpstate->planlist = NULL;
-
-	planlist = kmalloc(sizeof(*planlist), GFP_KERNEL);
-	if (planlist) {
-		planlist->dump_info.AFBC_flag = AFBC_flag;
-		planlist->dump_info.area_id = win->area_id;
-		planlist->dump_info.win_id = win->win_id;
-		planlist->dump_info.yuv_format = fb->format->is_yuv;
-		planlist->dump_info.num_pages = num_pages;
-		planlist->dump_info.pages = pages;
-		planlist->dump_info.offset = vpstate->offset;
-		planlist->dump_info.pitches = fb->pitches[0];
-		planlist->dump_info.height = drm_rect_height(psrc) >> 16;
-		planlist->dump_info.format = fb->format;
-		list_add_tail(&planlist->entry, &vp->rockchip_crtc.vop_dump_list_head);
-		vpstate->planlist = planlist;
-	} else {
-		DRM_ERROR("can't alloc a node of planlist %p\n", planlist);
-		return;
-	}
-	if (vp->rockchip_crtc.vop_dump_status == DUMP_KEEP ||
-	    vp->rockchip_crtc.vop_dump_times > 0) {
-		rockchip_drm_dump_plane_buffer(&planlist->dump_info, vp->rockchip_crtc.frame_count);
-		vp->rockchip_crtc.vop_dump_times--;
-	}
-#endif
 }
 
 static const struct drm_plane_helper_funcs vop2_plane_helper_funcs = {
@@ -7160,7 +7139,7 @@ static int vop2_plane_info_dump(struct seq_file *s, struct drm_plane *plane)
 	DEBUG_PRINT("\twin_id: %d\n", win->win_id);
 
 	DEBUG_PRINT("\tformat: %p4cc%s pixel_blend_mode[%d] glb_alpha[0x%x]\n",
-		    &fb->format->format, modifier_to_string(fb->modifier),
+		    &fb->format->format, rockchip_drm_modifier_to_string(fb->modifier),
 		    pstate->pixel_blend_mode, vpstate->global_alpha);
 	DEBUG_PRINT("\tcolor: %s[%d] color-encoding[%s] color-range[%s]\n",
 		    vpstate->eotf ? "HDR" : "SDR", vpstate->eotf,
@@ -7743,27 +7722,9 @@ static size_t vop2_crtc_bandwidth(struct drm_crtc *crtc,
 	u64 line_bw_mbyte = 0;
 	int8_t cnt = 0, plane_num = 0;
 	int i = 0;
-#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
-	struct vop_dump_list *pos, *n;
-	struct vop2_video_port *vp = to_vop2_video_port(crtc);
-#endif
 
 	if (!htotal || !vdisplay)
 		return 0;
-
-#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
-	if (!vp->rockchip_crtc.vop_dump_list_init_flag) {
-		INIT_LIST_HEAD(&vp->rockchip_crtc.vop_dump_list_head);
-		vp->rockchip_crtc.vop_dump_list_init_flag = true;
-	}
-	list_for_each_entry_safe(pos, n, &vp->rockchip_crtc.vop_dump_list_head, entry) {
-		list_del(&pos->entry);
-	}
-	if (vp->rockchip_crtc.vop_dump_status == DUMP_KEEP ||
-	    vp->rockchip_crtc.vop_dump_times > 0) {
-		vp->rockchip_crtc.frame_count++;
-	}
-#endif
 
 	for_each_new_plane_in_state(state, plane, pstate, i) {
 		if (pstate->crtc == crtc)
@@ -11758,6 +11719,14 @@ static void vop2_crtc_atomic_flush(struct drm_crtc *crtc, struct drm_atomic_stat
 	struct drm_writeback_connector *wb_conn = &wb->conn;
 	struct drm_connector_state *conn_state = wb_conn->base.state;
 	bool wb_oneframe_mode = VOP_MODULE_GET(vop2, wb, one_frame_mode);
+
+#if defined(CONFIG_ROCKCHIP_DRM_DEBUG)
+	if (vp->rockchip_crtc.vop_dump_status == DUMP_KEEP ||
+	    vp->rockchip_crtc.vop_dump_times > 0) {
+		rockchip_drm_crtc_dump_plane_buffer(crtc);
+		vp->rockchip_crtc.vop_dump_times--;
+	}
+#endif
 
 	if (conn_state && conn_state->writeback_job && conn_state->writeback_job->fb && !wb_oneframe_mode) {
 		u16 vtotal = VOP_MODULE_GET(vop2, vp, dsp_vtotal);
