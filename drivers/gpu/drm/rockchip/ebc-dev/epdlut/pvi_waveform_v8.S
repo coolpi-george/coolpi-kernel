@@ -1909,6 +1909,8 @@ pvi_wf_rpart_fix:
 .Ltmp363:
 	.loc	3 344 37
 	add	x11, x10, #1021
+	.loc	3 342 37
+	strb	wzr, [x10, #989]
 	.loc	3 347 37
 	strh	wzr, [x10, #958]
 	.loc	3 344 37

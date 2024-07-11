@@ -111,7 +111,7 @@ struct ebc_buf_info {
 	int win_y2;
 	int width_mm;
 	int height_mm;
-	int dropable;	//no use
+	int dropable;	//0: canbe drop by userspace, 1: can't be drop by userspace
 	char tid_name[16];
 	int dma_buf_fd;
 };
