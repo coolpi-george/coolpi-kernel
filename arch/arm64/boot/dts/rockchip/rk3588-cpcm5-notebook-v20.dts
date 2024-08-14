@@ -145,16 +145,6 @@
 		default-brightness-level = <200>;
 	};
 
-	hdmi0_sound: hdmi0-sound {
-		status = "disabled";
-		compatible = "rockchip,hdmi";
-		rockchip,mclk-fs = <128>;
-		rockchip,card-name = "rockchip-hdmi0";
-		rockchip,cpu = <&i2s5_8ch>;
-		rockchip,codec = <&hdmi0>;
-		rockchip,jack-det;
-	};
-
 	fan: pwm-fan {
 		compatible = "pwm-fan";
 		cooling-min-state = <0>;
@@ -203,6 +193,17 @@
 			};
 		};
 	};
+	
+	vendor_storage_rm: vendor-storage-rm@0 {
+		compatible = "rockchip,vendor-storage-rm";
+		reg = <0x0 0x0 0x0 0x0>;
+	};
+	
+	vendor_storage: vendor-storage {
+		compatible = "rockchip,ram-vendor-storage";
+		memory-region = <&vendor_storage_rm>;
+		status = "okay";
+	};
 
 	vcc3v3_lcd: vcc3v3-lcd {
 		compatible = "regulator-fixed";
@@ -214,39 +215,56 @@
 		pinctrl-0 = <&lcdpwr_en>;
 
 	};
-
+	
 	es8316_sound: es8316-sound {
 		status = "okay";
-		compatible = "simple-audio-card";
-		simple-audio-card,format = "i2s";
-		simple-audio-card,mclk-fs = <256>;
-		simple-audio-card,name = "rockchip,es8316-codec";
-		simple-audio-card,dai-link@0 {
-			format = "i2s";
-			cpu {
-				sound-dai = <&i2s0_8ch>;
-			};
-			codec {
-				sound-dai = <&es8316>;
-			};
-		};
-    };
-	
-	rk_headset: rk-headset {
-		compatible = "rockchip_headset";
-		headset_gpio = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
+		compatible = "rockchip,multicodecs-card";
+		rockchip,card-name = "rk3588-es8316";
+		hp-det-gpio = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
+		io-channels = <&saradc 3>;
+		io-channel-names = "adc-detect";
+		keyup-threshold-microvolt = <1800000>;
+		poll-interval = <100>;
+		spk-con-gpio = <&gpio1 RK_PA6 GPIO_ACTIVE_HIGH>;
+		rockchip,pre-power-on-delay-ms = <30>;
+		rockchip,post-power-down-delay-ms = <40>;
+		rockchip,format = "i2s";
+		rockchip,mclk-fs = <256>;
+		rockchip,cpu = <&i2s0_8ch>;
+		rockchip,codec = <&es8316>;
+		rockchip,audio-routing =
+			"Headphone", "HPOL",
+			"Headphone", "HPOR",
+			"Speaker", "HPOL",
+			"Speaker", "HPOR",
+			"MIC1", "Main Mic",
+			"MIC2", "Headset Mic";
 		pinctrl-names = "default";
 		pinctrl-0 = <&hp_det>;
-		io-channels = <&saradc 3>;
+		play-pause-key {
+			label = "playpause";
+			linux,code = <KEY_PLAYPAUSE>;
+			press-threshold-microvolt = <2000>;
+		};
 	};
 	
 	dp0_sound: dp0-sound {
-		status = "disabled";
+		status = "okay";
 		compatible = "rockchip,hdmi";
 		rockchip,card-name= "rockchip,dp0";
 		rockchip,mclk-fs = <512>;
 		rockchip,cpu = <&spdif_tx2>;
 		rockchip,codec = <&dp0 1>;
+		rockchip,jack-det;
+	};
+	
+	hdmi0_sound: hdmi0-sound {
+		status = "okay";
+		compatible = "rockchip,hdmi";
+		rockchip,mclk-fs = <128>;
+		rockchip,card-name = "rockchip-hdmi0";
+		rockchip,cpu = <&i2s5_8ch>;
+		rockchip,codec = <&hdmi0>;
 		rockchip,jack-det;
 	};
 
@@ -421,8 +439,12 @@
 	mem-supply = <&vdd_cpu_big1_mem_s0>;
 };
 
+&dfi {
+	status = "okay";
+};
+
 &dmc {
-	auto-freq-en = <1>;
+	auto-freq-en = <0>;
 	status = "okay";
 };
 
@@ -785,10 +807,6 @@
 	status = "okay";
 };
 
-&hdmi0_sound {
-	status = "okay";
-};
-
 &route_hdmi0 {
 	status = "okay";
 	logo,uboot = "logo.bmp";
@@ -807,10 +825,6 @@
 };
 
 &dp0_in_vp1 {
-	status = "okay";
-};
-
-&dp0_sound{
 	status = "okay";
 };
 
@@ -1112,8 +1126,7 @@
 
 &i2c7 {
 	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c7m0_xfer>;
+
 	es8316: es8316@10 {
 		status = "okay";
 		#sound-dai-cells = <0>;
@@ -1121,17 +1134,16 @@
 		reg = <0x10>;
 		clocks = <&mclkout_i2s0>;
 		clock-names = "mclk";
-		spk-con-gpio = <&gpio1 RK_PA6 GPIO_ACTIVE_HIGH>;
 		assigned-clocks = <&mclkout_i2s0>;
 		assigned-clock-rates = <12288000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&i2s0_mclk>;
-		extcon = <&rk_headset>;
 	};
 };
 
 &i2s0_8ch {
 	status = "okay";
+	pinctrl-names = "default";
 	pinctrl-0 = <&i2s0_lrck
 		     &i2s0_sclk
 		     &i2s0_sdi0

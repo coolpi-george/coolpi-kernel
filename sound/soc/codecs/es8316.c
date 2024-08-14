@@ -360,6 +360,70 @@ static const struct snd_soc_dapm_route es8316_dapm_routes[] = {
 	{"HPOR", NULL, "Headphone Out"},
 };
 
+static int es8316_init_regs(struct snd_soc_component *component)
+{
+	snd_soc_component_write(component, ES8316_RESET, 0x3f);
+	usleep_range(5000, 5500);
+	snd_soc_component_write(component, ES8316_RESET, 0x00);
+	snd_soc_component_write(component, ES8316_SYS_VMIDSEL, 0xFF);
+	msleep(30);
+	snd_soc_component_write(component, ES8316_CLKMGR_CLKSEL, 0x08);
+	snd_soc_component_write(component, ES8316_CLKMGR_ADCOSR, 0x20);
+	snd_soc_component_write(component, ES8316_CLKMGR_ADCDIV1, 0x11);
+	snd_soc_component_write(component, ES8316_CLKMGR_ADCDIV2, 0x00);
+	snd_soc_component_write(component, ES8316_CLKMGR_DACDIV1, 0x11);
+	snd_soc_component_write(component, ES8316_CLKMGR_DACDIV2, 0x00);
+	snd_soc_component_write(component, ES8316_CLKMGR_CPDIV, 0x00);
+	snd_soc_component_write(component, ES8316_SERDATA1, 0x04);
+	snd_soc_component_write(component, ES8316_CLKMGR_CLKSW, 0x7F);
+	snd_soc_component_write(component, ES8316_CAL_TYPE, 0x0F);
+	snd_soc_component_write(component, ES8316_CAL_HPLIV, 0x90);
+	snd_soc_component_write(component, ES8316_CAL_HPRIV, 0x90);
+	snd_soc_component_write(component, ES8316_ADC_VOLUME, 0x00);
+	snd_soc_component_write(component, ES8316_ADC_PDN_LINSEL, 0xC0);
+	snd_soc_component_write(component, ES8316_ADC_D2SEPGA, 0x00);
+	snd_soc_component_write(component, ES8316_ADC_DMIC, 0x08);
+	snd_soc_component_write(component, ES8316_DAC_SET2, 0x20);
+	snd_soc_component_write(component, ES8316_DAC_SET3, 0x00);
+	snd_soc_component_write(component, ES8316_DAC_VOLL, 0x00);
+	snd_soc_component_write(component, ES8316_DAC_VOLR, 0x00);
+	snd_soc_component_write(component, ES8316_SERDATA_ADC, 0x00);
+	snd_soc_component_write(component, ES8316_SERDATA_DAC, 0x00);
+	snd_soc_component_write(component, ES8316_SYS_VMIDLOW, 0x11);
+	snd_soc_component_write(component, ES8316_SYS_VSEL, 0xFC);
+	snd_soc_component_write(component, ES8316_SYS_REF, 0x28);
+	snd_soc_component_write(component, ES8316_SYS_LP1, 0x04);
+	snd_soc_component_write(component, ES8316_SYS_LP2, 0x0C);
+	snd_soc_component_write(component, ES8316_DAC_PDN, 0x11);
+	snd_soc_component_write(component, ES8316_HPMIX_SEL, 0x00);
+	snd_soc_component_write(component, ES8316_HPMIX_SWITCH, 0x88);
+	snd_soc_component_write(component, ES8316_HPMIX_PDN, 0x00);
+	snd_soc_component_write(component, ES8316_HPMIX_VOL, 0xBB);
+	snd_soc_component_write(component, ES8316_CPHP_PDN2, 0x10);
+	snd_soc_component_write(component, ES8316_CPHP_LDOCTL, 0x30);
+	snd_soc_component_write(component, ES8316_CPHP_PDN1, 0x02);
+	snd_soc_component_write(component, ES8316_CPHP_ICAL_VOL, 0x00);
+	snd_soc_component_write(component, ES8316_GPIO_SEL, 0x00);
+	snd_soc_component_write(component, ES8316_GPIO_DEBOUNCE, 0x02);
+	snd_soc_component_write(component, ES8316_TESTMODE, 0xA0);
+	snd_soc_component_write(component, ES8316_TEST1, 0x00);
+	snd_soc_component_write(component, ES8316_TEST2, 0x00);
+	snd_soc_component_write(component, ES8316_SYS_PDN, 0x00);
+	snd_soc_component_write(component, ES8316_RESET, 0xC0);
+	msleep(50);
+	snd_soc_component_write(component, ES8316_ADC_PGAGAIN, 0xA0);
+	snd_soc_component_write(component, ES8316_ADC_D2SEPGA, 0x01);
+	/* adc ds mode, HPF enable */
+	snd_soc_component_write(component, ES8316_ADC_DMIC, 0x08);
+	snd_soc_component_write(component, ES8316_ADC_ALC1, 0xcd);
+	snd_soc_component_write(component, ES8316_ADC_ALC2, 0x08);
+	snd_soc_component_write(component, ES8316_ADC_ALC3, 0xa0);
+	snd_soc_component_write(component, ES8316_ADC_ALC4, 0x05);
+	snd_soc_component_write(component, ES8316_ADC_ALC5, 0x06);
+	snd_soc_component_write(component, ES8316_ADC_ALC_NG, 0x61);
+	return 0;
+}
+
 static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 				 int clk_id, unsigned int freq, int dir)
 {
@@ -761,6 +825,21 @@ static int es8316_probe(struct snd_soc_component *component)
 	 * and quality for Intel CHT platforms.
 	 */
 	snd_soc_component_write(component, ES8316_CLKMGR_ADCOSR, 0x32);
+
+    es8316_init_regs(component);
+    /* es8316_set_bias_level(codec, SND_SOC_BIAS_OFF); */
+	snd_soc_component_write(component, ES8316_CPHP_OUTEN, 0x00);
+	snd_soc_component_write(component, ES8316_DAC_PDN, 0x11);
+	snd_soc_component_write(component, ES8316_CPHP_LDOCTL, 0x03);
+	snd_soc_component_write(component, ES8316_CPHP_PDN2, 0x22);
+	snd_soc_component_write(component, ES8316_CPHP_PDN1, 0x06);
+	snd_soc_component_write(component, ES8316_HPMIX_SWITCH, 0x00);
+	snd_soc_component_write(component, ES8316_HPMIX_PDN, 0x33);
+	snd_soc_component_write(component, ES8316_HPMIX_VOL, 0x00);
+	snd_soc_component_write(component, ES8316_SYS_LP1, 0xFF);
+	snd_soc_component_write(component, ES8316_SYS_LP2, 0xFF);
+	snd_soc_component_write(component, ES8316_CLKMGR_CLKSW, 0xF3);
+	snd_soc_component_write(component,ES8316_ADC_PDN_LINSEL, 0xC0);
 
 	return 0;
 }
