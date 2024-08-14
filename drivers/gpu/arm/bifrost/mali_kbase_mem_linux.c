@@ -2371,11 +2371,11 @@ static vm_fault_t kbase_cpu_vm_fault(struct vm_fault *vmf)
 	kbase_gpu_vm_lock(map->kctx);
 
 	/* Reject faults for SAME_VA mapping of UMM allocations */
-	if ((map->alloc->type == KBASE_MEM_TYPE_IMPORTED_UMM) && map->free_on_close) {
+/*	if ((map->alloc->type == KBASE_MEM_TYPE_IMPORTED_UMM) && map->free_on_close) {
 		dev_warn(map->kctx->kbdev->dev, "Invalid CPU access to UMM memory for ctx %d_%d",
 			 map->kctx->tgid, map->kctx->id);
 		goto exit;
-	}
+	}*/
 
 	map_start_pgoff = vma->vm_pgoff - map->region->start_pfn;
 
