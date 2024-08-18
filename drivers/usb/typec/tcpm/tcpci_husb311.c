@@ -329,8 +329,8 @@ static int husb311_pm_suspend(struct device *dev)
 	struct i2c_client *client = to_i2c_client(dev);
 
 	if (device_may_wakeup(dev) && (!chip->vbus_on || chip->wakeup))
-		enable_irq_wake(client->irq);
-	else
+		//enable_irq_wake(client->irq);
+	//else
 		disable_irq(client->irq);
 
 	if (!chip->suspended) {
