@@ -444,7 +444,7 @@
 };
 
 &dmc {
-	auto-freq-en = <0>;
+	auto-freq-en = <1>;
 	status = "okay";
 };
 
