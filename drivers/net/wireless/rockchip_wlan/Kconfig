@@ -36,8 +36,19 @@ menuconfig WLAN_RTL
 	bool "Realtek Wireless Device Driver Support"
 	default y
 
+menuconfig AICDHD
+	bool "AIC8800 Wireless Device Driver Support"
+	default n
+
+menuconfig AICDHD_USB
+	bool "AIC8800(USB) Wireless Device Driver Support"
+	default n
+
 if BCMDHD
 source "drivers/net/wireless/rockchip_wlan/rkwifi/Kconfig"
 endif
 source "drivers/net/wireless/rockchip_wlan/rtw8852be/Kconfig"
+if AICDHD
+source "drivers/net/wireless/rockchip_wlan/aic8800/Kconfig"
+endif
 endif # WL_ROCKCHIP
