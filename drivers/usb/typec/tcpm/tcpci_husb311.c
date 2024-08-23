@@ -328,7 +328,7 @@ static int husb311_pm_suspend(struct device *dev)
 	struct husb311_chip *chip = dev->driver_data;
 	struct i2c_client *client = to_i2c_client(dev);
 
-	if (device_may_wakeup(dev) && (!chip->vbus_on || chip->wakeup))
+	//if (device_may_wakeup(dev) && (!chip->vbus_on || chip->wakeup))
 		//enable_irq_wake(client->irq);
 	//else
 		disable_irq(client->irq);
@@ -348,9 +348,9 @@ static int husb311_pm_resume(struct device *dev)
 	int ret = 0;
 	u8 filter;
 
-	if (device_may_wakeup(dev) && (!chip->vbus_on || chip->wakeup))
-		disable_irq_wake(client->irq);
-	else
+	//if (device_may_wakeup(dev) && (!chip->vbus_on || chip->wakeup))
+	//	disable_irq_wake(client->irq);
+	//else
 		enable_irq(client->irq);
 
 	/*
