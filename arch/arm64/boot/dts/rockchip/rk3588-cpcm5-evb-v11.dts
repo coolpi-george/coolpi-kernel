@@ -170,18 +170,18 @@
 	};
 
 	hdmi1_sound: hdmi1-sound {
-                status = "okay";
-                compatible = "rockchip,hdmi";
-                rockchip,mclk-fs = <128>;
-                rockchip,card-name = "rockchip-hdmi1";
-                rockchip,cpu = <&i2s6_8ch>;
-                rockchip,codec = <&hdmi1>;
-                rockchip,jack-det;
+        status = "okay";
+        compatible = "rockchip,hdmi";
+        rockchip,mclk-fs = <128>;
+        rockchip,card-name = "rockchip-hdmi1";
+        rockchip,cpu = <&i2s6_8ch>;
+        rockchip,codec = <&hdmi1>;
+        rockchip,jack-det;
         };
 	dp0_sound: dp0-sound {
 		status = "okay";
 		compatible = "rockchip,hdmi";
-		rockchip,card-name= "rockchip,dp0";
+		rockchip,card-name= "rockchip-dp0";
 		rockchip,mclk-fs = <512>;
 		rockchip,cpu = <&spdif_tx2>;
 		rockchip,codec = <&dp0 1>;
@@ -191,7 +191,7 @@
 	dp1_sound: dp1-sound {
 		status = "okay";
 		compatible = "rockchip,hdmi";
-		rockchip,card-name= "rockchip,dp1";
+		rockchip,card-name= "rockchip-dp1";
 		rockchip,mclk-fs = <512>;
 		rockchip,cpu = <&spdif_tx5>;
 		rockchip,codec = <&dp1 1>;
@@ -259,7 +259,7 @@
 	es8316_sound: es8316-sound {
 		status = "okay";
 		compatible = "rockchip,multicodecs-card";
-		rockchip,card-name = "rk3588-es8316";
+		rockchip,card-name = "coolpi-es8316";
 		io-channels = <&saradc 3>;
 		io-channel-names = "adc-detect";
 		keyup-threshold-microvolt = <1800000>;
@@ -287,7 +287,7 @@
 		rockchip,format = "i2s";
 		rockchip,bitclock-master = <&hdmirx_ctrler>;
 		rockchip,frame-master = <&hdmirx_ctrler>;
-		rockchip,card-name = "rockchip,hdmiin";
+		rockchip,card-name = "rockchip-hdmiin";
 		rockchip,cpu = <&i2s7_8ch>;
 		rockchip,codec = <&hdmirx_ctrler 0>;
 		rockchip,jack-det;
@@ -945,7 +945,7 @@
 &hdmi1 {
 	enable-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_HIGH>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&hdmim2_tx1_cec &hdmim0_tx1_hpd &hdmim1_tx1_scl &hdmim1_tx1_sda>;
+	pinctrl-0 = <&hdmim0_tx1_hpd &hdmim1_tx1_scl &hdmim1_tx1_sda>;
         status = "okay";
 };
 
@@ -1104,9 +1104,9 @@
 		#sound-dai-cells = <0>;
 		compatible = "everest,es8316";
 		reg = <0x10>;
-		clocks = <&cru I2S0_8CH_MCLKOUT>;
+		clocks = <&mclkout_i2s0>;
 		clock-names = "mclk";
-		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
+		assigned-clocks = <&mclkout_i2s0>;
 		assigned-clock-rates = <12288000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&i2s0_mclk>;
