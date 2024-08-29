@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2022 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+
+/dts-v1/;
+
+#include "rk3588s-cp4.dts"
+
+/ {
+	model = "RK3588S CoolPi 4B Board Upgrade loader";
+	compatible = "rockchip,rk3588s-evb4-lp4x-v10", "rockchip,rk3588";
+};
+
+
+&sfc {
+	status="okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+
+		spi-max-frequency = <108000000>;
+		spi-tx-bus-width = <1>;
+		spi-rx-bus-width = <4>;
+	};
+};
+
+&sdio {
+	status="disabled";
+};

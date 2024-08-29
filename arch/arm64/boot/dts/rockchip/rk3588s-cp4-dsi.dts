@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2022 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+
+/dts-v1/;
+
+#include "rk3588s-cp4.dts"
+
+/ {
+	model = "RK3588S CoolPi 4B Board DSI ENABLE";
+	compatible = "rockchip,rk3588s-evb4-lp4x-v10", "rockchip,rk3588";
+};
+
+&dsi0 {
+	status = "okay";
+};
+
+&dsi0_in_vp3 {
+	status = "okay";
+};
+
+&route_dsi0 {
+	status = "okay";
+};
+
+/*mipi dsi*/
+&i2c4 {
+	status = "okay";
+};
+
+&mipi_dcphy0 {
+	status = "okay";
+};
