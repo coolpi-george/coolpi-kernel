@@ -23,7 +23,8 @@ echo "6. cm5-notebook"
 echo "7. cm5-notebook-v20"
 echo "8. cm5-8uart"
 echo "9. cpnano"
-echo "10. exit"
+echo "10. cp1b"
+echo "11. exit"
 echo
 read -rp "Enter option number: " choice
 
@@ -65,6 +66,10 @@ case $choice in
 	  BOARD="cpnano"
       ;;
     10)
+      echo "BOARD=cp1b"
+	  BOARD="cp1b"
+      ;;
+    11)
       echo "exit"
 	  exit 0
       ;;
@@ -130,6 +135,14 @@ case "$BOARD" in
     RV1106="1"
     export ARCH=arm
     ;;
+  cp1b)
+    cfg="rv1106_cp1b_defconfig"
+    dtb="rv1106-cp1b.dtb"
+    txt_config_file="config_cp1b.txt"
+    txt_extconf_file="extlinux_cp1b.conf"
+    RV1106="1"
+    export ARCH=arm
+    ;;
   *)
     exit 0
     ;;
@@ -167,8 +180,8 @@ if [ "$RV1106" == "1" ]; then
     rm -rf out
     mkdir -p out/extlinux
     cp vmlinuz out/
-    #cp demo-cfgs/cmdline.txt out/cmdline.txt
-    #cp demo-cfgs/$txt_config_file out/config.txt
+    cp demo-cfgs/cmdline.txt out/cmdline.txt
+    cp demo-cfgs/$txt_config_file out/config.txt
     cp demo-cfgs/$txt_extconf_file out/extlinux/extlinux.conf
     cp demo-cfgs/initrd32.img out/initrd32.img
 else
