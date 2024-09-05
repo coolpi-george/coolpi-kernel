@@ -2339,7 +2339,7 @@ static int option_probe(struct usb_serial *serial,
 	struct usb_interface_descriptor *iface_desc =
 				&serial->interface->cur_altsetting->desc;
 	unsigned long device_flags = id->driver_info;
-
+	struct usb_device_descriptor *dev_desc = &serial->dev->descriptor;
 	/* Never bind to the CD-Rom emulation interface	*/
 	if (iface_desc->bInterfaceClass == USB_CLASS_MASS_STORAGE)
 		return -ENODEV;
@@ -2357,6 +2357,13 @@ static int option_probe(struct usb_serial *serial,
 	 * can change (e.g. Quectel EP06).
 	 */
 	if (device_flags & NUMEP2 && iface_desc->bNumEndpoints != 2)
+		return -ENODEV;
+	if (dev_desc->idVendor == cpu_to_le16(0x05c6) && dev_desc->idProduct == cpu_to_le16(0x9003) && iface_desc->bInterfaceNumber >= 4)
+		return -ENODEV;
+	if (dev_desc->idVendor == cpu_to_le16(0x05c6) && dev_desc->idProduct == cpu_to_le16(0x9215) && iface_desc->bInterfaceNumber >= 4)
+		return -ENODEV;
+
+	if (dev_desc->idVendor == cpu_to_le16(0x2c7c) && iface_desc->bInterfaceNumber >= 4)
 		return -ENODEV;
 
 	/* Store the device flags so we can use them during attach. */

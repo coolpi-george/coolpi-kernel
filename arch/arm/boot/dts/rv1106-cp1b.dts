@@ -102,6 +102,16 @@
 			default-state = "off";
 		};		
 	};
+	
+	rk_modem: rk-modem {
+		compatible="4g-modem-platdata";
+		pinctrl-names = "default";
+		pinctrl-0 = <&lte_disable &lte_power_en &lte_reset>;
+		4G,disable-gpio  = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>;
+		4G,reset-gpio = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+		4G,power-gpio = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
 };
 
 &fiq_debugger {
@@ -191,7 +201,9 @@
 	status = "okay";
 };
 
-&pwm0 {
+&pwm1 {
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm1m2_pins>;
 	status = "okay";
 };
 
@@ -243,6 +255,20 @@
 		
 		usb_sel: usb-sel {
 			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_output_high>;
+		};
+	};
+	
+	rk-modem {
+		lte_disable: lte-disable {
+			rockchip,pins = <0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		lte_power_en: lte-power-en {
+			rockchip,pins = <1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		lte_reset: lte-reset {
+			rockchip,pins = <2 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
