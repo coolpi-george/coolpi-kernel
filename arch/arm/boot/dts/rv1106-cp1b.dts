@@ -78,6 +78,19 @@
 		pinctrl-0 = <&usb_pwren &usb_sel>;
 	};
 	
+	vcc3v3_wifi: vcc3v3-wifi {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_wifi";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		enable-active-low;
+		regulator-always-on;
+		regulator-boot-on;
+		gpio = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wifi_pwr>;
+	};
+	
 	leds: leds {
 	status = "okay";
 	compatible = "gpio-leds";
@@ -255,6 +268,10 @@
 		
 		usb_sel: usb-sel {
 			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_output_high>;
+		};
+		
+		wifi_pwr: wifi-pwr {
+			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_output_high>;
 		};
 	};
 	
