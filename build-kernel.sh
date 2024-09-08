@@ -4,8 +4,8 @@ K_SRC=`pwd`
 
 ARCH=`uname -m`
 if [ "$ARCH" == "x86_64" ]; then
-    export CROSS_COMPILE=aarch64-none-linux-gnu-
-    TOOLCHAIN_ARM64=$K_SRC/toolchain/bin
+    export CROSS_COMPILE=aarch64-linux-gnu-
+    TOOLCHAIN_ARM64=/usr/bin
     export PATH=$TOOLCHAIN_ARM64:$PATH
 fi
 export ARCH=arm64
@@ -157,8 +157,8 @@ if [ "$RV1106" == "1" ]; then
     GEN_DEBS="NO"
     ARCH=`uname -m`
     if [ "$ARCH" == "x86_64" ]; then
-        export CROSS_COMPILE=arm-rockchip830-linux-uclibcgnueabihf-
-        TOOLCHAIN_ARM32=$K_SRC/toolchain32uc/bin
+        export CROSS_COMPILE=arm-linux-gnueabi-
+        TOOLCHAIN_ARM32=/usr/bin
         export PATH=$TOOLCHAIN_ARM32:$PATH
     fi
     if [ "$ARCH" == "aarch64" ]; then
