@@ -224,6 +224,12 @@
 	status = "okay";
 };
 
+&uart0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart0m1_xfer &lora_m0 &lora_m1 &lora_aux>;
+};
+
 &uart1 {
 	status = "okay";
 	pinctrl-names = "default";
@@ -261,6 +267,21 @@
 };
 
 &pinctrl {
+
+	lora {
+		lora_m0: lora-m0 {
+			rockchip,pins = <2 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		
+		lora_m1: lora-m1 {
+			rockchip,pins = <2 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		
+		lora_aux: lora-aux {
+			rockchip,pins = <2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+	
 	usb {
 		usb_pwren: usb-pwren {
 			rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
@@ -271,7 +292,7 @@
 		};
 		
 		wifi_pwr: wifi-pwr {
-			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_output_high>;
+			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 	
@@ -285,7 +306,7 @@
 		};
 
 		lte_reset: lte-reset {
-			rockchip,pins = <2 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
