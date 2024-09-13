@@ -39,7 +39,7 @@
 
 	vdd_arm: vdd-arm {
 		compatible = "pwm-regulator";
-		pwms = <&pwm0 0 5000 1>;
+		pwms = <&pwm1 0 5000 1>;
 		regulator-name = "vdd_arm";
 		regulator-min-microvolt = <724000>;
 		regulator-max-microvolt = <1078000>;
