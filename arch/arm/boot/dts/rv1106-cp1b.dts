@@ -206,8 +206,8 @@
 	bus-width = <8>;
 	cap-mmc-highspeed;
 	non-removable;
-	mmc-ddr-1_8v;
-	mmc-hs200-1_8v;
+//	mmc-ddr-1_8v;
+//	mmc-hs200-1_8v;
 	rockchip,default-sample-phase = <90>;
 	no-sdio;
 	no-sd;
@@ -288,7 +288,7 @@
 		};
 		
 		usb_sel: usb-sel {
-			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_output_high>;
+			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_output_low>;
 		};
 		
 		wifi_pwr: wifi-pwr {
