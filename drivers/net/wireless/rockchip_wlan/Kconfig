@@ -47,7 +47,7 @@ menuconfig AICDHD_USB
 if BCMDHD
 source "drivers/net/wireless/rockchip_wlan/rkwifi/Kconfig"
 endif
-source "drivers/net/wireless/rockchip_wlan/rtw8852be/Kconfig"
+source "drivers/net/wireless/rockchip_wlan/rtl8852be/Kconfig"
 if AICDHD
 source "drivers/net/wireless/rockchip_wlan/aic8800/Kconfig"
 endif
