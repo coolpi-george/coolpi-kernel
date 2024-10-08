@@ -188,9 +188,12 @@ else
 
     rm -rf out_modules
     mkdir -p out_modules
+    rm -rf out_headers
+    mkdir -p out_headers/usr/src/linux-headers-6.1.75
 
     cd $K_SRC
     make ARCH=arm64 modules_install INSTALL_MOD_PATH=out_modules
+    make ARCH=arm64 headers_install INSTALL_HDR_PATH=out_headers/usr/src/linux-headers-6.1.75
     rm -rf out
     mkdir -p out/extlinux
     cp vmlinuz out/
@@ -208,6 +211,8 @@ ln -sf /usr/src/linux-headers-6.1.75/ build
 ln -sf /usr/src/linux-headers-6.1.75/ source
 cd $K_SRC/out_modules/lib/
 tar -czf ../../modules.tar.gz *
+cd $K_SRC/out_headers/usr/
+tar -czf ../../headers.tar.gz *
 
 cd $K_SRC
 for dtb_f in $dtb
@@ -215,6 +220,7 @@ do
     cp $dtb_f out/
 done
 cp modules.tar.gz out/
+cp headers.tar.gz out/
 
 case "$GEN_DEBS" in
     [yY][eE][sS]|[yY])
