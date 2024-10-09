@@ -225,7 +225,7 @@ static int c_show(struct seq_file *m, void *v)
 		np = of_find_node_by_path("/system");
 		if (np) {
 			if (!of_property_read_string(np, "cpu,model", &cpu_model))
-				seq_printf(m, "cpu model\t: %s\n", cpu_model);
+				seq_printf(m, "model name\t: %s\n", cpu_model);
 			of_node_put(np);
 		}
 		seq_printf(m, "CPU implementer\t: 0x%02x\n",
