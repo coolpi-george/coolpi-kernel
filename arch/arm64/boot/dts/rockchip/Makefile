@@ -297,3 +297,4 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-minipc.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-evb-v11.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-notebook.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-notebook-v20.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-zxfz-lp4x-v10-linux.dtb
