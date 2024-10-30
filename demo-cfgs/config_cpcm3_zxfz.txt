@@ -1,0 +1,5 @@
+bootdir=/
+kernel=vmlinuz
+initrd=initrd.img
+dtb=rk3566-zxfz-lp4x-v10-linux.dtb
+
