@@ -29,7 +29,7 @@ CONFIG_BCMDHD_TPUT := y
 CONFIG_MACH_PLATFORM := y
 #CONFIG_BCMDHD_DTS := y
 
-DHDCFLAGS = -Wall -Wstrict-prototypes -Wno-date-time                      \
+DHDCFLAGS = -Wall -Wstrict-prototypes -Wno-date-time -Wno-address         \
 	-Wno-implicit-fallthrough -Wno-declaration-after-statement            \
 	-Wno-vla -Wno-vla-extension                                           \
 	-Dlinux -DLINUX -DBCMDRIVER                                           \
