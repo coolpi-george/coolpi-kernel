@@ -26,10 +26,6 @@
 	model = "Rockchip RK3566 EVB2 LP4X V10 Board";
 	compatible = "rockchip,rk3566-evb2-lp4x-v10", "rockchip,rk3566";
 	
-	chosen: chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 root=PARTUUID=614e0000-0000 rw rootwait net.ifnames=0";
-	};
-	
 	aliases {
 		mmc0 = &sdhci;
 		mmc1 = &sdmmc0;

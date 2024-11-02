@@ -133,7 +133,7 @@ case "$BOARD" in
     txt_extconf_file="extlinux_cpcm5_8uart.conf"
     ;;
   cm3-zxfz)
-    cfg="rk3566_zxfz_linux.config"
+    cfg="rk3566_zxfz_linux_defconfig"
     dtb="rk3566-zxfz-lp4x-v10-linux.dtb"
     txt_config_file="config_cpcm3_zxfz.txt"
     txt_extconf_file="extlinux_cpcm3_zxfz.conf"
