@@ -132,6 +132,10 @@
 	status = "okay";
 };
 
+&wdt{
+	status = "okay";
+};
+
 &gmac {
 	status = "okay";
 };
