@@ -144,7 +144,7 @@ case "$BOARD" in
     txt_extconf_file="extlinux_cpcm3_zxfz.conf"
     ;;
   cp3b)
-    cfg="rk3566_zxfz_linux_defconfig"
+    cfg="rk3566_cp3b_defconfig"
     dtb="rk3566-cp3b-lp4x-v10-linux.dtb"
     txt_config_file="config_cp3b.txt"
     txt_extconf_file="extlinux_cp3b.conf"
