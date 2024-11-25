@@ -31,6 +31,18 @@ config WIFI_GENERATE_RANDOM_MAC_ADDR
 menuconfig BCMDHD
 	bool "Broadcom Wireless Device Driver Support"
 	default y
+	
+menuconfig WLAN_RTL
+	bool "Realtek Wireless Device Driver Support"
+	default y
+
+menuconfig AICDHD
+	bool "AIC8800 Wireless Device Driver Support"
+	default n
+
+menuconfig AICDHD_USB
+	bool "AIC8800(USB) Wireless Device Driver Support"
+	default n
 
 if BCMDHD
 source "drivers/net/wireless/rockchip_wlan/rkwifi/Kconfig"
@@ -38,5 +50,12 @@ endif
 
 source "drivers/net/wireless/rockchip_wlan/cywdhd/Kconfig"
 source "drivers/net/wireless/rockchip_wlan/infineon/Kconfig"
+
+if WLAN_RTL
+source "drivers/net/wireless/rockchip_wlan/rtl8852be/Kconfig"
+endif
+if AICDHD
+source "drivers/net/wireless/rockchip_wlan/aic8800/Kconfig"
+endif
 
 endif # WL_ROCKCHIP

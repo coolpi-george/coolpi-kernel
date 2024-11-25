@@ -2,3 +2,5 @@
 obj-$(CONFIG_BCMDHD)	+= rkwifi/
 obj-$(CONFIG_CYW_BCMDHD)	+= cywdhd/
 obj-$(CONFIG_INFINEON_DHD)	+= infineon/
+obj-$(CONFIG_WLAN_RTL)	+= rtl8852be/
+obj-$(CONFIG_AICDHD)   += aic8800/
