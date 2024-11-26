@@ -1064,6 +1064,7 @@
 	gt9xx: gt9xx@5d {
 		compatible = "goodix,gt9xx";
 		reg = <0x5d>;
+		wakeup-source;
 		pinctrl-names = "default";
 		pinctrl-0 = <&gt9xx_gpio>;
 		touch-gpio = <&gpio0 RK_PC1 IRQ_TYPE_LEVEL_LOW>;
