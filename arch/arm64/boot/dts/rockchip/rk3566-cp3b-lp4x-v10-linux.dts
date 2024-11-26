@@ -89,6 +89,12 @@
 			linux,default-trigger = "heartbeat";
 		};	
 	};
+	
+	clk8m: clk8m {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <8000000>;
+	};
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
@@ -379,6 +385,23 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart9m2_xfer>;
+};
+
+&spi2 {
+	status = "okay";
+	max-freq = <24000000>;
+	pinctrl-0 = <&spi2m0_cs0 &spi2m0_pins>;
+
+	mcp2515: mcp2515@0{
+		compatible = "microchip,mcp2515";
+		reg = <0>;
+		spi-max-frequency = <24000000>;
+		clocks = <&clk8m>;
+		interrupt-parent = <&gpio0>;
+		interrupts = <RK_PC6 IRQ_TYPE_EDGE_FALLING>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&can_int &can_rst>;
+	};
 };
 
 &bus_npu {
@@ -1272,6 +1295,16 @@
 	headphone {
 		hp_det: hp-det {
 			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+	
+	can {
+		can_int: can-int {
+			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		can_rst: can-rst {
+			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_output_high>;
 		};
 	};
 
