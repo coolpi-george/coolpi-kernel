@@ -391,6 +391,8 @@
 	status = "okay";
 	max-freq = <24000000>;
 	pinctrl-0 = <&spi2m0_cs0 &spi2m0_pins>;
+	pinctrl-1 = <&spi2m0_cs0 &spi2m0_pins_hs>;
+	num-cs = <1>;
 
 	mcp2515: mcp2515@0{
 		compatible = "microchip,mcp2515";
