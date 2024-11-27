@@ -161,10 +161,10 @@ static int phy_rtl8211f_led_fixup(struct phy_device *phydev)
 
 static int phy_yt8531_led_fixup(struct phy_device *phydev)
 {
-	   phy_write(phydev, 0x1e, 0xA00D);//?¨¨D¡ä¦Ì??¡¤led1
-	   phy_write(phydev, 0x1f, 0x0026);//?¨´D¡ä¨ºy?Y
-	   phy_write(phydev, 0x1e, 0xA00E);//?¨¨D¡ä¦Ì??¡¤led2
-	   phy_write(phydev, 0x1f, 0x00D8);//?¨´D¡ä¨ºy?Y
+	   phy_write(phydev, 0x1e, 0xA00D);//?ï¿½ï¿½Dï¿½ï¿½ï¿½??ï¿½ï¿½led1
+	   phy_write(phydev, 0x1f, 0x0026);//?ï¿½ï¿½Dï¿½ä¨ºy?Y
+	   phy_write(phydev, 0x1e, 0xA00E);//?ï¿½ï¿½Dï¿½ï¿½ï¿½??ï¿½ï¿½led2
+	   phy_write(phydev, 0x1f, 0x00D8);//?ï¿½ï¿½Dï¿½ä¨ºy?Y
        return 0;
 }
 
@@ -6884,8 +6884,8 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 		 * register (if supported).
 		 */
 		priv->plat->enh_desc = priv->dma_cap.enh_desc;
-		priv->plat->pmt = priv->dma_cap.pmt_remote_wake_up &&
-				!priv->plat->use_phy_wol;
+		priv->plat->pmt = 0;//priv->dma_cap.pmt_remote_wake_up &&
+				//!priv->plat->use_phy_wol;
 		priv->hw->pmt = priv->plat->pmt;
 		if (priv->dma_cap.hash_tb_sz) {
 			priv->hw->multicast_filter_bins =
