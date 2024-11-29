@@ -182,7 +182,7 @@
 	es8316_sound: es8316-sound {
 		status = "okay";
 		compatible = "rockchip,multicodecs-card";
-		rockchip,card-name = "rk3588-es8316";
+		rockchip,card-name = "coolpi-es8316";
 		io-channels = <&saradc 3>;
 		io-channel-names = "adc-detect";
 		keyup-threshold-microvolt = <1800000>;
@@ -887,10 +887,6 @@
 	status = "okay";
 };
 
-&hdmi0_in_vp1 {
-	status = "okay";
-};
-
 &hdptxphy_hdmi0 {
 	status = "okay";
 };
@@ -973,7 +969,7 @@
 
 /*mipi dsi*/
 &i2c4 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c4m3_xfer>;
 	
@@ -1029,9 +1025,9 @@
 		#sound-dai-cells = <0>;
 		compatible = "everest,es8316";
 		reg = <0x10>;
-		clocks = <&cru I2S0_8CH_MCLKOUT>;
+		clocks = <&mclkout_i2s0>;
 		clock-names = "mclk";
-		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
+		assigned-clocks = <&mclkout_i2s0>;
 		assigned-clock-rates = <12288000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&i2s0_mclk>;
