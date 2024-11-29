@@ -25,8 +25,9 @@ echo "8. cm5-8uart"
 echo "9. cpnano"
 echo "10. cp1b"
 echo "11. cm3-zxfz"
-echo "12. cp3b"
-echo "13. exit"
+echo "12. cp3b-hmi8"
+echo "13. cp3b"
+echo "14. exit"
 echo
 read -rp "Enter option number: " choice
 
@@ -76,10 +77,14 @@ case $choice in
 	  BOARD="cm3-zxfz"
       ;;
     12)
+      echo "BOARD=cp3b-hmi8"
+	  BOARD="cp3b-hmi8"
+      ;;
+    13)
       echo "BOARD=cp3b"
 	  BOARD="cp3b"
       ;;
-    13)
+    14)
       echo "exit"
 	  exit 0
       ;;
@@ -142,6 +147,12 @@ case "$BOARD" in
     dtb="rk3566-zxfz-lp4x-v10-linux.dtb"
     txt_config_file="config_cpcm3_zxfz.txt"
     txt_extconf_file="extlinux_cpcm3_zxfz.conf"
+    ;;
+  cp3b-hmi8)
+    cfg="rk3566_cp3b_defconfig"
+    dtb="rk3566-cp3b-hmi8-lp4x-v10-linux.dtb"
+    txt_config_file="config_cp3b.txt"
+    txt_extconf_file="extlinux_cp3b.conf"
     ;;
   cp3b)
     cfg="rk3566_cp3b_defconfig"

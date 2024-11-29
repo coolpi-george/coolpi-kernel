@@ -27,7 +27,7 @@
 	compatible = "rockchip,rk3566";
 
 	chosen: chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0";
+		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 video=DSI-1:panel_orientation=left_side_up";
 	};
 	
 	aliases {
@@ -426,7 +426,7 @@
 };
 
 &dsi0 {
-	status = "disabled";
+	status = "okay";
 	//rockchip,lane-rate = <1000>;
 	panel@0 {
 		compatible = "aoly,sl008pa21y1285-b00", "simple-panel-dsi";
@@ -708,7 +708,7 @@
 };
 
 &dsi0_in_vp0 {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi0_in_vp1 {
@@ -716,7 +716,7 @@
 };
 
 &route_dsi0 {
-	status = "disabled";
+	status = "okay";
 	connect = <&vp0_out_dsi0>;
 };
 
@@ -726,7 +726,7 @@
 };
 
 &hdmi {
-	status = "okay";
+	status = "disabled";
 	rockchip,phy-table =
 		<92812500  0x8009 0x0000 0x0270>,
 		<165000000 0x800b 0x0000 0x026d>,
