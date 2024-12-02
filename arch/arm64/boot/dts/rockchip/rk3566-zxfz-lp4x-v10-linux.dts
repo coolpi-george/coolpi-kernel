@@ -113,7 +113,7 @@
 			240 241 242 243 244 245 246 247
 			248 249 250 251 252 253 254 255
 		>;
-		default-brightness-level = <200>;
+		default-brightness-level = <254>;
 	};
 
 	rk809_sound: rk809-sound {
@@ -121,22 +121,12 @@
 		compatible = "rockchip,multicodecs-card";
 		rockchip,card-name = "rockchip-rk809";
 		hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
-		io-channels = <&saradc 1>;
-		io-channel-names = "adc-detect";
-		keyup-threshold-microvolt = <1800000>;
-		poll-interval = <100>;
-		spk-con-gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 		rockchip,format = "i2s";
 		rockchip,mclk-fs = <256>;
 		rockchip,cpu = <&i2s1_8ch>;
 		rockchip,codec = <&rk809_codec>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&hp_det>;
-		play-pause-key {
-			label = "playpause";
-			linux,code = <KEY_PLAYPAUSE>;
-			press-threshold-microvolt = <2000>;
-		};
 	};
 	
 	dc_12v: dc-12v {
@@ -168,14 +158,16 @@
 		vin-supply = <&dc_12v>;
 	};
 	
-	vcc5v0_otg: vcc5v0-otg {
+	vcc5v0_otg: vcc5v0-otg-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0_otg";
-		regulator-always-on;
-		regulator-boot-on;
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
-		vin-supply = <&dc_12v>;
+		enable-active-high;
+		gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc5v0_sys>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_otg_en>;
 	};
 	
 	vcc5v0_usb: vcc5v0-usb {
@@ -733,6 +725,8 @@
 			assigned-clock-parents = <&cru I2S1_MCLKOUT_TX>, <&cru I2S1_MCLKOUT_TX>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&i2s1m0_mclk>;
+			use-ext-amplifier;
+			spk-ctl-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 			hp-volume = <20>;
 			spk-volume = <3>;
 			mic-in-differential;
@@ -1043,6 +1037,9 @@
 	usb {
 		vcc5v0_host_en: vcc5v0-host-en {
 			rockchip,pins = <4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		vcc5v0_otg_en: vcc5v0-otg-en {
+			rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 	
