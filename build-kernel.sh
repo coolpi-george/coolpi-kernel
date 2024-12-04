@@ -151,8 +151,8 @@ case "$BOARD" in
   cp3b-hmi8)
     cfg="rk3566_cp3b_defconfig"
     dtb="rk3566-cp3b-hmi8-lp4x-v10-linux.dtb"
-    txt_config_file="config_cp3b.txt"
-    txt_extconf_file="extlinux_cp3b.conf"
+    txt_config_file="config_cp3b_hmi8.txt"
+    txt_extconf_file="extlinux_cp3b_hmi8.conf"
     ;;
   cp3b)
     cfg="rk3566_cp3b_defconfig"
