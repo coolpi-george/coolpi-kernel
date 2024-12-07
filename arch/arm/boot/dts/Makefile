@@ -974,6 +974,7 @@ dtb-$(CONFIG_ARCH_RENESAS) += \
 dtb-$(CONFIG_ARCH_ROCKCHIP) += \
 	rv1106-cp1b.dtb   \
 	rv1106-cpnano.dtb   \
+	rv1106-core-test.dtb \
 	rv1103g-38x38-ipc-v10.dtb \
 	rv1103g-battery-ipc-v10.dtb \
 	rv1103g-battery-ipc-v11.dtb \
