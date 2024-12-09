@@ -16,15 +16,10 @@ echo "------------------------------------------"
 echo "Please enter a number to select your machine"
 echo
 echo "1. cp4b"
-echo "2. cp4b-hdmi-in"
-echo "3. cm5-evb"
-echo "4. cm5-evb-v11"
-echo "5. cm5-minipc"
-echo "6. cm5-notebook"
-echo "7. cm5-notebook-v20"
-echo "8. cm5-8uart"
-echo "9. cpnano"
-echo "10. exit"
+echo "2. cm5-evb"
+echo "3. cm5-notebook"
+echo "4. cm5-genbook"
+echo "5. exit"
 echo
 read -rp "Enter option number: " choice
 
@@ -34,38 +29,18 @@ case $choice in
 	  BOARD="cp4b"
       ;;
     2)
-      echo "BOARD=cp4b-hdmi-in"
-	  BOARD="cp4b-hdmi-in"
-      ;;
-    3)
-      echo "BOARD=cm5-evb"
-	  BOARD="cm5-evb"
-      ;;
-    4)
       echo "BOARD=cm5-evb-v11"
 	  BOARD="cm5-evb-v11"
       ;;
-    5)
-      echo "BOARD=cm5-minipc"
-	  BOARD="cm5-minipc"
-      ;;
-    6)
-      echo "BOARD=cm5-notebook"
-	  BOARD="cm5-notebook"
-      ;;
-    7)
+    3)
       echo "BOARD=cm5-notebook-v20"
 	  BOARD="cm5-notebook-v20"
       ;;
-    8)
-      echo "BOARD=cm5-8uart"
-	  BOARD="cm5-8uart"
+    4)
+      echo "BOARD=cm5-genbook"
+	  BOARD="cm5-genbook"
       ;;
-    9)
-      echo "BOARD=cpnano"
-	  BOARD="cpnano"
-      ;;
-    10)
+    5)
       echo "exit"
 	  exit 0
       ;;
@@ -120,6 +95,12 @@ case "$BOARD" in
     txt_config_file="config_cpcm5_notebook_v20.txt"
     txt_extconf_file="extlinux_cpcm5_notebook_v20.conf"
     ;;
+  cm5-genbook)
+    cfg="rk3588_cpcm5_genbook_defconfig"
+    dtb="rk3588-cpcm5-genbook.dtb"
+    txt_config_file="config_cpcm5_genbook.txt"
+    txt_extconf_file="extlinux_cpcm5_genbook.conf"
+	;;
   cm5-8uart)
     cfg="rk3588_cpcm5_defconfig"
     dtb="rk3588-cpcm5-8uart.dtb"
