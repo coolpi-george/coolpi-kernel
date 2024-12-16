@@ -219,7 +219,7 @@
 	es8316_sound: es8316-sound {
 		status = "okay";
 		compatible = "rockchip,multicodecs-card";
-		rockchip,card-name = "rk3588-es8316";
+		rockchip,card-name = "coolpi-es8316";
 		hp-det-gpio = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
 		io-channels = <&saradc 3>;
 		io-channel-names = "adc-detect";
