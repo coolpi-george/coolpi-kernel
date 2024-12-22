@@ -19,7 +19,8 @@ echo "1. cp4b"
 echo "2. cm5-evb"
 echo "3. cm5-notebook"
 echo "4. cm5-genbook"
-echo "5. exit"
+echo "5. cm5-lz"
+echo "6. exit"
 echo
 read -rp "Enter option number: " choice
 
@@ -41,6 +42,10 @@ case $choice in
 	  BOARD="cm5-genbook"
       ;;
     5)
+      echo "BOARD=cm5-lz"
+	  BOARD="cm5-lz"
+      ;;
+    6)
       echo "exit"
 	  exit 0
       ;;
@@ -106,6 +111,12 @@ case "$BOARD" in
     dtb="rk3588-cpcm5-8uart.dtb"
     txt_config_file="config_cpcm5_8uart.txt"
     txt_extconf_file="extlinux_cpcm5_8uart.conf"
+    ;;
+  cm5-lz)
+    cfg="rk3588_cpcm5_lz_defconfig"
+    dtb="rk3588-cpcm5-lz.dtb"
+    txt_config_file="config_cpcm5_lz.txt"
+    txt_extconf_file="extlinux_cpcm5_lz.conf"
     ;;
   cpnano)
     cfg="rv1106_cpnano_defconfig"
