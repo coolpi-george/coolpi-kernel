@@ -19,7 +19,7 @@
 
 / {
 	model = "RK3588S CoolPi 4B Board";
-	compatible = "rockchip,rk3588s-evb4-lp4x-v10", "rockchip,rk3588";
+	compatible = "rockchip,rk3588s-sbc", "rockchip,rk3588";
 	
 	aliases {
 		mmc0 = &sdhci;
@@ -162,7 +162,7 @@
 	dp0_sound: dp0-sound {
 		status = "okay";
 		compatible = "rockchip,hdmi";
-		rockchip,card-name= "rockchip,dp0";
+		rockchip,card-name= "rockchip-dp0";
 		rockchip,mclk-fs = <512>;
 		rockchip,cpu = <&spdif_tx2>;
 		rockchip,codec = <&dp0 1>;
@@ -711,6 +711,7 @@
 	keep-power-in-suspend;
 	mmc-pwrseq = <&sdio_pwrseq>;
 	non-removable;
+	rockchip,default-sample-phase = <180>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&sdiom1_pins>,<&wifi_poweren_gpio>;
 	//sd-uhs-sdr104;
@@ -1036,7 +1037,7 @@
 
 /*mipi csi*/
 &i2c8 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c8m2_xfer>;
 
@@ -1112,7 +1113,7 @@
 };
 
 &csi2_dphy0 {
-	status = "okay";
+	status = "disabled";
 
 	ports {
 		#address-cells = <1>;
@@ -1154,11 +1155,11 @@
 };
 
 &csi2_dphy0_hw {
-	status = "okay";
+	status = "disabled";
 };
 
 &mipi2_csi2 {
-	status = "okay";
+	status = "disabled";
 
 	ports {
 		#address-cells = <1>;
@@ -1189,11 +1190,11 @@
 };
 
 &rkcif {
-	status = "okay";
+	status = "disabled";
 };
 
 &rkcif_mipi_lvds2 {
-	status = "okay";
+	status = "disabled";
 
 	port {
 		cif_mipi2_in0: endpoint {
@@ -1203,7 +1204,7 @@
 };
 
 &rkcif_mipi_lvds2_sditf {
-	status = "okay";
+	status = "disabled";
 
 	port {
 		mipi_lvds2_sditf: endpoint {
@@ -1214,19 +1215,19 @@
 
 
 &rkcif_mmu {
-        status = "okay";
+        status = "disabled";
 };
 
 &rkisp0 {
-	status = "okay";
+	status = "disabled";
 };
 
 &isp0_mmu {
-	status = "okay";
+	status = "disabled";
 };
 
 &rkisp0_vir0 {
-	status = "okay";
+	status = "disabled";
 
 	port {
 		#address-cells = <1>;
