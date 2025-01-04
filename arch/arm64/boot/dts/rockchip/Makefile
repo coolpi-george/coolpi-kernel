@@ -345,3 +345,4 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-cp4.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cm5-test.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-genbook.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-lz.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-cp4-skh.dtb
