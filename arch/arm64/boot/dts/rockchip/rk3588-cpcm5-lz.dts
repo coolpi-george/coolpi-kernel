@@ -141,6 +141,19 @@
 		status = "okay";
 	};
 	
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		cooling-min-state = <0>;
+		cooling-max-state = <1>;
+		#cooling-cells = <2>;
+		pwms = <&pwm2 0 50000 0>;
+		cooling-levels = <0 255>;
+		rockchip,temp-trips = <
+			60000	0 //stop
+			80000	1 //start
+		>;
+	};
+	
 	es8316_sound: es8316-sound {
 		status = "disabled";
 		compatible = "rockchip,multicodecs-card";
@@ -802,6 +815,11 @@
 
 &wdt{
 	status = "okay";
+};
+
+&pwm2 {
+	status = "okay";
+	pinctrl-0 = <&pwm2m0_pins>;
 };
 
 &pwm12 {
