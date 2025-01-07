@@ -741,7 +741,7 @@
 };
 
 &u2phy2 {
-	status = "disabled";
+	status = "okay";
 };
 
 &u2phy3 {
@@ -755,7 +755,7 @@
 
 &u2phy2_host {
 	phy-supply = <&vcc5v0_host>;
-	status = "disabled";
+	status = "okay";
 };
 
 &u2phy3_host {
@@ -763,11 +763,11 @@
 };
 
 &usb_host0_ehci {
-	status = "disabled";
+	status = "okay";
 };
 
 &usb_host0_ohci {
-	status = "disabled";
+	status = "okay";
 };
 
 &usb_host1_ehci {
