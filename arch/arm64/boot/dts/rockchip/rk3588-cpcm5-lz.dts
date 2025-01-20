@@ -147,10 +147,10 @@
 		cooling-max-state = <1>;
 		#cooling-cells = <2>;
 		pwms = <&pwm2 0 50000 0>;
-		cooling-levels = <0 255>;
+		cooling-levels = <0 50 100 150 200 255>;
 		rockchip,temp-trips = <
-			60000	0 //stop
-			80000	1 //start
+			60000	1 //stop
+			75000	5 //start
 		>;
 	};
 	
@@ -811,6 +811,13 @@
     pinctrl-0 = <&spi0m1_cs0 &spi0m1_pins>;
     num-cs = <1>;
 	status = "okay";
+	max-freq = <50000000>;
+	spi_test@0 {
+		compatible = "rockchip,spidev";
+		reg = <0>;
+		spi-max-frequency = <5000000>;
+	};
+
 };
 
 &wdt{
