@@ -2049,7 +2049,7 @@ static void vop2_win_disable(struct vop2_win *win, bool skip_splice_win)
 		win->splice_win = NULL;
 	}
 
-	if (VOP_WIN_GET(vop2, win, enable) || VOP_WIN_GET_REG_BAK(vop2, win, enable)) {
+	if (VOP_WIN_GET_REG_BAK(vop2, win, enable)) {
 		VOP_WIN_SET(vop2, win, enable, 0);
 		/*
 		 * at rk3576 platform, the esmart1/3 can merge from vp1, but the enable bit: port0_extra_alpha_en
@@ -7053,6 +7053,8 @@ static int vop2_crtc_loader_protect(struct drm_crtc *crtc, bool on, void *data)
 		if (crtc->primary) {
 			win = to_vop2_win(crtc->primary);
 			if (VOP_WIN_GET(vop2, win, enable)) {
+				/* set enable in regbaks */
+				VOP_WIN_SET(vop2, win, enable, 1);
 				if (win->pd) {
 					win->pd->ref_count++;
 					win->pd->vp_mask |= BIT(vp->id);
