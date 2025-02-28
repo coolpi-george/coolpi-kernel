@@ -236,8 +236,8 @@ static const struct id_table ic_id_table[] = {
 	  .config_needed = false,
 	  .has_rom_version = true,
 	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8852bu_fw.bin",
-	  .cfg_name = "rtl_bt/rtl8852bu_config" },
+	  .fw_name  = "rtl8852bu_fw",
+	  .cfg_name = "rtl8852bu_config" },
 
 	/* 8852C */
 	{ IC_INFO(RTL_ROM_LMP_8852A, 0xc, 0xc, HCI_USB),
@@ -804,10 +804,10 @@ out_free:
 
 	if (btrtl_dev->ic_info->cfg_name) {
 		if (postfix) {
-			snprintf(cfg_name, sizeof(cfg_name), "%s-%s.bin",
+			snprintf(cfg_name, sizeof(cfg_name), "%s-%s",
 				 btrtl_dev->ic_info->cfg_name, postfix);
 		} else {
-			snprintf(cfg_name, sizeof(cfg_name), "%s.bin",
+			snprintf(cfg_name, sizeof(cfg_name), "%s",
 				 btrtl_dev->ic_info->cfg_name);
 		}
 		btrtl_dev->cfg_len = rtl_load_file(hdev, cfg_name,
@@ -1084,8 +1084,8 @@ MODULE_FIRMWARE("rtl_bt/rtl8822b_fw.bin");
 MODULE_FIRMWARE("rtl_bt/rtl8822b_config.bin");
 MODULE_FIRMWARE("rtl_bt/rtl8852au_fw.bin");
 MODULE_FIRMWARE("rtl_bt/rtl8852au_config.bin");
-MODULE_FIRMWARE("rtl_bt/rtl8852bu_fw.bin");
-MODULE_FIRMWARE("rtl_bt/rtl8852bu_config.bin");
+MODULE_FIRMWARE("rtl8852bu_fw");
+MODULE_FIRMWARE("rtl8852bu_config");
 MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw.bin");
 MODULE_FIRMWARE("rtl_bt/rtl8852cu_config.bin");
 MODULE_FIRMWARE("rtl_bt/rtl8851bu_fw.bin");
