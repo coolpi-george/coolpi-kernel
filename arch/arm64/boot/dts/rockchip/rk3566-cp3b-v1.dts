@@ -397,7 +397,7 @@
 	mcp2515: mcp2515@0{
 		compatible = "microchip,mcp2515";
 		reg = <0>;
-		spi-max-frequency = <24000000>;
+		spi-max-frequency = <12000000>;
 		clocks = <&clk8m>;
 		interrupt-parent = <&gpio0>;
 		interrupts = <RK_PC6 IRQ_TYPE_EDGE_FALLING>;
