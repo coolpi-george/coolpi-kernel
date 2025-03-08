@@ -26,6 +26,7 @@ obj-y += phy/
 obj-y += pse-pd/
 obj-y += mdio/
 obj-y += pcs/
+obj-y += lte/
 obj-$(CONFIG_RIONET) += rionet.o
 obj-$(CONFIG_NET_TEAM) += team/
 obj-$(CONFIG_TUN) += tun.o
