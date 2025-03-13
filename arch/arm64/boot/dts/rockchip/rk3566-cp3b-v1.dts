@@ -721,8 +721,44 @@
 };
 
 &gpu {
+	compatible = "rockchip, rk3568-mali","arm,mali-bifrost";
+	reg = <0x0 0xfde60000 0x0 0x20000>;
+	interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+				 <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+				 <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+	interrupt-names = "job", "mmu", "gpu";
+	clock-names = "core", "bus"; 
 	mali-supply = <&vdd_gpu>;
 	status = "okay";
+	/delete-property/ upthreshold;
+	/delete-property/ downdifferential;
+	/delete-node/ gpu_power_model;
+};
+
+&gpu_opp_table {
+		opp-200000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-300000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-400000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-600000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-700000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-800000000 {
+			/delete-property/ opp-supported-hw;
+		};
 };
 
 &hdmi {
