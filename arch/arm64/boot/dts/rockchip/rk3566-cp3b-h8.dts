@@ -23,11 +23,11 @@
 #include "rk3566.dtsi"
 
 / {
-	model = "Rockchip RK3566 CoolPi 3B-ZXFZ Board";
+	model = "Rockchip RK3566 CoolPi CP3B Board";
 	compatible = "rockchip,rk3566";
 
 	chosen: chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 video=DSI-1:panel_orientation=right_side_up ipv6.disable=1";
+		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 video=DSI-1:panel_orientation=left_side_up";
 	};
 	
 	aliases {
@@ -79,6 +79,22 @@
 			press-threshold-microvolt = <1750>;
 		};
 	};
+	
+	leds: leds {
+	status = "okay";
+		compatible = "gpio-leds";
+		led_pwr: led-pwr {
+			label = "led-pwr";
+			gpios = <&gpio2 RK_PB3 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "heartbeat";
+		};	
+	};
+	
+	clk8m: clk8m {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <8000000>;
+	};
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
@@ -117,7 +133,7 @@
 			240 241 242 243 244 245 246 247
 			248 249 250 251 252 253 254 255
 		>;
-		default-brightness-level = <254>;
+		default-brightness-level = <200>;
 	};
 
 	rk809_sound: rk809-sound {
@@ -125,12 +141,37 @@
 		compatible = "rockchip,multicodecs-card";
 		rockchip,card-name = "rockchip-rk809";
 		hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
+		io-channels = <&saradc 1>;
+		io-channel-names = "adc-detect";
+		keyup-threshold-microvolt = <1800000>;
+		poll-interval = <100>;
+		spk-con-gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 		rockchip,format = "i2s";
 		rockchip,mclk-fs = <256>;
 		rockchip,cpu = <&i2s1_8ch>;
 		rockchip,codec = <&rk809_codec>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&hp_det>;
+		play-pause-key {
+			label = "playpause";
+			linux,code = <KEY_PLAYPAUSE>;
+			press-threshold-microvolt = <2000>;
+		};
+	};
+	
+	hdmi_sound: hdmi-sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <128>;
+		simple-audio-card,name = "rockchip,hdmi";
+		status = "disabled";
+
+		simple-audio-card,cpu {
+				sound-dai = <&i2s0_8ch>;
+		};
+		simple-audio-card,codec {
+				sound-dai = <&hdmi>;
+		};
 	};
 	
 	dc_12v: dc-12v {
@@ -162,43 +203,34 @@
 		vin-supply = <&dc_12v>;
 	};
 	
-	vcc5v0_otg: vcc5v0-otg-regulator {
+	vcc5v0_otg: vcc5v0-otg {
 		compatible = "regulator-fixed";
-		regulator-name = "vcc5v0_otg";
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
-		vin-supply = <&vcc5v0_sys>;
+		gpio = <&gpio3 RK_PD3 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vcc5v0_otg_en>;
+		regulator-name = "vcc5v0_otg";
+		regulator-always-on;
 	};
 	
 	vcc5v0_host: vcc5v0-host {
 		compatible = "regulator-fixed";
 		enable-active-high;
-		gpio = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio3 RK_PD2 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vcc5v0_host_en>;
 		regulator-name = "vcc5v0_host";
 		regulator-always-on;
 	};
-
-	sdio_pwrseq: sdio-pwrseq {
-		compatible = "mmc-pwrseq-simple";
-		clocks = <&rk809 1>;
-		clock-names = "ext_clock";
+	
+	vcc5v0_eth: vcc5v0-eth {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&wifi_enable_h>;
-
-		/*
-		 * On the module itself this is one of these (depending
-		 * on the actual card populated):
-		 * - SDIO_RESET_L_WL_REG_ON
-		 * - PDN (power down when low)
-		 */
-		post-power-on-delay-ms = <200>;
-		reset-gpios = <&gpio2 RK_PB1 GPIO_ACTIVE_LOW>;
+		pinctrl-0 = <&vcc5v0_eth_en>;
+		regulator-name = "vcc5v0_eth";
+		regulator-always-on;
 	};
 
 	wireless-wlan {
@@ -208,7 +240,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&wifi_host_wake_irq>;
 		WIFI,host_wake_irq = <&gpio2 RK_PB2 GPIO_ACTIVE_HIGH>;
-		WIFI,poweren_gpio = <&gpio2 RK_PB1 GPIO_ACTIVE_HIGH>;
+		WIFI,poweren_gpio  = <&gpio2 RK_PB1 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
@@ -224,6 +256,16 @@
 		BT,reset_gpio    = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
 		BT,wake_gpio     = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
 		BT,wake_host_irq = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+	
+	rk_modem: rk-modem {
+		compatible="4g-modem-platdata";
+		pinctrl-names = "default";
+		pinctrl-0 = <&lte_disable &lte_power_en &lte_reset>;
+		4G,disable-gpio  = <&gpio2 RK_PB4 GPIO_ACTIVE_HIGH>;
+		4G,reset-gpio    = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
+		4G,power-gpio    = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 };
@@ -249,22 +291,6 @@
 
 &vp0 {
 	cursor-win-id = <ROCKCHIP_VOP2_CLUSTER0>;
-};
-
-/*
- * video_phy0 needs to be enabled
- * when dsi0 is enabled
- */
-&dsi0 {
-	status = "okay";
-};
-
-&dsi0_in_vp0 {
-	status = "disabled";
-};
-
-&dsi0_in_vp1 {
-	status = "okay";
 };
 
 &gmac1 {
@@ -309,10 +335,39 @@
 	status = "okay";
 };
 
+&video_phy1 {
+	status = "disabled";
+};
+
+&combphy1_usq {
+	rockchip,dis-u3otg1-port;
+	status = "okay";
+};
+
+&combphy2_psq {
+	status = "okay";
+};
+
+&pcie2x1 {
+	reset-gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+	vpcie3v3-supply = <&vcc3v3_sys>;
+	status = "okay";
+};
+
+&sata1 {
+	status = "okay";
+};
+
 &uart1 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&uart1m0_xfer &uart1m0_ctsn>;
+	pinctrl-0 = <&uart1m1_xfer>;
+};
+
+&uart3 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3m0_xfer>;
 };
 
 &uart5 {
@@ -331,6 +386,25 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart9m2_xfer>;
+};
+
+&spi2 {
+	status = "okay";
+	max-freq = <24000000>;
+	pinctrl-0 = <&spi2m0_cs0 &spi2m0_pins>;
+	pinctrl-1 = <&spi2m0_cs0 &spi2m0_pins_hs>;
+	num-cs = <1>;
+
+	mcp2515: mcp2515@0{
+		compatible = "microchip,mcp2515";
+		reg = <0>;
+		spi-max-frequency = <12000000>;
+		clocks = <&clk8m>;
+		interrupt-parent = <&gpio0>;
+		interrupts = <RK_PC6 IRQ_TYPE_EDGE_FALLING>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&can_int &can_rst>;
+	};
 };
 
 &bus_npu {
@@ -362,7 +436,7 @@
 		backlight = <&backlight>;
 		power-supply=<&vcc_3v3>;
 		enable-gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;
+		reset-gpios  = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&lcd_enable_gpio>, <&lcd_rst_gpio>;
@@ -384,10 +458,203 @@
 		dsi,lanes = <4>;
 
 		panel-init-sequence = [
-			05 78 01 11
-			05 14 01 29
-			
-			23 00 02 35 00			
+			23 00 04 ff 98 81 03
+            23 00 02 01 00
+            23 00 02 02 00
+            23 00 02 03 57    
+            23 00 02 04 D3    
+            23 00 02 05 00
+            23 00 02 06 11
+            23 00 02 07 08
+            23 00 02 08 00
+            23 00 02 09 00
+            23 00 02 0a 3F
+            23 00 02 0b 00
+            23 00 02 0c 00
+            23 00 02 0d 00
+            23 00 02 0e 00
+            23 00 02 0f 3F
+            23 00 02 10 3F
+            23 00 02 11 00
+            23 00 02 12 00
+            23 00 02 13 00
+            23 00 02 14 00
+            23 00 02 15 00
+            23 00 02 16 00
+            23 00 02 17 00
+            23 00 02 18 00
+            23 00 02 19 00
+            23 00 02 1a 00
+            23 00 02 1b 00
+            23 00 02 1c 00
+            23 00 02 1d 00
+            23 00 02 1e 40
+            23 00 02 1f 80
+            23 00 02 20 06
+            23 00 02 21 01
+            23 00 02 22 00
+            23 00 02 23 00
+            23 00 02 24 00
+            23 00 02 25 00
+            23 00 02 26 00
+            23 00 02 27 00
+            23 00 02 28 33
+            23 00 02 29 33
+            23 00 02 2a 00
+            23 00 02 2b 00
+            23 00 02 2c 00
+            23 00 02 2d 00
+            23 00 02 2e 00
+            23 00 02 2f 00
+            23 00 02 30 00
+            23 00 02 31 00
+            23 00 02 32 00
+            23 00 02 33 00
+            23 00 02 34 00
+            23 00 02 35 00      
+            23 00 02 36 00
+            23 00 02 37 00  
+            23 00 02 38 78	
+            23 00 02 39 00
+            23 00 02 3a 00 
+            23 00 02 3b 00
+            23 00 02 3c 00
+            23 00 02 3d 00
+            23 00 02 3e 00
+            23 00 02 3f 00
+            23 00 02 40 00
+            23 00 02 41 00
+            23 00 02 42 00
+            23 00 02 43 00  
+            23 00 02 44 00
+            23 00 02 50 00
+            23 00 02 51 23
+            23 00 02 52 45
+            23 00 02 53 67
+            23 00 02 54 89
+            23 00 02 55 ab
+            23 00 02 56 01
+            23 00 02 57 23
+            23 00 02 58 45
+            23 00 02 59 67
+            23 00 02 5a 89
+            23 00 02 5b ab
+            23 00 02 5c cd
+            23 00 02 5d ef
+            23 00 02 5e 00
+            23 00 02 5f 0D  
+            23 00 02 60 0D  
+            23 00 02 61 0C  
+            23 00 02 62 0C  
+            23 00 02 63 0F  
+            23 00 02 64 0F  
+            23 00 02 65 0E  
+            23 00 02 66 0E  
+            23 00 02 67 08  
+            23 00 02 68 02  
+            23 00 02 69 02  
+            23 00 02 6a 02  
+            23 00 02 6b 02  
+            23 00 02 6c 02  
+            23 00 02 6d 02  
+            23 00 02 6e 02  
+            23 00 02 6f 02  
+            23 00 02 70 14  
+            23 00 02 71 15  
+            23 00 02 72 06  
+            23 00 02 73 02  
+            23 00 02 74 02  
+            23 00 02 75 0D  
+            23 00 02 76 0D  
+            23 00 02 77 0C  
+            23 00 02 78 0C  
+            23 00 02 79 0F   
+            23 00 02 7a 0F   
+            23 00 02 7b 0E  
+            23 00 02 7c 0E  
+            23 00 02 7d 08    
+            23 00 02 7e 02  
+            23 00 02 7f 02   
+            23 00 02 80 02  
+            23 00 02 81 02  
+            23 00 02 82 02     
+            23 00 02 83 02  
+            23 00 02 84 02     
+            23 00 02 85 02  
+            23 00 02 86 14  
+            23 00 02 87 15  
+            23 00 02 88 06  
+            23 00 02 89 02  
+            23 00 02 8A 02  
+            23 00 04 FF 98 81 04
+            23 00 02 6E 3A   
+            23 00 02 6F 57   
+            23 00 02 35 1F   
+            23 00 02 3A 24   
+            23 00 02 8D 1F   
+            23 00 02 87 BA   
+            23 00 02 B2 D1
+            23 00 02 88 0B
+            23 00 02 38 01   
+            23 00 02 39 00
+            23 00 02 B5 07   
+            23 00 02 31 75
+            23 00 02 3B 98  
+            23 00 04 FF 98 81 01
+            23 00 02 22 0A 
+            23 00 02 31 09 
+            23 00 02 35 07 
+            23 00 02 53 82 
+            23 00 02 55 84 
+            23 00 02 50 85 
+            23 00 02 51 80 
+            23 00 02 60 10 
+            23 00 02 62 00 
+            23 00 02 42 55 
+            23 00 02 A0 0C	
+            23 00 02 A1 16	
+            23 00 02 A2 23	
+            23 00 02 A3 12	
+            23 00 02 A4 14	
+            23 00 02 A5 27	
+            23 00 02 A6 1C	
+            23 00 02 A7 1D	
+            23 00 02 A8 7E	
+            23 00 02 A9 1D	
+            23 00 02 AA 29	
+            23 00 02 AB 6C	
+            23 00 02 AC 19	
+            23 00 02 AD 16	
+            23 00 02 AE 49	
+            23 00 02 AF 20	
+            23 00 02 B0 27	
+            23 00 02 B1 50	
+            23 00 02 B2 64	
+            23 00 02 B3 3F	
+            23 00 02 C0 00	
+            23 00 02 C1 16	
+            23 00 02 C2 23	
+            23 00 02 C3 12
+            23 00 02 C4 14
+            23 00 02 C5 27
+            23 00 02 C6 1C
+            23 00 02 C7 1D
+            23 00 02 C8 7F
+            23 00 02 C9 1D	
+            23 00 02 CA 29	
+            23 00 02 CB 6C
+            23 00 02 CC 19
+            23 00 02 CD 16
+            23 00 02 CE 49	
+            23 00 02 CF 20
+            23 00 02 D0 27	
+            23 00 02 D1 50
+            23 00 02 D2 64	
+            23 00 02 D3 3F	
+            23 00 04 FF 98 81 00
+            23 00 02 35 00
+            05 78 01 11	  
+            05 14 01 29		
 		];
 
 		panel-exit-sequence = [
@@ -398,15 +665,15 @@
 		disp_timings0: display-timings {
 			native-mode = <&dsi0_timing0>;
 			dsi0_timing0: timing0 {
-				clock-frequency = <143000000>;
-				hactive = <1200>;
-				vactive = <1920>;
-				hfront-porch = <80>;
-				hsync-len = <1>;
-				hback-porch = <60>;
-				vfront-porch = <35>;
-				vsync-len = <1>;
-				vback-porch = <25>;
+				clock-frequency = <70800000>;
+				hactive = <800>;
+				vactive = <1280>;
+				hfront-porch = <40>;
+				hsync-len = <20>;
+				hback-porch = <20>;
+				vfront-porch = <30>;
+				vsync-len = <4>;
+				vback-porch = <28>;
 				hsync-active = <0>;
 				vsync-active = <0>;
 				de-active = <0>;
@@ -441,14 +708,87 @@
 
 };
 
+&dsi0_in_vp0 {
+	status = "okay";
+};
+
+&dsi0_in_vp1 {
+	status = "disabled";
+};
+
 &route_dsi0 {
 	status = "okay";
-	connect = <&vp1_out_dsi0>;
+	connect = <&vp0_out_dsi0>;
+	logo,rotate = <270>;
 };
 
 &gpu {
+	compatible = "rockchip, rk3568-mali","arm,mali-bifrost";
+	reg = <0x0 0xfde60000 0x0 0x20000>;
+	interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+				 <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+				 <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+	interrupt-names = "job", "mmu", "gpu";
+	clock-names = "core", "bus"; 
 	mali-supply = <&vdd_gpu>;
 	status = "okay";
+	/delete-property/ upthreshold;
+	/delete-property/ downdifferential;
+	/delete-node/ gpu_power_model;
+};
+
+&gpu_opp_table {
+		opp-200000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-300000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-400000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-600000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-700000000 {
+			/delete-property/ opp-supported-hw;
+		};
+
+		opp-800000000 {
+			/delete-property/ opp-supported-hw;
+		};
+};
+
+&hdmi {
+	status = "disabled";
+	rockchip,phy-table =
+		<92812500  0x8009 0x0000 0x0270>,
+		<165000000 0x800b 0x0000 0x026d>,
+		<185625000 0x800b 0x0000 0x01ed>,
+		<297000000 0x800b 0x0000 0x01ad>,
+		<594000000 0x8029 0x0000 0x0088>,
+		<000000000 0x0000 0x0000 0x0000>;
+};
+
+&hdmi_in_vp0 {
+	status = "okay";
+};
+
+&hdmi_in_vp1 {
+	status = "disabled";
+};
+
+&hdmi_sound {
+	status = "okay";
+};
+
+&route_hdmi {
+	status = "okay";
+	connect = <&vp0_out_hdmi>;
 };
 
 &i2c0 {
@@ -729,8 +1069,6 @@
 			assigned-clock-parents = <&cru I2S1_MCLKOUT_TX>, <&cru I2S1_MCLKOUT_TX>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&i2s1m0_mclk>;
-			use-ext-amplifier;
-			spk-ctl-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 			hp-volume = <20>;
 			spk-volume = <3>;
 			mic-in-differential;
@@ -764,16 +1102,21 @@
 	gt9xx: gt9xx@5d {
 		compatible = "goodix,gt9xx";
 		reg = <0x5d>;
+		wakeup-source;
 		pinctrl-names = "default";
 		pinctrl-0 = <&gt9xx_gpio>;
 		touch-gpio = <&gpio0 RK_PC1 IRQ_TYPE_LEVEL_LOW>;
 		reset-gpio = <&gpio0 RK_PC0 GPIO_ACTIVE_HIGH>;
-		max-x = <1200>;
-		max-y = <1920>;
-		tp-size = <9110>;
+		max-x = <800>;
+		max-y = <1280>;
+		tp-size = <9112>;
 		tp-supply = <&vcc_3v3>;
 	};
 	
+};
+
+&i2s0_8ch {
+	status = "okay";
 };
 
 &i2s1_8ch {
@@ -852,11 +1195,6 @@
 	status = "okay";
 };
 
-&route_hdmi {
-	status = "okay";
-	connect = <&vp0_out_hdmi>;
-};
-
 &saradc {
 	status = "okay";
 	vref-supply = <&vcca_1v8>;
@@ -885,23 +1223,6 @@
 	vqmmc-supply = <&vccio_sd>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
-	status = "okay";
-};
-
-&sdmmc1 {
-	max-frequency = <150000000>;
-	no-sd;
-	no-mmc;
-	bus-width = <4>;
-	disable-wp;
-	cap-sd-highspeed;
-	cap-sdio-irq;
-	keep-power-in-suspend;
-	mmc-pwrseq = <&sdio_pwrseq>;
-	non-removable;
-	pinctrl-names = "default";
-	pinctrl-0 = <&sdmmc1_bus4 &sdmmc1_cmd &sdmmc1_clk>;
-	sd-uhs-sdr104;
 	status = "okay";
 };
 
@@ -993,7 +1314,6 @@
 	status = "okay";
 };
 
-
 &vdpu {
 	status = "okay";
 };
@@ -1028,6 +1348,16 @@
 			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
+	
+	can {
+		can_int: can-int {
+			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		can_rst: can-rst {
+			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_output_high>;
+		};
+	};
 
 	pmic {
 		pmic_int: pmic_int {
@@ -1058,11 +1388,15 @@
 	};
 	
 	usb {
-		vcc5v0_host_en: vcc5v0-host-en {
-			rockchip,pins = <4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
 		vcc5v0_otg_en: vcc5v0-otg-en {
-			rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <3 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		
+		vcc5v0_host_en: vcc5v0-host-en {
+			rockchip,pins = <3 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		vcc5v0_eth_en: vcc5v0-eth-en {
+			rockchip,pins = <3 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 	
@@ -1098,6 +1432,20 @@
 	wireless-bluetooth {
 		uart1_gpios: uart1-gpios {
 			rockchip,pins = <2 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+	
+	rk-modem {
+		lte_disable: lte-disable {
+			rockchip,pins = <2 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		lte_power_en: lte-power-en {
+			rockchip,pins = <4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		lte_reset: lte-reset {
+			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
