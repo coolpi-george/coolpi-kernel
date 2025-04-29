@@ -484,33 +484,4 @@ status = "okay";
 		op-mode = <0>;          /* MCASP_IIS_MODE */
 		tdm-slots = <2>;
 		/* 16 serializers */
-		num-serializer = <16>;
-		serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-			0 0 2 1 0 0 0 0 0 0 0 0 0 0 0 0
-		>;
-		tx-num-evt = <1>;
-		rx-num-evt = <1>;
-
-		#sound-dai-cells = <0>;
-		status = "okay";
-};
-
-&spi0 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&spi0_pins>;
-	ti,pindir-d0-out-d1-in;
-	/* WLS1271 WiFi */
-	wlcore: wlcore@1 {
-		compatible = "ti,wl1271";
-		pinctrl-names = "default";
-		pinctrl-0 = <&wifi_pins>;
-		reg = <1>;
-		spi-max-frequency = <48000000>;
-		clock-xtal;
-		ref-clock-frequency = <38400000>;
-		interrupt-parent = <&gpio3>;
-		interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
-		vwlan-supply = <&vwlan_fixed>;
-	};
-};
+		num-serializer 
