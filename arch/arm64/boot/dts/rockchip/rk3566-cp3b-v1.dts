@@ -340,6 +340,7 @@
 };
 
 &combphy1_usq {
+	rockchip,dis-u3otg1-port;
 	status = "okay";
 };
 
@@ -420,9 +421,32 @@
 	status = "okay";
 };
 
+&lpddr4_params {
+	/* freq info, freq_0 is final frequency, unit: MHz */
+	freq_0 = <1560>;
+};
+
+&lpddr4x_params {
+	/* freq info, freq_0 is final frequency, unit: MHz */
+	freq_0 = <1560>;
+};
+
 &dmc {
 	center-supply = <&vdd_logic>;
 	status = "okay";
+};
+
+&cpu0_opp_table {
+	opp-1992000000 {
+		opp-supported-hw = <0xf9 0xffff>;
+		opp-hz = /bits/ 64 <1992000000>;
+		opp-microvolt = <1150000 1150000 1150000>;
+		opp-microvolt-L0 = <1150000 1150000 1150000>;
+		opp-microvolt-L1 = <1150000 1150000 1150000>;
+		opp-microvolt-L2 = <1125000 1125000 1150000>;
+		opp-microvolt-L3 = <1100000 1100000 1150000>;
+		clock-latency-ns = <40000>;
+	};
 };
 
 &dsi0 {
