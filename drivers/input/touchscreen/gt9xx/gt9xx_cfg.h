@@ -38,6 +38,10 @@ static u8 gtp_dat_gt9112[] = {
 	#include "GT911_Config_20211030_124453.cfg"
 };
 
+static u8 gtp_dat_gt9113[] = {
+	#include "GT928_Config_20250607_184330.cfg"
+};
+
 
 static u8 gtp_dat_8_9[] = {
 	/* TODO:Puts your update firmware data here! */

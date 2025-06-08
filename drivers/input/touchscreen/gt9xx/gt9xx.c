@@ -61,6 +61,7 @@ static u8 bgt911 = FALSE;
 static u8 bgt9110 = FALSE;
 static u8 bgt9111 = FALSE;
 static u8 bgt9112 = FALSE;
+static u8 bgt9113 = FALSE;
 static u8 bgt970 = FALSE;
 static u8 bgt910 = FALSE;
 static u8 gtp_change_x2y = TRUE;
@@ -1467,6 +1468,11 @@ static s32 gtp_init_panel(struct goodix_ts_data *ts)
 		send_cfg_buf[0] = gtp_dat_gt9112;
 		cfg_info_len[0] =  CFG_GROUP_LEN(gtp_dat_gt9112);
 	}
+	
+	if (bgt9113) {
+		send_cfg_buf[0] = gtp_dat_gt9113;
+		cfg_info_len[0] =  CFG_GROUP_LEN(gtp_dat_gt9113);
+	}
 
 	if (bgt970) {
 		send_cfg_buf[0] = gtp_dat_9_7;
@@ -2690,6 +2696,12 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
 		bgt9112 = TRUE;
 		gtp_change_x2y = TRUE;
 		gtp_x_reverse = FALSE;
+		gtp_y_reverse = TRUE;
+	} else if (val == 9113) {
+		m89or101 = FALSE;
+		bgt9113 = TRUE;
+		gtp_change_x2y = TRUE;
+		gtp_x_reverse = TRUE;
 		gtp_y_reverse = TRUE;
 	} else if (val == 970) {
 		m89or101 = FALSE;
