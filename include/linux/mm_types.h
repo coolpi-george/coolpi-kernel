@@ -449,16 +449,13 @@ struct vma_lock {
 struct vm_area_struct {
 	/* The first cache line has the info for VMA tree walking. */
 
-	union {
-		struct {
-			/* VMA covers [vm_start; vm_end) addresses within mm */
-			unsigned long vm_start;
-			unsigned long vm_end;
-		};
+	unsigned long vm_start;		/* Our start address within vm_mm. */
+	unsigned long vm_end;		/* The first byte after our end address
+					   within vm_mm. */
 #ifdef CONFIG_PER_VMA_LOCK
 		struct rcu_head vm_rcu;	/* Used for deferred freeing. */
 #endif
-	};
+
 
 	struct mm_struct *vm_mm;	/* The address space we belong to. */
 
@@ -467,14 +464,14 @@ struct vm_area_struct {
 	 * See vmf_insert_mixed_prot() for discussion.
 	 */
 	pgprot_t vm_page_prot;
-
+	
 	/*
 	 * Flags, see mm.h.
 	 * To modify use vm_flags_{init|reset|set|clear|mod} functions.
 	 */
 	union {
-		const vm_flags_t vm_flags;
-		vm_flags_t __private __vm_flags;
+        unsigned long vm_flags;		/* Flags, see mm.h. */
+		unsigned long __private __vm_flags;
 	};
 
 #ifdef CONFIG_PER_VMA_LOCK
