@@ -239,7 +239,7 @@
 	
 	vcc3v3_wifi: vcc3v3-wifi {
 		compatible = "regulator-fixed";
-		enable-active-high;
+		enable-active-low;
 		gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_LOW>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&wifi_en>;
