@@ -317,7 +317,7 @@
 	/*rx_delay = <0x2d>;*/
 
 	phy-handle = <&rgmii_phy0>;
-	status = "okay";
+	status = "disabled";
 
 	/*fixed-link {
 		speed = <100>;
@@ -1268,7 +1268,7 @@
 //host1
 &u2phy0_host {
 	phy-supply = <&vcc5v0_host>;
-	status = "okay";
+	status = "disabled";
 };
 
 &usbhost_dwc3 {
@@ -1276,43 +1276,43 @@
 	phy-names = "usb2-phy";
 	maximum-speed = "high-speed";
 	snps,dis_u2_susphy_quirk;
-	status = "okay";
+	status = "disabled";
 };
 
 &usbhost30 {
-	status = "okay";
+	status = "disabled";
 };
 
 //host2
 &u2phy1_otg {
 	phy-supply = <&vcc5v0_host>;
-	status = "okay";
+	status = "disabled";
 };
 
 &usb2phy1 {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host0_ehci {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host0_ohci {
-	status = "okay";
+	status = "disabled";
 };
 
 //host3
 &u2phy1_host {
 	phy-supply = <&vcc5v0_host>;
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host1_ehci {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host1_ohci {
-	status = "okay";
+	status = "disabled";
 };
 
 &vdpu {
