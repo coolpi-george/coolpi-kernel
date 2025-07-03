@@ -27,7 +27,7 @@
 	compatible = "rockchip,rk3566";
 
 	chosen: chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 video=DSI-1:panel_orientation=left_side_up";
+		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=tty0,ttyFIQ0  video=DSI-1:panel_orientation=left_side_up fbcon=rotate:3";
 	};
 	
 	aliases {
