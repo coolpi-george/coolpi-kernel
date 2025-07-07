@@ -421,8 +421,8 @@
 &spi0 {
 	status = "okay";
 	max-freq = <24000000>;
-	pinctrl-0 = <&spi0m0_cs1 &spi0m0_pins>;
-	pinctrl-1 = <&spi0m0_cs1 &spi0m0_pins_hs>;
+	pinctrl-0 = <&spi0m0_cs0 &spi0m0_pins>;
+	pinctrl-1 = <&spi0m0_cs0 &spi0m0_pins_hs>;
 	num-cs = <1>;
 	
 	spi_test@0 {
@@ -438,8 +438,8 @@
 &spi1 {
 	status = "okay";
 	max-freq = <24000000>;
-	pinctrl-0 = <&spi1m0_cs1 &spi1m0_pins>;
-	pinctrl-1 = <&spi1m0_cs1 &spi1m0_pins_hs>;
+	pinctrl-0 = <&spi1m0_cs0 &spi1m0_pins>;
+	pinctrl-1 = <&spi1m0_cs0 &spi1m0_pins_hs>;
 	num-cs = <1>;
 	
 	spi_test@0 {
@@ -474,8 +474,8 @@
 &spi3 {
 	status = "okay";
 	max-freq = <24000000>;
-	pinctrl-0 = <&spi3m0_cs1 &spi3m0_pins>;
-	pinctrl-1 = <&spi3m0_cs1 &spi3m0_pins_hs>;
+	pinctrl-0 = <&spi3m0_cs0 &spi3m0_pins>;
+	pinctrl-1 = <&spi3m0_cs0 &spi3m0_pins_hs>;
 	num-cs = <1>;
 	
 	spi_test@0 {
