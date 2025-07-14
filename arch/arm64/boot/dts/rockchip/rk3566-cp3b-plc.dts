@@ -443,12 +443,13 @@
 	num-cs = <1>;
 	
 	spi_test@0 {
-		compatible = "rockchip,spidev";
-		reg = <0>; //片选0或者1
-		spi-cpha; //设置 CPHA = 1，不配置则为 0
-		spi-cpol; //设置 CPOL = 1，不配置则为 0
-		spi-lsb-first; //IO 先传输 lsb
-		spi-max-frequency = <24000000>; //spi clk输出的时钟
+		compatible = "tianmao,spitbus";
+		reg = <0>;
+		spi-cpha;
+		spi-cpol;
+		spi-msb-first;
+		spi-max-frequency = <10000000>;
+		ready-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>; //请设置为实际所用GPIO
 	};
 };
 
@@ -465,7 +466,7 @@
 		spi-max-frequency = <12000000>;
 		clocks = <&clk8m>;
 		interrupt-parent = <&gpio0>;
-		interrupts = <RK_PC6 IRQ_TYPE_EDGE_FALLING>;
+		interrupts = <RK_PA6 IRQ_TYPE_EDGE_FALLING>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&can_int &can_rst>;
 	};
@@ -1148,7 +1149,7 @@
 
 	can {
 		can_int: can-int {
-			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 
 		can_rst: can-rst {
