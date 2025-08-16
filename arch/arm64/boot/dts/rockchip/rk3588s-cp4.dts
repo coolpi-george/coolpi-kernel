@@ -878,6 +878,11 @@
 	status = "okay";
 };
 
+&display_subsystem {
+        clocks = <&hdptxphy_hdmi0>;
+        clock-names = "hdmi0_phy_pll";
+};
+
 &hdmi0 {
 	enable-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
 	pinctrl-0 = <&hdmim0_tx0_cec &hdmim0_tx0_hpd &hdmim0_tx0_scl &hdmim0_tx0_sda>;
