@@ -387,6 +387,23 @@
 	pinctrl-0 = <&uart9m2_xfer>;
 };
 
+&spi1 {
+	status = "okay";
+	max-freq = <24000000>;
+	pinctrl-0 = <&spi1m0_cs0 &spi1m0_pins>;
+	pinctrl-1 = <&spi1m0_cs0 &spi1m0_pins_hs>;
+	num-cs = <1>;
+	
+	spi_test@0 {
+		compatible = "rockchip,spidev";
+		reg = <0>; //片选0或者1
+		spi-cpha; //设置 CPHA = 1，不配置则为 0
+		spi-cpol; //设置 CPOL = 1，不配置则为 0
+		spi-lsb-first; //IO 先传输 lsb
+		spi-max-frequency = <24000000>; //spi clk输出的时钟
+	};
+};
+
 &spi2 {
 	status = "okay";
 	max-freq = <24000000>;
