@@ -37,7 +37,7 @@ menuconfig WLAN_RTL
 	default y
 
 menuconfig AICDHD
-	bool "AIC8800 Wireless Device Driver Support"
+	bool "AIC8800(SDIO) Wireless Device Driver Support"
 	default n
 
 menuconfig AICDHD_USB
@@ -50,5 +50,8 @@ endif
 source "drivers/net/wireless/rockchip_wlan/rtl8852be/Kconfig"
 if AICDHD
 source "drivers/net/wireless/rockchip_wlan/aic8800/Kconfig"
+endif
+if AICDHD_USB
+source "drivers/net/wireless/rockchip_wlan/aic8800-usb/Kconfig"
 endif
 endif # WL_ROCKCHIP

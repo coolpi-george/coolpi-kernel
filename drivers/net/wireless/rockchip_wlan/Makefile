@@ -2,3 +2,4 @@
 obj-$(CONFIG_BCMDHD)	+= rkwifi/
 obj-$(CONFIG_WLAN_RTL) += rtl8852be/
 obj-$(CONFIG_AICDHD)   += aic8800/
+obj-$(CONFIG_AICDHD_USB)   += aic8800-usb/
