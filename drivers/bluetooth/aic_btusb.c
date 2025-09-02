@@ -42,6 +42,8 @@
 
 #include "aic_btusb.h"
 
+#define CONFIG_USE_FW_REQUEST                1
+
 #ifdef CONFIG_USE_FW_REQUEST
 #include <linux/firmware.h>
 #endif
@@ -2443,11 +2445,11 @@ struct aicbsp_info_t aicbsp_info = {
 
 char aic_fw_path[FW_PATH_MAX];
 #if (CONFIG_BLUEDROID == 0)
-static const char* aic_default_fw_path = "/lib/firmware/aic8800/USB/aic8800";
+static const char* aic_default_fw_path = "/lib/firmware/aic8800/USB/aic8800DC";
 #elif CONFIG_BLUEDROID == 1
-static const char* aic_default_fw_path = "/lib/firmware/aic8800/USB/aic8800";
+static const char* aic_default_fw_path = "/lib/firmware/aic8800/USB/aic8800DC";
 #else
-static const char* aic_default_fw_path = "/lib/firmware/aic8800/USB/aic8800";
+static const char* aic_default_fw_path = "/lib/firmware/aic8800/USB/aic8800DC";
 #endif
 #endif //CONFIG_USE_FW_REQUEST
 
@@ -2615,12 +2617,12 @@ int aic_load_firmware(u8 ** fw_buf, const char *name, struct device *device)
             return -1;
     }
 
-    //if (strlen(aic_fw_path) > 0) {
-    //    printk("%s: use customer define fw_path\n", __func__);
-    //    len = snprintf(path, FW_PATH_MAX, "%s/%s", aic_fw_path, name);
-    //} else {
+    if (strlen(aic_fw_path) > 0) {
+        printk("%s: use customer define fw_path\n", __func__);
+        len = snprintf(path, FW_PATH_MAX, "%s/%s", aic_fw_path, name);
+    } else {
         len = snprintf(path, FW_PATH_MAX, "%s/%s",aic_default_fw_path, name);
-    //}
+    }
 
     if (len >= FW_PATH_MAX) {
         printk("%s: %s file's path too long\n", __func__, name);
@@ -5330,7 +5332,6 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
     struct btusb_data *data = usb_get_intfdata(intf);
 #ifdef CONFIG_BT_WAKEUP_IN_PM
     firmware_info *fw_info = data->fw_info;
-	(void)fw_info;
 #endif
     AICBT_INFO("%s: event 0x%x, suspend count %d", __func__,
             message.event, data->suspend_count);
