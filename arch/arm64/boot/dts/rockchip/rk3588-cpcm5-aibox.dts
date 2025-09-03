@@ -950,8 +950,6 @@
 };
 
 &dp1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&dp1m2_pins>;
 	status = "okay";
 	
 	ports {
