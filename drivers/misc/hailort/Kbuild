@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-2.0
+# Hailo RT H8 modified driver for rk3588
+# version 4.18.x, Kbuild = rev.3
+# Raphael Kim @ bear robotics - 
+
+COMMON_SRC_DIRECTORY=common
+VDMA_SRC_DIRECTORY=vdma
+UTILS_SRC_DIRECTORY=utils
+
+obj-$(CONFIG_HAILORT_PCIE) += hailo_pci.o
+
+hailo_pci-objs += src/pcie.o
+hailo_pci-objs += src/fops.o
+hailo_pci-objs += src/utils.o
+hailo_pci-objs += src/sysfs.o
+hailo_pci-objs += src/pci_soc_ioctl.o
+
+hailo_pci-objs += $(COMMON_SRC_DIRECTORY)/fw_validation.o
+hailo_pci-objs += $(COMMON_SRC_DIRECTORY)/fw_operation.o
+hailo_pci-objs += $(COMMON_SRC_DIRECTORY)/pcie_common.o
+hailo_pci-objs += $(COMMON_SRC_DIRECTORY)/vdma_common.o
+hailo_pci-objs += $(COMMON_SRC_DIRECTORY)/hailo_resource.o
+
+hailo_pci-objs += $(UTILS_SRC_DIRECTORY)/logs.o
+
+hailo_pci-objs += $(VDMA_SRC_DIRECTORY)/vdma.o
+hailo_pci-objs += $(VDMA_SRC_DIRECTORY)/memory.o
+hailo_pci-objs += $(VDMA_SRC_DIRECTORY)/ioctl.o
+
+ccflags-y      += -Werror
+ccflags-y      += -I$(src)
+ccflags-y      += -I$(src)/include
+ccflags-y      += -I$(src)/$(COMMON_SRC_DIRECTORY)
+ccflags-y      += -I$(src)/$(VDMA_SRC_DIRECTORY)
+ccflags-y      += -I$(src)/$(UTILS_SRC_DIRECTORY)
+
+clean-files := $(hailo_pci-objs)
+

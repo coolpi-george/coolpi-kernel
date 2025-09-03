@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-2.0-only
+menu "Hailo RT H8 M2"
+
+config HAILORT_PCIE
+	tristate "Hailo RT M.2 PCIE driver"
+	depends on PCIE_BUS_DEFAULT
+	help
+	  Hailo RT model 8, M.2 AI accelerator.
+	  version 4.18.0
+	  Driver ported by Raphael Kim.
+
+endmenu
