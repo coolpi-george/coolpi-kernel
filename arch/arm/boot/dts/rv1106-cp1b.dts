@@ -12,7 +12,11 @@
 / {
 	model = "Rockchip RV1106G CoolPi 1B Board";
 	compatible = "rockchip,rv1106";
-	
+
+	chosen {
+		bootargs = "console=ttyFIQ0";
+	};
+
 	adc-keys {
 		compatible = "adc-keys";
 		io-channels = <&saradc 0>;
@@ -210,8 +214,8 @@
 	bus-width = <8>;
 	cap-mmc-highspeed;
 	non-removable;
-//	mmc-ddr-1_8v;
-//	mmc-hs200-1_8v;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
 	rockchip,default-sample-phase = <90>;
 	no-sdio;
 	no-sd;
