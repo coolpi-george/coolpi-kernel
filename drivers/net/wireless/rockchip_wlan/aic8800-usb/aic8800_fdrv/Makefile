@@ -2,7 +2,7 @@ EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
 EXTRA_CFLAGS += -Wno-implicit-fallthrough
 #EXTRA_CFLAGS += -Wno-unused-variable
 EXTRA_CFLAGS += -Wno-discarded-qualifiers
-
+EXTRA_CFLAGS +=-Wno-address
 RWNX_VERS_NUM := 6.4.3.0
 
 CONFIG_AIC8800_WLAN_SUPPORT = m
