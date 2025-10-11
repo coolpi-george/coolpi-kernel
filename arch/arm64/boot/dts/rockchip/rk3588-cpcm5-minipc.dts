@@ -545,6 +545,12 @@
 	status = "okay";
 };
 
+&gpu_mali {
+	mali-supply = <&vdd_gpu_s0>;
+	mem-supply = <&vdd_gpu_mem_s0>;
+	status = "okay";
+};
+
 &i2s0_8ch {
 	status = "okay";
 	pinctrl-0 = <&i2s0_lrck

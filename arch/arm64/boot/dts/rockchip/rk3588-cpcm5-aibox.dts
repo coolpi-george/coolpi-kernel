@@ -186,6 +186,7 @@
         };
 	
 	panel-edp1 {
+	    status = "disabled";
 		compatible = "simple-panel";
 		backlight = <&backlight>;
 		power-supply = <&vcc3v3_lcd>;
@@ -513,6 +514,12 @@
 };
 
 &gpu {
+	mali-supply = <&vdd_gpu_s0>;
+	mem-supply = <&vdd_gpu_mem_s0>;
+	status = "okay";
+};
+
+&gpu_mali {
 	mali-supply = <&vdd_gpu_s0>;
 	mem-supply = <&vdd_gpu_mem_s0>;
 	status = "okay";
