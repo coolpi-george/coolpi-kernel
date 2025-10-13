@@ -152,6 +152,7 @@ static void stmmac_exit_fs(struct net_device *dev);
 #define RTL_8211E_PHY_ID  0x001cc915
 #define RTL_8211F_PHY_ID  0x001cc916
 #define DP_83848_PHY_ID   0x20005c90
+#define YT_8531C_PHY_ID	  0x4f51e91b
 #endif
 
 int stmmac_bus_clks_config(struct stmmac_priv *priv, bool enabled)
@@ -6853,8 +6854,8 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 		 * register (if supported).
 		 */
 		priv->plat->enh_desc = priv->dma_cap.enh_desc;
-		priv->plat->pmt = priv->dma_cap.pmt_remote_wake_up &&
-				!priv->plat->use_phy_wol;
+		priv->plat->pmt = 0;//priv->dma_cap.pmt_remote_wake_up &&
+				//!priv->plat->use_phy_wol;
 		priv->hw->pmt = priv->plat->pmt;
 		if (priv->dma_cap.hash_tb_sz) {
 			priv->hw->multicast_filter_bins =
@@ -7023,6 +7024,114 @@ int stmmac_reinit_ringparam(struct net_device *dev, u32 rx_size, u32 tx_size)
 	return ret;
 }
 
+static unsigned char u_phyaddr[12] = {0};
+
+#include <linux/ctype.h>
+
+#ifndef MODULE
+static int __init mac_cmdline_opt(char *str)
+{
+        char *opt;
+        char *p = NULL;
+        int i = 0;
+        int j = 0;
+        int len = 0;
+        unsigned char temp;
+
+        if (!str || !*str)
+                return -EINVAL;
+
+	while ((opt = strsep(&str, ",")) != NULL) {
+                if (!strncmp(opt, "ethaddr:", 8)) {
+                        len = strlen(opt+8);
+                        if(len > 17)
+                                len = 17;
+                        p = opt + 8;
+                        for(i = 0; i< len; i++) {
+                                temp = tolower(p[i]);
+                                if(temp == ':')
+                                        continue;
+                                if(temp > '9')
+                                        u_phyaddr[j] = temp - 'a' + 10;
+                                else
+                                        u_phyaddr[j] = temp - 0x30;
+                                j++;
+                        }
+                }
+        }
+
+        return 0;
+}
+
+__setup("rtleth=", mac_cmdline_opt);
+#endif /* MODULE */
+
+#define MAC_ADDR_LEN    6
+
+static int stmmac_get_mac_address(struct net_device *dev)
+{
+	int i = 0;
+	int j = 0;
+	//int k = 0;
+	u8 mac_addr[MAC_ADDR_LEN];
+	int temp = 0;
+
+	j = 0;
+        for (i = 0; i < MAC_ADDR_LEN; i++) {
+                mac_addr[i] = (u_phyaddr[j] << 4) | u_phyaddr[j+1];
+                j += 2;
+        }
+
+	temp = mac_addr[5] + 1;
+	if (temp > 0xff) {
+		mac_addr[5] = 0;
+		mac_addr[4] += 1;
+		temp = mac_addr[4] + 1;
+		if (temp > 0xff) {
+			mac_addr[4] = 0;
+			mac_addr[3] += 1;
+			temp = mac_addr[3] + 1;
+			if (temp > 0xff) {
+				mac_addr[3] = 0;
+				mac_addr[2] += 1;
+				temp = mac_addr[2] + 1;
+				if (temp > 0xff) {
+					mac_addr[2] = 0;
+					mac_addr[1] += 1;
+					temp = mac_addr[1] + 1;
+					if (temp > 0xff) {
+						mac_addr[1] = 0;
+						mac_addr[0] += 1;
+					} else {
+						mac_addr[0] += 1;
+					}
+				} else {
+					mac_addr[1] += 1;
+				}
+			} else {
+				mac_addr[2] += 1;
+			}
+		} else {
+			mac_addr[3] += 1;
+		}
+	} else {
+		mac_addr[5] += 1;
+	}
+	
+	eth_hw_addr_set(dev, mac_addr);
+
+//   for (i = 0; i < MAC_ADDR_LEN; i++) {
+//	k = mac_addr[i];
+//	dev->dev_addr[i] = k;
+//
+
+        if (!is_valid_ether_addr(mac_addr)) {
+                eth_hw_addr_random(dev);
+	}
+
+	return 0;
+}
+
 #define SEND_VERIFY_MPAKCET_FMT "Send Verify mPacket lo_state=%d lp_state=%d\n"
 static void stmmac_fpe_lp_task(struct work_struct *work)
 {
@@ -7173,24 +7282,22 @@ static int phy_rtl8211e_led_fixup(struct phy_device *phydev)
 
 static int phy_rtl8211f_led_fixup(struct phy_device *phydev)
 {
-	int val;
+       /*switch to extension page31*/
+       phy_write(phydev, 31, 0xd04);
+       /*set led1(yellow) act*/
+       phy_write(phydev, 16, 0xa200);
+       /*switch back to page0*/
+       phy_write(phydev,31,0xa42);
+       return 0;
+}
 
-	printk("%s in\n", __func__);
-
-	val = phy_read(phydev, 31);
-	printk("%s in  val=0x%04x\n", __func__, val);
-	
-	/*switch to extension page31*/
-	phy_write(phydev, 31, 0xd04);
-
-	//phy_write(phydev, 0x10, 0x6d60);   /*led1-green led2-yellow */
-	phy_write(phydev, 0x10, 0xc160);   /*led1-green led2-yellow */
-	phy_write(phydev, 0x11, 0x8);  
-
-	/*switch back to page0*/
-	phy_write(phydev,31,0x0);
-
-	return 0;
+static int phy_yt8531_led_fixup(struct phy_device *phydev)
+{
+	   phy_write(phydev, 0x1e, 0xA00D);//?ï¿½ï¿½Dï¿½ï¿½ï¿??ï¿½ï¿½led1
+	   phy_write(phydev, 0x1f, 0x0026);//?ï¿½ï¿½Dï¿½ä¨ºy?Y
+	   phy_write(phydev, 0x1e, 0xA00E);//?ï¿½ï¿½Dï¿½ï¿½ï¿??ï¿½ï¿½led2
+	   phy_write(phydev, 0x1f, 0x00D8);//?ï¿½ï¿½Dï¿½ä¨ºy?Y
+       return 0;
 }
 #endif
 
@@ -7458,6 +7565,7 @@ int stmmac_dvr_probe(struct device *device,
 		netdev_err(ndev, "failed to setup phy (%d)\n", ret);
 		goto error_phy_setup;
 	}
+	stmmac_get_mac_address(ndev);
 
 	ret = register_netdev(ndev);
 	if (ret) {
@@ -7478,6 +7586,9 @@ ret = phy_register_fixup_for_uid(RTL_8201F_PHY_ID, 0xffffffff, phy_rtl8201f_led_
 if (ret)
 	pr_warn("Cannot register PHY board fixup.\n");
 ret = phy_register_fixup_for_uid(DP_83848_PHY_ID, 0xffffffff, phy_dp83848_led_fixup);
+if (ret)
+	pr_warn("Cannot register PHY board fixup.\n");
+ret = phy_register_fixup_for_uid(YT_8531C_PHY_ID, 0xffffffff, phy_yt8531_led_fixup);
 if (ret)
 	pr_warn("Cannot register PHY board fixup.\n");
 #endif

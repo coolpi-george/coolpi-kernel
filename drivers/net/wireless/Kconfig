@@ -15,11 +15,26 @@ menuconfig WLAN
 	  on them refer to the wireless wiki:
 
 	  https://wireless.wiki.kernel.org/en/users/Drivers
+	  
+menuconfig AICDHD
+	bool "AIC8800(SDIO) Wireless Device Driver Support"
+	default n
+
+menuconfig AICDHD_USB
+	bool "AIC8800(USB) Wireless Device Driver Support"
+	default n
 
 if WLAN
 
-source "drivers/net/wireless/admtek/Kconfig"
+if AICDHD
 source "drivers/net/wireless/aic8800_sdio/Kconfig"
+endif
+
+if AICDHD_USB
+source "drivers/net/wireless/aic8800_usb/Kconfig"
+endif
+
+source "drivers/net/wireless/admtek/Kconfig"
 source "drivers/net/wireless/ath/Kconfig"
 source "drivers/net/wireless/atmel/Kconfig"
 source "drivers/net/wireless/broadcom/Kconfig"
