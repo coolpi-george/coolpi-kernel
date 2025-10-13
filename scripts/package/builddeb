@@ -148,6 +148,7 @@ else
 	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
 fi
 cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
+cp -f "$srctree/demo-cfgs/extlinux.conf" "$tmpdir/boot/extlinux.conf"
 
 if is_enabled CONFIG_OF_EARLY_FLATTREE; then
 	# Only some architectures with OF support have this target
@@ -191,7 +192,19 @@ fi
 debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
 for script in postinst postrm preinst prerm ; do
 	mkdir -p "$tmpdir$debhookdir/$script.d"
-	cat <<EOF > "$tmpdir/DEBIAN/$script"
+	case "$script" in
+		"postinst") cat <<EOF > "$tmpdir/DEBIAN/$script"
+#!/bin/sh
+
+cp -f /boot/vmlinuz-$version /boot/Image.gz
+cp -f /boot/extlinux.conf /boot/firmware/extlinux/extlinux.conf
+gunzip -f /boot/Image.gz
+cp -f /boot/Image /boot/firmware/
+cp -f /usr/lib/linux-image-$version/rockchip/* /boot/firmware/
+exit 0
+EOF
+		;;
+		"postrm") cat <<EOF > "$tmpdir/DEBIAN/$script"
 #!/bin/sh
 
 set -e
@@ -205,6 +218,30 @@ export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)
 test -d $debhookdir/$script.d && run-parts --arg="$version" --arg="/$installed_image_path" $debhookdir/$script.d
 exit 0
 EOF
+		;;
+		"preinst") cat <<EOF > "$tmpdir/DEBIAN/$script"
+#!/bin/sh
+
+rm /lib/modules/$version/ -R
+exit 0
+EOF
+		;;
+		"prerm") cat <<EOF > "$tmpdir/DEBIAN/$script"
+#!/bin/sh
+
+set -e
+
+# Pass maintainer script parameters to hook scripts
+export DEB_MAINT_PARAMS="\$*"
+
+# Tell initramfs builder whether it's wanted
+export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)
+
+test -d $debhookdir/$script.d && run-parts --arg="$version" --arg="/$installed_image_path" $debhookdir/$script.d
+exit 0
+EOF
+		;;
+esac
 	chmod 755 "$tmpdir/DEBIAN/$script"
 done
 
