@@ -1,0 +1,154 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2024 Rockchip Electronics Co., Ltd.
+ */
+
+/dts-v1/;
+
+#include "rk3506.dtsi"
+#include <dt-bindings/display/drm_mipi_dsi.h>
+#include <dt-bindings/input/rk-input.h>
+#include <dt-bindings/suspend/rockchip-rk3506.h>
+
+
+/ {
+	model = "RK3506B CoolPi CP2B  Board";
+	compatible = "rockchip,rk3506b-cp2b", "rockchip,rk3506";
+	
+	chosen {
+		bootargs = "earlycon=uart8250,mmio32,0xff0a0000 console=ttyFIQ0";
+	};
+
+	vcc5v0_otg0: vcc5v0-otg0-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc5v0_otg0";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		enable-active-high;
+		gpio = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_otg0_en>;
+	};
+
+	vcc5v0_otg1: vcc5v0-otg1-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc5v0_otg1";
+		regulator-boot-on;
+		regulator-always-on;
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		enable-active-high;
+		gpio = <&gpio1 RK_PD0 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_otg1_en>;
+	};
+	
+	fiq_debugger: fiq-debugger {
+		compatible = "rockchip,fiq-debugger";
+		rockchip,serial-id = <0>;
+		rockchip,wake-irq = <0>;
+		rockchip,irq-mode-enable = <1>;
+		rockchip,baudrate = <115200>;	/* Only 115200 and 1500000 */
+		interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+	};
+};
+
+&can1 {
+	assigned-clocks = <&cru CLK_CAN0>;
+	assigned-clock-rates = <300000000>;
+	pinctrl-0 = <&rm_io25_can1_tx &rm_io26_can1_rx>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-0 = <&rm_io17_uart1_tx &rm_io16_uart1_rx>;
+	status = "okay";
+};
+
+&uart2 {
+	pinctrl-0 = <&rm_io2_uart2_tx &rm_io0_uart2_rx>;
+	status = "okay";
+};
+
+&uart3 {
+	pinctrl-0 = <&rm_io14_uart3_tx &rm_io15_uart3_rx>;
+	status = "okay";
+};
+
+&uart4 {
+	pinctrl-0 = <&rm_io31_uart4_tx &rm_io30_uart4_rx>;
+	status = "okay";
+};
+
+&gmac0 {
+	phy-mode = "rmii";
+	clock_in_out = "output";
+
+	snps,reset-gpio = <&gpio0 RK_PC2 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	snps,reset-delays-us = <0 20000 100000>;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&eth_rmii0_miim_pins
+		     &eth_rmii0_tx_bus2_pins
+		     &eth_rmii0_rx_bus2_pins
+		     &eth_rmii0_clk_pins>;
+
+	phy-handle = <&rmii_phy0>;
+	status = "okay";
+};
+
+&gmac1 {
+	phy-mode = "rmii";
+	clock_in_out = "output";
+
+	snps,reset-gpio = <&gpio4 RK_PA3 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	snps,reset-delays-us = <0 20000 100000>;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&eth_rmii1_miim_pins
+		     &eth_rmii1_tx_bus2_pins
+		     &eth_rmii1_rx_bus2_pins
+		     &eth_rmii1_clk_pins>;
+
+	phy-handle = <&rmii_phy1>;
+	status = "okay";
+};
+
+&mdio0 {
+	rmii_phy0: phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <0x1>;
+	};
+};
+
+&mdio1 {
+	rmii_phy1: phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <0x1>;
+	};
+};
+
+&u2phy_otg0 {
+	vbus-supply = <&vcc5v0_otg0>;
+	status = "okay";
+};
+
+&u2phy_otg1 {
+	phy-supply = <&vcc5v0_otg1>;
+	status = "okay";
+};
+
+&pinctrl {
+	usb {
+		vcc5v0_otg0_en: vcc5v0-otg0-en {
+			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		vcc5v0_otg1_en: vcc5v0-otg1-en {
+			rockchip,pins = <4 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};
