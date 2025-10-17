@@ -18,6 +18,77 @@
 	chosen {
 		bootargs = "earlycon=uart8250,mmio32,0xff0a0000 console=ttyFIQ0";
 	};
+	
+	leds {
+		compatible = "gpio-leds";
+
+		red-led {
+			default-state = "on";
+			gpios = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
+			label = "rockchip:work_led:power";
+			linux,default-trigger = "heartbeat";
+		};
+	};
+	
+	vcc12v_dc: vcc12v-dc {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc12v_dc";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <12000000>;
+		regulator-max-microvolt = <12000000>;
+	};
+
+	vcc_sys: vcc-sys {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_sys";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		vin-supply = <&vcc12v_dc>;
+	};
+
+	vcc3v3_stb: vcc3v3-stb {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_stb";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		vin-supply = <&vcc_sys>;
+	};
+
+	vcc_1v8: vcc-1v8 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_1v8";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		vin-supply = <&vcc3v3_stb>;
+	};
+
+	vcc_ddr: vcc-ddr {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_ddr";
+		regulator-always-on;
+		regulator-boot-on;
+		vin-supply = <&vcc_sys>;
+	};
+
+	vdd_arm: vdd-arm {
+		compatible = "pwm-regulator";
+		pwms = <&pwm0_4ch_0 0 5000 1>;
+		regulator-name = "vdd_arm";
+		regulator-min-microvolt = <710000>;
+		regulator-max-microvolt = <1207000>;
+		regulator-init-microvolt = <1011000>;
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-settling-time-up-us = <250>;
+		pwm-supply = <&vcc_sys>;
+	};
 
 	vcc5v0_otg0: vcc5v0-otg0-regulator {
 		compatible = "regulator-fixed";
@@ -25,9 +96,7 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&vcc5v0_otg0_en>;
+		gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
 	};
 
 	vcc5v0_otg1: vcc5v0-otg1-regulator {
@@ -38,9 +107,17 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio1 RK_PD0 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
+	};
+	
+	rk_modem: rk-modem {
+		compatible="4g-modem-platdata";
 		pinctrl-names = "default";
-		pinctrl-0 = <&vcc5v0_otg1_en>;
+		pinctrl-0 = <&lte_power_en &wifi_pwr>;
+		4G,disable-gpio  = <&gpio4 RK_PA4 GPIO_ACTIVE_HIGH>;
+		4G,reset-gpio    = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+		4G,power-gpio    = <&gpio0 RK_PA3 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	};
 	
 	fiq_debugger: fiq-debugger {
@@ -50,6 +127,51 @@
 		rockchip,irq-mode-enable = <1>;
 		rockchip,baudrate = <115200>;	/* Only 115200 and 1500000 */
 		interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+	};
+};
+
+&cma {
+	size = <0x800000>;
+};
+
+&cpu0 {
+	cpu-supply = <&vdd_arm>;
+};
+
+&wdt0{
+	status = "okay";
+};
+
+&pwm0_4ch_0 {
+	pinctrl-names = "active";
+	pinctrl-0 = <&rm_io21_pwm0_ch0>;
+	status = "okay";
+};
+
+&mmc {
+	cap-sd-highspeed;
+	cap-mmc-highspeed;
+	no-sd;
+	no-sdio;
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc_clk_pins &sdmmc_cmd_pins &sdmmc_bus4_pins>;
+	non-removable;
+	status = "okay";
+};
+
+&spi0 {
+	status = "okay";
+	max-freq = <24000000>;
+	pinctrl-0 = <&rm_io8_spi0_clk &rm_io9_spi0_mosi &rm_io10_spi0_miso &rm_io11_spi0_csn0>;
+	num-cs = <1>;
+	
+	spi_test@0 {
+		compatible = "rockchip,spidev";
+		reg = <0>; //片选0或者1
+		spi-cpha; //设置 CPHA = 1，不配置则为 0
+		spi-cpol; //设置 CPOL = 1，不配置则为 0
+		spi-lsb-first; //IO 先传输 lsb
+		spi-max-frequency = <24000000>; //spi clk输出的时钟
 	};
 };
 
@@ -79,6 +201,22 @@
 &uart4 {
 	pinctrl-0 = <&rm_io31_uart4_tx &rm_io30_uart4_rx>;
 	status = "okay";
+};
+
+&i2c2 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&rm_io4_i2c2_scl &rm_io5_i2c2_sda>;
+	status = "okay";
+	
+	hym8563: hym8563@51 {
+		compatible = "haoyu,hym8563";
+		reg = <0x51>;
+		#clock-cells = <0>;
+		clock-frequency = <32768>;
+		clock-output-names = "hym8563";
+		status = "okay";
+	};
 };
 
 &gmac0 {
@@ -131,8 +269,18 @@
 	};
 };
 
+&usb2phy {
+	status = "okay";
+};
+
 &u2phy_otg0 {
+	/* Only switch date-role manually */
 	vbus-supply = <&vcc5v0_otg0>;
+	status = "okay";
+};
+
+&usb20_otg0 {
+	dr_mode = "host";
 	status = "okay";
 };
 
@@ -141,14 +289,81 @@
 	status = "okay";
 };
 
+&usb20_otg1 {
+	dr_mode = "host";
+	status = "okay";
+};
+
+&saradc {
+	vref-supply = <&vcc_1v8>;
+	status = "okay";
+};
+
+&tsadc {
+	status = "okay";
+};
+
+&rga2 {
+	status = "okay";
+};
+
+&rng {
+	status = "okay";
+};
+
+&rockchip_suspend {
+	rockchip,sleep-mode-config = <
+		(0
+		| RKPM_ARMOFF_DDRPD
+		| RKPM_24M_OSC_DIS
+		| RKPM_32K_CLK
+		| RKPM_32K_SRC_RC
+		| RKPM_PWM0_CH0_REGULATOR
+		)
+	>;
+
+	rockchip,apios-suspend = <
+		(0
+		| RKPM_PWREN_CORE_GPIO0A2 | RKPM_PWREN_CORE_ACT_LOW
+		| RKPM_PWREN_SLEEP_GPIO0A0 | RKPM_PWREN_SLEEP_ACT_LOW
+		)
+	>;
+
+#define GPIO0_IOC_GPIO0A_PULL_REG	0xff950200
+#define GPIO0_IOC_GPIO0B_PULL_REG	0xff950204
+#define GPIO0_IOC_GPIO0C_PULL_REG	0xff950208
+#define GPIO0A3_PULL_DOWN		0x00c00080
+#define GPIO0B0_PULL_DOWN		0x00030002
+#define GPIO0C5_PULL_DOWN		0x0c000800
+
+	/* Note: support max 16 pairs */
+	rockchip,sleep-io-config = <
+		GPIO0_IOC_GPIO0C_PULL_REG GPIO0C5_PULL_DOWN /* PWM0_CH0_CPU */
+		GPIO0_IOC_GPIO0A_PULL_REG GPIO0A3_PULL_DOWN /* PWM0_CH2_LCD_BL */
+		GPIO0_IOC_GPIO0B_PULL_REG GPIO0B0_PULL_DOWN /* SAI1_MCLK */
+	>;
+};
+
 &pinctrl {
-	usb {
+/*	usb {
 		vcc5v0_otg0_en: vcc5v0-otg0-en {
 			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
 		vcc5v0_otg1_en: vcc5v0-otg1-en {
 			rockchip,pins = <4 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};*/
+	
+	rk-modem {
+		lte_power_en: lte-power-en {
+			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+	
+	wifi{
+		wifi_pwr: wifi-pwr {
+			rockchip,pins = <0 RK_PA1 RK_FUNC_GPIO &pcfg_output_low>;
 		};
 	};
 };
