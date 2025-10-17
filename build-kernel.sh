@@ -26,11 +26,11 @@ mkdir -p $K_SRC/out/extlinux
 cp demo-cfgs/extlinux.conf ./out/extlinux/extlinux.conf
 case "$ARCH_TYPE" in
 arm64|aarch64)
-	cp arch/arm64/boot/zImage ./out/Image
+	cp arch/arm64/boot/Image ./out/Image
 	cp arch/arm64/boot/dts/rockchip/*.dtb ./out
 	cp demo-cfgs/initrd.img out/initrd.img ;;
 arm*)
-	cp arch/arm/boot/Image ./out/Image
+	cp arch/arm/boot/zImage ./out/Image
 	cp arch/arm/boot/dts/*.dtb ./out
 	cp demo-cfgs/initrd32.img out/initrd.img ;;
 esac

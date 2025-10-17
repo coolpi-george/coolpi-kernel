@@ -193,7 +193,9 @@ debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
 for script in postinst postrm preinst prerm ; do
 	mkdir -p "$tmpdir$debhookdir/$script.d"
 	case "$script" in
-		"postinst") cat <<EOF > "$tmpdir/DEBIAN/$script"
+		"postinst") 
+		if [ "$ARCH" = "arm64" ] ; then
+		cat <<EOF > "$tmpdir/DEBIAN/$script"
 #!/bin/sh
 
 cp -f /boot/vmlinuz-$version /boot/Image.gz
@@ -203,6 +205,16 @@ cp -f /boot/Image /boot/firmware/
 cp -f /usr/lib/linux-image-$version/rockchip/* /boot/firmware/
 exit 0
 EOF
+		else 
+		cat <<EOF > "$tmpdir/DEBIAN/$script"
+#!/bin/sh
+
+cp -f /boot/vmlinuz-$version /boot/firmware/Image
+cp -f /boot/extlinux.conf /boot/firmware/extlinux/extlinux.conf
+cp -f /usr/lib/linux-image-$version/rockchip/* /boot/firmware/
+exit 0
+EOF
+		fi
 		;;
 		"postrm") cat <<EOF > "$tmpdir/DEBIAN/$script"
 #!/bin/sh
