@@ -35,10 +35,10 @@ arm*)
 	cp demo-cfgs/initrd32.img out/initrd.img ;;
 esac
 
-cd $K_SRC/debian/linux-image/lib/modules
-tar -czf $K_SRC/out/modules.tar.gz *
-cd $K_SRC/debian/linux-headers/usr/src
-tar -czf $K_SRC/out/headers.tar.gz *
+cd $K_SRC/debian/linux-image/lib/
+tar -czf $K_SRC/out/modules.tar.gz modules
+cd $K_SRC/debian/linux-headers/usr/
+tar -czf $K_SRC/out/headers.tar.gz src
 
 cd $K_SRC
 

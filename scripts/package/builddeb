@@ -211,7 +211,7 @@ EOF
 
 cp -f /boot/vmlinuz-$version /boot/firmware/Image
 cp -f /boot/extlinux.conf /boot/firmware/extlinux/extlinux.conf
-cp -f /usr/lib/linux-image-$version/rockchip/* /boot/firmware/
+cp -f /usr/lib/linux-image-$version/* /boot/firmware/
 exit 0
 EOF
 		fi
