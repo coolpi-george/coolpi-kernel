@@ -7068,7 +7068,7 @@ __setup("rtleth=", mac_cmdline_opt);
 
 #define MAC_ADDR_LEN    6
 
-static int stmmac_get_mac_address(struct net_device *dev)
+static int stmmac_get_mac_address(struct net_device *dev,u8 id)
 {
 	int i = 0;
 	int j = 0;
@@ -7081,7 +7081,7 @@ static int stmmac_get_mac_address(struct net_device *dev)
                 mac_addr[i] = (u_phyaddr[j] << 4) | u_phyaddr[j+1];
                 j += 2;
         }
-
+if(id == 0){
 	temp = mac_addr[5] + 1;
 	if (temp > 0xff) {
 		mac_addr[5] = 0;
@@ -7117,6 +7117,44 @@ static int stmmac_get_mac_address(struct net_device *dev)
 	} else {
 		mac_addr[5] += 1;
 	}
+}
+else{
+	temp = mac_addr[5] + 2;
+	if (temp > 0xff) {
+		mac_addr[5] = 0;
+		mac_addr[4] += 1;
+		temp = mac_addr[4] + 1;
+		if (temp > 0xff) {
+			mac_addr[4] = 0;
+			mac_addr[3] += 1;
+			temp = mac_addr[3] + 1;
+			if (temp > 0xff) {
+				mac_addr[3] = 0;
+				mac_addr[2] += 1;
+				temp = mac_addr[2] + 1;
+				if (temp > 0xff) {
+					mac_addr[2] = 0;
+					mac_addr[1] += 1;
+					temp = mac_addr[1] + 1;
+					if (temp > 0xff) {
+						mac_addr[1] = 0;
+						mac_addr[0] += 1;
+					} else {
+						mac_addr[0] += 1;
+					}
+				} else {
+					mac_addr[1] += 1;
+				}
+			} else {
+				mac_addr[2] += 1;
+			}
+		} else {
+			mac_addr[3] += 1;
+		}
+	} else {
+		mac_addr[5] += 2;
+	}
+}	
 	
 	eth_hw_addr_set(dev, mac_addr);
 
@@ -7565,7 +7603,8 @@ int stmmac_dvr_probe(struct device *device,
 		netdev_err(ndev, "failed to setup phy (%d)\n", ret);
 		goto error_phy_setup;
 	}
-	stmmac_get_mac_address(ndev);
+	printk("jx:mac probe address id=%d\n",priv->plat->bus_id);
+	stmmac_get_mac_address(ndev,priv->plat->bus_id);
 
 	ret = register_netdev(ndev);
 	if (ret) {
