@@ -176,30 +176,35 @@
 	};
 };
 
-&can1 {
+&can0 {
 	assigned-clocks = <&cru CLK_CAN0>;
 	assigned-clock-rates = <300000000>;
-	pinctrl-0 = <&rm_io25_can1_tx &rm_io26_can1_rx>;
+	pinctrl-0 = <&rm_io26_can0_tx &rm_io25_can0_rx>;
 	pinctrl-names = "default";
+	rockchip,rx-max-data = <4>;
 	status = "okay";
 };
 
 &uart1 {
+	pinctrl-names = "default";
 	pinctrl-0 = <&rm_io17_uart1_tx &rm_io16_uart1_rx>;
 	status = "okay";
 };
 
 &uart2 {
+	pinctrl-names = "default";
 	pinctrl-0 = <&rm_io2_uart2_tx &rm_io0_uart2_rx>;
 	status = "okay";
 };
 
 &uart3 {
+	pinctrl-names = "default";
 	pinctrl-0 = <&rm_io14_uart3_tx &rm_io15_uart3_rx>;
 	status = "okay";
 };
 
 &uart4 {
+	pinctrl-names = "default";
 	pinctrl-0 = <&rm_io31_uart4_tx &rm_io30_uart4_rx>;
 	status = "okay";
 };
