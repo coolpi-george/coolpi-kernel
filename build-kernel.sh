@@ -1,40 +1,45 @@
-#!/bin/bash
+#!/bin/sh
+#
+# Copyright 2025 coolpi-george <george@cool-pi.com>
+#
+# A simple kernel compilation script for generating kernel files for the CoolPi machine.
 
 K_SRC=`pwd`
+ARCH_TYPE=$1
 
-ARCH=`uname -m`
-if [ "$ARCH" == "x86_64" ]; then
-    export CROSS_COMPILE=aarch64-linux-gnu-
-fi
+CFG="coolpi_linux_defconfig"
 
-cfg="coolpi_linux_defconfig"
+case "$ARCH_TYPE" in
+arm64|aarch64)
+	export ARCH=arm64 
+	export CROSS_COMPILE=aarch64-linux-gnu- ;;
+arm*)
+	export ARCH=arm 
+	export CROSS_COMPILE=arm-linux-gnueabihf- ;;
+esac
 
-rm -rf $K_SRC/out
-rm -rf $K_SRC/out_modules
-rm -rf $K_SRC/out_headers
+
+make $CFG
+make bindeb-pkg -j16
+rm -rf $K_SRC/out/*
 mkdir -p $K_SRC/out/extlinux
-mkdir -p $K_SRC/out_modules
-mkdir -p $K_SRC/out_headers/usr/src/linux-headers-6.1.75
-
-make ARCH=arm64 LOCALVERSION= $cfg
-make ARCH=arm64 LOCALVERSION= -j8
-make ARCH=arm64 LOCALVERSION= modules -j8
-make ARCH=arm64 LOCALVERSION= modules_install INSTALL_MOD_PATH=out_modules
-make ARCH=arm64 LOCALVERSION= headers_install INSTALL_HDR_PATH=out_headers/usr/src/linux-headers-6.1.75
-      
-cp arch/arm64/boot/Image ./out/Image    
-cp arch/arm64/boot/dts/rockchip/*.dtb ./out
 cp demo-cfgs/extlinux.conf ./out/extlinux/extlinux.conf
-cp demo-cfgs/initrd.img out/initrd.img
+case "$ARCH_TYPE" in
+arm64|aarch64)
+	cp arch/arm64/boot/Image ./out/Image
+	cp arch/arm64/boot/dts/rockchip/*.dtb ./out
+	cp demo-cfgs/initrd.img out/initrd.img ;;
+arm*)
+	cp arch/arm/boot/zImage ./out/Image
+	cp arch/arm/boot/dts/*.dtb ./out
+	cp demo-cfgs/initrd32.img out/initrd.img ;;
+esac
 
-cd $K_SRC/out_modules/lib/modules/6.1.75
-unlink source
-unlink build
-ln -sf /usr/src/linux-headers-6.1.75/ build
-ln -sf /usr/src/linux-headers-6.1.75/ source
-cd $K_SRC/out_modules/lib/
-tar -czf ../../out/modules.tar.gz *
-cd $K_SRC/out_headers/usr/
-tar -czf ../../out/headers.tar.gz *
+cd $K_SRC/debian/linux-image/lib/
+tar -czf $K_SRC/out/modules.tar.gz modules
+cd $K_SRC/debian/linux-headers/usr/
+tar -czf $K_SRC/out/headers.tar.gz src
 
-exit 0
+cd $K_SRC
+
+
