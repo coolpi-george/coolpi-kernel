@@ -37,6 +37,7 @@
 #include <linux/user_namespace.h>
 #include <linux/fs_context.h>
 #include <uapi/linux/mount.h>
+#include <linux/delay.h>
 #include "internal.h"
 
 static int thaw_super_locked(struct super_block *sb);
@@ -1314,6 +1315,7 @@ int get_tree_bdev(struct fs_context *fc,
 	bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type);
 	if (IS_ERR(bdev)) {
 		errorf(fc, "%s: Can't open blockdev", fc->source);
+		msleep(200);
 		return PTR_ERR(bdev);
 	}
 
