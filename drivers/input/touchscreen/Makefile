@@ -57,6 +57,7 @@ obj-$(CONFIG_TOUCHSCREEN_GSL3673_800X1280)	+= gsl3673-800x1280.o
 gsl3673-800x1280-y := gsl3673_800x1280.o gsl_point_id.o
 obj-$(CONFIG_TOUCHSCREEN_GSLX680_PAD)	+= gslx680-pad.o
 gslx680-pad-y := gslx680_pad.o gsl_point_id.o
+obj-$(CONFIG_TOUCHSCREEN_JADARD_CHIPSET)	+= jadard/
 obj-$(CONFIG_TOUCHSCREEN_GT1X)		+= gt1x/
 obj-$(CONFIG_TOUCHSCREEN_GT9XX)		+= gt9xx/
 obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o

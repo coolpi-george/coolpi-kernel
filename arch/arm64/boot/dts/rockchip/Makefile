@@ -361,4 +361,6 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-uboot.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-plc.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-plc-uboot.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-wjb.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-wjb-uboot.dtb
 

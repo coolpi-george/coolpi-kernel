@@ -434,6 +434,12 @@ config TOUCHSCREEN_GSLX680_PAD
 	tristate "gslX680 touchpad driver for pad"
 	help
 	  gslX680 touchpad driver for pad
+	  
+config TOUCHSCREEN_JADARD_CHIPSET
+	tristate "JD9366TC touchscreens support"
+	depends on I2C && ARCH_ROCKCHIP
+	
+source "drivers/input/touchscreen/jadard/Kconfig"
 
 config TOUCHSCREEN_GT1X
 	tristate "GT1X touchscreens support"

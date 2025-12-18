@@ -1,0 +1,33 @@
+#
+# Jadard Touchscreen driver configuration
+#
+
+config TOUCHSCREEN_JADARD_MODULE
+	tristate "Jadard chipset module fuction"
+	depends on TOUCHSCREEN_JADARD_CHIPSET
+	help
+	  This switch whether to compile into a kernel module.
+config TOUCHSCREEN_JADARD_IC_JD9366T
+	tristate "Jadard chipset of JD9366T"
+	depends on TOUCHSCREEN_JADARD_CHIPSET
+	help
+	  This enables support for Jadard chipset of JD9366T.
+
+
+config JD_DB
+	tristate "Jadard driver test over Dragon Board"
+	depends on TOUCHSCREEN_JADARD_CHIPSET
+	help
+	  This enables support for Jadard driver test over Dragon Board.
+
+config JD_FB
+	tristate "Jadard driver suspend/resume event by system FB"
+	depends on TOUCHSCREEN_JADARD_CHIPSET
+	help
+	  This enables support for Jadard driver suspend/resume event by system FB.
+
+config JD_HID
+	tristate "Jadard HID over I2C/SPI function"
+	depends on TOUCHSCREEN_JADARD_CHIPSET
+	help
+	  This enables support for Jadard HID over I2C/SPI.
