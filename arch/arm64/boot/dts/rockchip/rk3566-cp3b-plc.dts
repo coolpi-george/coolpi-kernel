@@ -23,7 +23,7 @@
 #include "rk3566.dtsi"
 
 / {
-	model = "Rockchip RK3566 CoolPi CP3B Board";
+	model = "Rockchip RK3566 CoolPi CP3B-PLC Board";
 	compatible = "rockchip,rk3566";
 
 	chosen: chosen {
