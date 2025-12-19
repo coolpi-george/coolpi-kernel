@@ -249,7 +249,7 @@
 		clocks = <&rk809 1>;
 		clock-names = "ext_clock";
 		//wifi-bt-power-toggle;
-		uart_rts_gpios = <&gpio2 RK_PB5 GPIO_ACTIVE_LOW>;
+		//uart_rts_gpios = <&gpio2 RK_PB5 GPIO_ACTIVE_LOW>;
 		pinctrl-names = "default", "rts_gpio";
 		pinctrl-0 = <&uart1m0_rtsn>;
 		pinctrl-1 = <&uart1_gpios>;
@@ -476,7 +476,7 @@
 		backlight = <&backlight>;
 		power-supply=<&vcc_3v3>;
 		enable-gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
-		reset-gpios  = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;
+		reset-gpios  = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&lcd_enable_gpio>, <&lcd_rst_gpio>;
