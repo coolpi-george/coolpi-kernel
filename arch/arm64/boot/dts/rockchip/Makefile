@@ -355,6 +355,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-genbook.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-genbook-uboot.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-aibox.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-aibox-uboot.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-chn60-58.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-cpcm5-chn60-58-uboot.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h8.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h8-uboot.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10.dtb
@@ -363,4 +365,3 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-plc.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-plc-uboot.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-wjb.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-wjb-uboot.dtb
-
