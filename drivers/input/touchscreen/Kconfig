@@ -391,6 +391,8 @@ config TOUCHSCREEN_FT5726
 	help
 	  Say Y here if you have Focaltech touch panel.
 	  If unsure, say N.
+	  
+source "drivers/input/touchscreen/focaltech_touch_ft8201p/Kconfig"
 
 config TOUCHSCREEN_FUJITSU
 	tristate "Fujitsu serial touchscreen"
