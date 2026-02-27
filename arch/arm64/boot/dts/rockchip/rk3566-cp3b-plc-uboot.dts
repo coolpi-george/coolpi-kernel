@@ -83,8 +83,8 @@
 	leds: leds {
 	status = "okay";
 		compatible = "gpio-leds";
-		led_run: led-run {
-			label = "led-run";
+		led_pwr: led-pwr {
+			label = "led-pwr";
 			gpios = <&gpio4 RK_PC5 GPIO_ACTIVE_HIGH>;
 			linux,default-trigger = "heartbeat";
 		};	
