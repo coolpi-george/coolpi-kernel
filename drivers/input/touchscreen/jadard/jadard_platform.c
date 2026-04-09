@@ -317,7 +317,7 @@ int jadard_gpio_power_config(struct jadard_platform_data *pdata)
 {
     int error;
     struct i2c_client *client = pjadard_ts_data->client;
-
+	struct device_node *np = client->dev.of_node;
     error = jadard_regulator_configure(pdata);
     if (error) {
         JD_E("Failed to intialize hardware\n");
@@ -386,6 +386,11 @@ int jadard_gpio_power_config(struct jadard_platform_data *pdata)
         goto err_gpio_irq_req;
     }
 #endif
+
+	if (of_property_read_bool(np, "wakeup-source")){
+		device_init_wakeup(&client->dev, 1);
+		enable_irq_wake(pjadard_ts_data->jd_irq);
+	}
 
     return 0;
 

@@ -159,7 +159,7 @@
 
 /* Other config */
 #define JD_RST_PIN_FUNC
-/* #define JD_SMART_WAKEUP */
+/*#define JD_SMART_WAKEUP*/
 /* #define JD_SYS_CLASS_SMWP_EN */
 /* #define JD_HIGH_SENSITIVITY */
 /* #define JD_ROTATE_BORDER */

@@ -286,6 +286,10 @@
 
 &pcie2x1 {
 	reset-gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+	rockchip,perst-inactive-ms = <500>;
+	rockchip,keep-power-in-suspend;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pcie_rst>;
 	vpcie3v3-supply = <&vcc3v3_sys>;
 	status = "okay";
 };
@@ -701,8 +705,6 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&i2s1m0_mclk>;
 			hp-volume = <20>;
-			spk-volume = <3>;
-			mic-in-differential;
 			status = "okay";
 		};
 	};
@@ -982,6 +984,12 @@
 	rtc {
 		hym8563_int: hym8563-int {
 			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+	
+	pcie {
+		pcie_rst: pcie-rst {
+			rockchip,pins = <1 RK_PB2 RK_FUNC_GPIO &pcfg_output_high>;
 		};
 	};
 	

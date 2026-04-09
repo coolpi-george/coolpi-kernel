@@ -469,14 +469,14 @@
 &dsi0 {
 	status = "okay";
 	//rockchip,lane-rate = <1000>;
-	panel@0 {
+	dsi_panel: panel@0 {
 		compatible = "aoly,sl008pa21y1285-b00", "simple-panel-dsi";
 		reg = <0>;
 
 		backlight = <&backlight>;
 		power-supply=<&vcc_3v3>;
 //		enable-gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
-		reset-gpios  = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
+//		reset-gpios  = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&lcd_enable_gpio>, <&lcd_rst_gpio>;
@@ -1036,7 +1036,9 @@
 	jadard@68{
 		compatible ="jadard,jdcommon";
 		reg = <0x68>;
+		wakeup-source;
 		status = "okay";
+		//rockchip,panel-notifier = <&dsi_panel>;
 		interrupt-parent = <&gpio0>;
 		interrupts = <RK_PC1 IRQ_TYPE_EDGE_FALLING>;
 		jadard,panel-sense-nums = <20 36>;
@@ -1337,7 +1339,7 @@
 	
 	lcd {
 		lcd_rst_gpio: lcd-rst-gpio {
-			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_output_low>;
 		};
 
 		lcd_enable_gpio: lcd-enable-gpio {
