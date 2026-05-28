@@ -9,7 +9,7 @@
  *
  * Released under the GPLv2 only.
  */
-
+#define DEBUG
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/module.h>
@@ -148,7 +148,7 @@ struct usb_hub *usb_hub_to_struct_hub(struct usb_device *hdev)
 int usb_device_supports_lpm(struct usb_device *udev)
 {
 	/* Some devices have trouble with LPM */
-	if (udev->quirks & USB_QUIRK_NO_LPM)
+//	if (udev->quirks & USB_QUIRK_NO_LPM)
 		return 0;
 
 	/* Skip if the device BOS descriptor couldn't be read */
@@ -4932,10 +4932,13 @@ hub_port_init(struct usb_hub *hub, struct usb_device *udev, int port1,
 		driver_name = udev->bus->sysdev->driver->name;
 
 	if (udev->speed < USB_SPEED_SUPER)
+	{
+		dump_stack();
 		dev_info(&udev->dev,
 				"%s %s USB device number %d using %s\n",
 				(initial ? "new" : "reset"), speed,
 				devnum, driver_name);
+	}
 
 	if (initial) {
 		/* Set up TT records, if needed  */

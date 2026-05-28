@@ -63,7 +63,7 @@ EXPORT_SYMBOL_GPL(usb_disabled);
 
 #ifdef	CONFIG_PM
 /* Default delay value, in seconds */
-static int usb_autosuspend_delay = CONFIG_USB_AUTOSUSPEND_DELAY;
+static int usb_autosuspend_delay = -1;//CONFIG_USB_AUTOSUSPEND_DELAY;
 module_param_named(autosuspend, usb_autosuspend_delay, int, 0644);
 MODULE_PARM_DESC(autosuspend, "default autosuspend delay");
 

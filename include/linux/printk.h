@@ -59,7 +59,7 @@ static inline const char *printk_skip_headers(const char *buffer)
  * Default used to be hard-coded at 7, quiet used to be hardcoded at 4,
  * we're now allowing both to be set from kernel config.
  */
-#define CONSOLE_LOGLEVEL_DEFAULT CONFIG_CONSOLE_LOGLEVEL_DEFAULT
+#define CONSOLE_LOGLEVEL_DEFAULT 8//CONFIG_CONSOLE_LOGLEVEL_DEFAULT
 #define CONSOLE_LOGLEVEL_QUIET	 CONFIG_CONSOLE_LOGLEVEL_QUIET
 
 extern int console_printk[];
