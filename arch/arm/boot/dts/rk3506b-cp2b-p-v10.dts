@@ -133,6 +133,13 @@
 		rockchip,baudrate = <115200>;	/* Only 115200 and 1500000 */
 		interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
 	};
+	
+    //uart_adc: uart-adc {
+	//	compatible = "ultraman,uart-adc-2ch";
+	//	uart-dev  = "ttyS3";      /* 串口设备名 */
+	//	baudrate  = <9600>;        /* 波特率 */
+	//	status = "okay";
+	//};
 };
 
 &cma {
@@ -212,6 +219,9 @@
 };
 
 &uart3 {
+	compatible = "ultraman,uart-adc";
+	baudrate      = <9600>;        /* 串口波特率 */
+    channel-count = <2>;           /* ADC 通道个数 */
 	pinctrl-names = "default";
 	pinctrl-0 = <&rm_io14_uart3_tx &rm_io15_uart3_rx>;
 	status = "okay";
