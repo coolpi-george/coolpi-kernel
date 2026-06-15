@@ -1240,4 +1240,6 @@ endif # SPI_SLAVE
 config SPI_DYNAMIC
 	def_bool ACPI || OF_DYNAMIC || SPI_SLAVE
 
+source "drivers/spi/spi-multi-io/Kconfig"
+
 endif # SPI

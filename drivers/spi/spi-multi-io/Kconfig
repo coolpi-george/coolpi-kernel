@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# SPI Multi-IO driver configuration
+#
+
+config SPI_MULTI_IO
+	tristate "SPI Multi-IO (DI/DO/AI/AO) support"
+	depends on SPI
+	help
+	  SPI-to-multi-interface driver supporting two module types
+	  over a single chip-select SPI bus:
+
+	    Type1 - 8x Digital Input (DI) + 8x Digital Output (DO)
+	    Type2 - 4x Analog Input (AI) + 2x Analog Output (AO)
+
+	  Modules share one SPI bus and one CS line, differentiated
+	  by assigned addresses. Features:
+	    - Automatic module discovery and address assignment
+	    - sysfs interface for DI/DO/AI/AO access
+	    - Optional power-gpios for module power cycling
+	      to guarantee reliable scan
+	    - Power management (suspend/resume with state restore)
+
+	  Device tree compatible: "hqvt,spi-multi-io"
+
+	  Say M here to build as a module (spi_multi_io.ko).

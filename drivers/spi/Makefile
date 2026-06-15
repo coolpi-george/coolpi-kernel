@@ -154,3 +154,4 @@ obj-$(CONFIG_SPI_SLAVE_TIME)		+= spi-slave-time.o
 obj-$(CONFIG_SPI_SLAVE_SYSTEM_CONTROL)	+= spi-slave-system-control.o
 obj-$(CONFIG_SPI_SLAVE_ROCKCHIP_OBJ)	+= spidev-rkslv.o
 obj-$(CONFIG_SPI_SLAVE_ROCKCHIP_OBJ)    += spidev-rkmst.o
+obj-$(CONFIG_SPI_MULTI_IO)	+= spi-multi-io/
