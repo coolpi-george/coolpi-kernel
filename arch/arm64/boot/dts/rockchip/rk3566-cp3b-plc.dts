@@ -207,13 +207,13 @@
 		vin-supply = <&dc_12v>;
 	};
 	
-	vcc12v_sub0: vcc12v-sub0 {
+	vcc12v_sub1: vcc12v-sub1 {
 		compatible = "regulator-fixed";
 		enable-active-high;
-		gpio = <&gpio2 RK_PB0 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio2 RK_PB1 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&vcc12v_sub0_en>;
-		regulator-name = "vcc12v_sub0";
+		pinctrl-0 = <&vcc12v_sub1_en>;
+		regulator-name = "vcc12v_sub1";
 		regulator-always-on;
 	};
 	
@@ -440,9 +440,9 @@
         /* 模块电源控制GPIO（可选）
          * 如果提供此GPIO，驱动在模块扫描时会先关电再逐个上电，
          * 确保所有模块回到默认地址 0xAA */
-        power-gpios = <&gpio2 RK_PB1 GPIO_ACTIVE_HIGH>;
+        power-gpios = <&gpio2 RK_PB0 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&vcc12v_sub1_en>;
+		pinctrl-0 = <&vcc12v_sub0_en>;
     };
 };
 
