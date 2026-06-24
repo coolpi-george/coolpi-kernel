@@ -26,6 +26,8 @@
 #include <linux/string.h>
 #include <linux/errno.h>
 #include <linux/mutex.h>
+#include <linux/kobject.h>
+#include <linux/delay.h>
 #include "spi_multi_io.h"
 
 /* ========== 顶层属性 ========== */
@@ -48,6 +50,14 @@ static ssize_t scan_store(struct device *dev,
 	mutex_lock(&sio->lock);
 	ret = sio_scan_modules(sio);
 	mutex_unlock(&sio->lock);
+
+	/*
+	 * 触发 udev CHANGE 事件，让 udev 规则重新设置
+	 * 新创建的 modN/ 目录下文件的 0666 权限。
+	 * 等待 50ms 确保 udev 执行完 chmod，避免竞态。
+	 */
+	kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+	msleep(50);
 
 	if (ret < 0)
 		return ret;
@@ -283,7 +293,7 @@ static ssize_t mod_ai_all_show(struct device *dev,
 
 /*
  * 创建单个模块属性，返回 struct attribute *。
- * _name_dynamic: true 表示 name 是 kstrdup 分配的，清理时需 kfree
+ * _name_dynamic: true 表示 name 是 kstrdup 分配的，卸载时需 kfree
  */
 #define SIO_MOD_ATTR(_name, _mode, _show, _store, _mod_idx, _ch, _name_dynamic) \
 	({\
@@ -451,7 +461,6 @@ int sio_create_sysfs_interfaces(struct sio_device *sio)
 	struct device *dev = sio->dev;
 	int ret;
 
-	/* 创建顶层sysfs组 */
 	ret = sysfs_create_group(&dev->kobj, &sio_top_group);
 	if (ret < 0) {
 		dev_err(dev, "创建sysfs顶层组失败: %d\n", ret);
@@ -469,7 +478,6 @@ void sio_remove_sysfs_interfaces(struct sio_device *sio)
 {
 	int i;
 
-	/* 移除每个模块的sysfs目录并释放内存 */
 	for (i = 0; i < MAX_MODULES; i++) {
 		if (sio->mod_group[i]) {
 			sysfs_remove_group(&sio->dev->kobj,
@@ -479,6 +487,5 @@ void sio_remove_sysfs_interfaces(struct sio_device *sio)
 		}
 	}
 
-	/* 移除顶层组 */
 	sysfs_remove_group(&sio->dev->kobj, &sio_top_group);
 }
