@@ -12,7 +12,7 @@
 
 
 / {
-	model = "RK3506B CoolPi CP2B  Board";
+	model = "RK3506B CoolPi CP2B-P  Board";
 	compatible = "rockchip,rk3506b-cp2b-p", "rockchip,rk3506";
 	
 	chosen {
