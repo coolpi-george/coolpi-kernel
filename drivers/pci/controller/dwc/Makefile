@@ -25,7 +25,7 @@ obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
 obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
 obj-$(CONFIG_PCIE_VISCONTI_HOST) += pcie-visconti.o
 obj-$(CONFIG_PCIE_DW_ROCKCHIP) += pcie-dw-rockchip.o
-obj-$(CONFIG_PCIE_DW_DMATEST) += pcie-dw-dmatest.o
+#obj-$(CONFIG_PCIE_DW_DMATEST) += pcie-dw-dmatest.o
 obj-$(CONFIG_PCIE_DW_ROCKCHIP_EP) += pcie-dw-ep-rockchip.o
 
 # The following drivers are for devices that use the generic ACPI

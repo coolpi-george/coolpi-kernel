@@ -1,0 +1,156 @@
+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+/*
+ * Copyright (c) 2022 Rockchip Electronics Co., Ltd.
+ */
+
+#ifndef _UAPI__RK_PCIE_EP_H__
+#define _UAPI__RK_PCIE_EP_H__
+
+#include <linux/types.h>
+
+/* rkep device mode status definition */
+#define RKEP_MODE_BOOTROM       1
+#define RKEP_MODE_LOADER        2
+#define RKEP_MODE_KERNEL        3
+#define RKEP_MODE_FUN0          4
+/* Common status */
+#define RKEP_SMODE_INIT         0
+#define RKEP_SMODE_LNKRDY       1
+#define RKEP_SMODE_LNKUP        2
+#define RKEP_SMODE_ERR          0xff
+/* Firmware download status */
+#define RKEP_SMODE_FWDLRDY      0x10
+#define RKEP_SMODE_FWDLDONE     0x11
+/* Application status*/
+#define RKEP_SMODE_APPRDY       0x20
+
+/*
+ * rockchip driver cache ioctrl input param
+ */
+struct pcie_ep_dma_cache_cfg {
+	__u64 addr;
+	__u32 size;
+};
+
+struct pcie_ep_dma_block {
+	__u64 bus_paddr;
+	__u64 local_paddr;
+	__u32 size;
+};
+
+struct pcie_ep_dma_block_req {
+	__u16 vir_id;	/* Default 0 */
+	__u8 chn;
+	__u8 wr;
+	__u32 flag;
+#define PCIE_EP_DMA_BLOCK_FLAG_COHERENT BIT(0)		/* Cache coherent, 1-need, 0-None */
+	struct pcie_ep_dma_block block;
+};
+
+#define	PCIE_EP_OBJ_INFO_MAGIC 0x524B4550
+
+enum pcie_ep_obj_irq_type {
+	OBJ_IRQ_UNKNOWN,
+	OBJ_IRQ_DMA,
+	OBJ_IRQ_USER,
+	OBJ_IRQ_ELBI,
+};
+
+struct pcie_ep_obj_irq_dma_status {
+	__u32 wr;
+	__u32 rd;
+};
+
+enum pcie_ep_mmap_resource {
+	PCIE_EP_MMAP_RESOURCE_DBI,
+	PCIE_EP_MMAP_RESOURCE_BAR0,
+	PCIE_EP_MMAP_RESOURCE_BAR2,
+	PCIE_EP_MMAP_RESOURCE_BAR4,
+	PCIE_EP_MMAP_RESOURCE_USER_MEM,
+	PCIE_EP_MMAP_RESOURCE_RK3568_RC_DBI,
+	PCIE_EP_MMAP_RESOURCE_RK3588_RC_DBI,
+	PCIE_EP_MMAP_RESOURCE_BAR1,
+	PCIE_EP_MMAP_RESOURCE_BAR5,
+	PCIE_EP_MMAP_RESOURCE_CONTINUOUS_BUFFER,
+	PCIE_EP_MMAP_RESOURCE_MAX,
+};
+
+#define PCIE_EP_OBJ_INFO_MSI_DATA_NUM	0x8
+#define RKEP_EP_VIRTUAL_ID_MAX		(PCIE_EP_OBJ_INFO_MSI_DATA_NUM * 32) /* 256 virtual_id */
+
+/*
+ * rockchip ep device information which is store in BAR0
+ */
+struct pcie_ep_obj_info {
+	__u32 magic;
+	__u32 version;
+	struct {
+		__u16 mode;
+		__u16 submode;
+	} devmode;
+	__u32 msi_data[PCIE_EP_OBJ_INFO_MSI_DATA_NUM];
+	__u8 err_event[0x20];
+	__u8 rsvd0[0x4];
+	__u64 ep_bar0_phy_addr;
+	__u64 ep_bar1_phy_addr;
+	__u64 ep_bar2_phy_addr;
+	__u64 ep_bar5_phy_addr;
+	__u8 rsvd1[0x18C];
+
+	__u32 irq_type_rc;					/* Generate in ep isr, valid only for rc, clear in rc */
+	struct pcie_ep_obj_irq_dma_status dma_status_rc;	/* Generate in ep isr, valid only for rc, clear in rc */
+	__u32 irq_type_ep;					/* Generate in ep isr, valid only for ep, clear in ep */
+	struct pcie_ep_obj_irq_dma_status dma_status_ep;	/* Generate in ep isr, valid only for ep, clear in ep */
+	__u32 irq_user_data_rc;					/* Generate in ep, valid only for rc, No need to clear */
+	__u32 irq_user_data_ep;					/* Generate in rc, valid only for ep, No need to clear */
+	__u32 irq_rc_msi_en;
+	__u8 rsvd2[0xE0];
+	__u8 rsvd_user[0x100];
+};
+
+/*
+ * rockchip driver ep_obj poll ioctrl input param
+ */
+struct pcie_ep_obj_poll_virtual_id_cfg {
+	__u32 timeout_ms;
+	__u32 sync;
+	__u32 virtual_id;
+	__u32 poll_status;
+};
+
+struct pcie_ep_continuous_buffer_param {
+	__u64 dma_addr;
+	__u32 size;
+};
+
+struct pcie_ep_elbi_data_compare_and_swap_param {
+	__u32 offset;
+	__u32 old_val;
+	__u32 new_val;
+	int result;
+};
+
+#define PCIE_BASE	'P'
+#define PCIE_EP_GET_FUNC_DRV_VERSION				_IOR(PCIE_BASE, 0x00, unsigned int)
+#define PCIE_DMA_CACHE_INVALIDE					_IOW(PCIE_BASE, 0x01, struct pcie_ep_dma_cache_cfg)
+#define PCIE_DMA_CACHE_FLUSH					_IOW(PCIE_BASE, 0x02, struct pcie_ep_dma_cache_cfg)
+#define PCIE_DMA_IRQ_MASK_ALL					_IOW(PCIE_BASE, 0x03, int)
+#define PCIE_EP_RAISE_MSI					_IOW(PCIE_BASE, 0x04, int)
+#define PCIE_EP_SET_MMAP_RESOURCE				_IOW(PCIE_BASE, 0x06, int)
+#define PCIE_EP_RAISE_ELBI					_IOW(PCIE_BASE, 0x07, int)
+#define PCIE_EP_RESET_CTRL					_IOW(PCIE_BASE, 0x08, int)
+#define PCIE_EP_RESET_SLOT					_IO(PCIE_BASE, 0x09)
+#define PCIE_EP_REQUEST_VIRTUAL_ID				_IOR(PCIE_BASE, 0x10, int)
+#define PCIE_EP_RELEASE_VIRTUAL_ID				_IOW(PCIE_BASE, 0x11, int)
+#define PCIE_EP_RAISE_IRQ_USER					_IOW(PCIE_BASE, 0x12, int)
+#define PCIE_EP_POLL_IRQ_USER					_IOW(PCIE_BASE, 0x13, struct pcie_ep_obj_poll_virtual_id_cfg)
+#define PCIE_EP_OBJ_INFO_SYNC					_IOW(PCIE_BASE, 0x14, int)
+#define PCIE_EP_DMA_MSI_DETECT					_IOW(PCIE_BASE, 0x15, int)
+#define PCIE_EP_ELBI_DATA_COMPARE_AND_SWAP			_IOWR(PCIE_BASE, 0x16, struct pcie_ep_elbi_data_compare_and_swap_param)
+#define PCIE_EP_DMA_XFER_BLOCK					_IOW(PCIE_BASE, 0x20, struct pcie_ep_dma_block_req)
+
+#define PCIE_EP_CONTINUOUS_BUFFER_ALLOC				_IOWR(PCIE_BASE, 0x30, struct pcie_ep_continuous_buffer_param)
+#define PCIE_EP_CONTINUOUS_BUFFER_FREE				_IOW(PCIE_BASE, 0x31, struct pcie_ep_continuous_buffer_param)
+#define PCIE_EP_SET_MMAP_RESOURCE_CONTINUOUS_BUFFER		_IOW(PCIE_BASE, 0x32, struct pcie_ep_continuous_buffer_param)
+
+#endif
