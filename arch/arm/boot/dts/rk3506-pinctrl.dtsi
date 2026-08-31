@@ -301,7 +301,7 @@
 		eth_rmii1_clk_pins: eth-rmii1-clk-pins {
 			rockchip,pins =
 				/* eth_rmii1_clk */
-				<3 RK_PB0 2 &pcfg_pull_none>;
+				<3 RK_PB0 2 &pcfg_pull_down_drv_level_3>;
 		};
 	};
 
