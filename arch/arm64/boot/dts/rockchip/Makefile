@@ -369,3 +369,5 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-wjb.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-h10-wjb-uboot.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-aibox.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-aibox-uboot.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-vms-v10.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-cp3b-vms-uboot-v10.dtb
