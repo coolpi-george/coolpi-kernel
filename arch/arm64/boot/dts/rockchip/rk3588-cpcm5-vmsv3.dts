@@ -18,7 +18,7 @@
 #include "rk3588-rk806-single.dtsi"
 
 / {
-	model = "RK3588 CoolPi CM5 VMSV1 Board";
+	model = "RK3588 CoolPi CM5 VMSV2 Board";
 	compatible = "rockchip,rk3588-core", "rockchip,rk3588";
 	
 	aliases {
@@ -161,7 +161,21 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&typec5v_pwren>;
 	};
-
+	
+	vcc3v3_628: vcc3v3-628-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "rk628_pwr";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+		regulator-always-on;
+		enable-active-high;
+		gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc5v0_sys>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rk628_pwren>;
+	};
+	
     vcc_1v1_nldo_s3: vcc-1v1-nldo-s3 {
             compatible = "regulator-fixed";
             regulator-name = "vcc_1v1_nldo_s3";
@@ -171,6 +185,13 @@
             regulator-max-microvolt = <1100000>;
             vin-supply = <&vcc5v0_sys>;
     };
+	
+	ext_cam_clk: external-camera-clock {
+		compatible = "fixed-clock";
+		clock-frequency = <27000000>;
+		clock-output-names = "CLK_CAMERA_27MHZ";
+		#clock-cells = <0>;
+	};
 	
 };
 
@@ -370,6 +391,35 @@
 	status = "okay";
 };
 
+&usbdp_phy0 {
+
+	rockchip,udphy-tune-sequence = <
+		0x091c 0x13 0
+		0x191c 0x13 0
+		0x0c2c 0x0c 0
+		0x1c2c 0x0c 0
+	>;
+        rockchip,dp-lane-mux = < 2 3 >;
+        status = "okay";
+};
+
+&usbdp_phy0_dp {
+        status = "disabled";
+};
+
+&usbdp_phy0_u3 {
+        status = "okay";
+};
+
+&usbdrd3_0 {
+        status = "okay";
+};
+
+&usbdrd_dwc3_0 {
+        dr_mode = "host";
+        status = "okay";
+};
+
 &vdpu {
 	status = "okay";
 };
@@ -471,11 +521,11 @@
 };
 
 &mipi_dcphy0 {
-	status = "disabled";
+	status = "okay";
 };
 
 &mipi_dcphy1 {
-	status = "disabled";
+	status = "okay";
 };
 
 &uart2 {
@@ -514,20 +564,546 @@
 	};
 };
 
-&pinctrl {
+&spi1 {
+    status = "okay";
+    max-freq = <10000000>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&spi1m1_cs0 &spi1m1_cs1 &spi1m1_pins>;
 
-	rtl8111 {
-		rtl8111_isolate: rtl8111-isolate {
-			rockchip,pins = <1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;
+    spi_gs2971@0 {
+        status = "okay";
+        compatible = "semtech,gs2971";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+
+        reset-gpios = <&gpio4 RK_PB7 GPIO_ACTIVE_LOW>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk";
+        pinctrl-names = "default";
+        pinctrl-0 = < &gs2971_reset1>;
+    };
+    spi_gs2971@1 {
+        status = "okay";
+        compatible = "rockchip,spidev";
+        reg = <1>;
+        spi-max-frequency = <1000000>;
+		
+		reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_LOW>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk";
+        pinctrl-names = "default";
+        pinctrl-0 = < &gs2971_reset2>;
+    };
+};
+
+&spi0 {
+    status = "okay";
+    max-freq = <10000000>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&spi0m2_cs0 &spi0m2_cs1 &spi0m2_pins>;
+
+    spi_gs2971@0 {
+        status = "okay";
+        compatible = "semtech,gs2971";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+
+        reset-gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_LOW>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk";
+        pinctrl-names = "default";
+        pinctrl-0 = < &gs2971_reset3>;
+    };
+    spi_gs2971@1 {
+        status = "okay";
+        compatible = "rockchip,spidev";
+        reg = <1>;
+        spi-max-frequency = <1000000>;
+		
+		reset-gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk";
+        pinctrl-names = "default";
+        pinctrl-0 = < &gs2971_reset4>;
+    };
+};
+
+&i2c8 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c8m2_xfer>;
+	status = "okay";
+
+	rk628_csi: rk628_csi@50 {
+		reg = <0x50>;
+		compatible = "rockchip,rk628-bt1120-csi";
+		status = "okay";
+		power-domains = <&power RK3588_PD_VI>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rk628_pin>;
+		interrupt-parent = <&gpio4>;
+		interrupts = <RK_PB5 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B5
+		reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
+		continues-clk = <1>;
+
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "HDMI-MIPI2";
+		rockchip,camera-module-lens-name = "RK628-CSI";
+
+		port {
+			hdmiin_out1: endpoint {
+				remote-endpoint = <&hdmi_mipi2_in>;
+				data-lanes = <1 2 3 4>;
+			};
 		};
 	};
+};
 
+&csi2_dphy0 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			hdmi_mipi2_in: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&hdmiin_out1>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidphy0_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi2_csi2_input>;
+			};
+		};
+	};
+};
+
+&csi2_dphy0_hw {
+	status = "okay";
+};
+
+&mipi2_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi2_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidphy0_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi2_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in2>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds2 {
+	status = "okay";
+
+	port {
+		cif_mipi_in2: endpoint {
+			remote-endpoint = <&mipi2_csi2_output>;
+		};
+	};
+};
+
+&i2c5 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c5m3_xfer>;
+	status = "okay";
+
+	rk628_csi1: rk628_csi1@50 {
+		reg = <0x50>;
+		compatible = "rockchip,rk628-bt1120-csi";
+		status = "okay";
+		power-domains = <&power RK3588_PD_VI>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rk628_pin1>;
+		interrupt-parent = <&gpio4>;
+		interrupts = <RK_PB4 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B5
+		reset-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_LOW>;
+		continues-clk = <1>;
+
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "HDMI-MIPI4";
+		rockchip,camera-module-lens-name = "RK628-CSI";
+
+		port {
+			hdmiin_out2: endpoint {
+				remote-endpoint = <&hdmi_mipi4_in>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+	};
+};
+
+&csi2_dphy3 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			hdmi_mipi4_in: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&hdmiin_out2>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidphy3_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi4_csi2_input>;
+			};
+		};
+	};
+};
+
+&csi2_dphy1_hw {
+	status = "okay";
+};
+
+&mipi4_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi4_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidphy3_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi4_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in4>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds4 {
+	status = "okay";
+
+	port {
+		cif_mipi_in4: endpoint {
+			remote-endpoint = <&mipi4_csi2_output>;
+		};
+	};
+};
+
+&i2c4 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c4m3_xfer>;
+	status = "okay";
+
+	rk628_csi2: rk628_csi2@50 {
+		reg = <0x50>;
+		compatible = "rockchip,rk628-bt1120-csi";
+		status = "okay";
+		power-domains = <&power RK3588_PD_VI>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rk628_pin2>;
+		interrupt-parent = <&gpio4>;
+		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B5
+		reset-gpios = <&gpio4 RK_PA4 GPIO_ACTIVE_LOW>;
+		continues-clk = <1>;
+
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "HDMI-MIPI0";
+		rockchip,camera-module-lens-name = "RK628-CSI";
+
+		port {
+			hdmiin_out3: endpoint {
+				remote-endpoint = <&hdmi_mipi0_in>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+	};
+};
+
+&csi2_dcphy0 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			hdmi_mipi0_in: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&hdmiin_out3>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidcphy0_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi0_csi2_input>;
+			};
+		};
+	};
+};
+
+&mipi0_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi0_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidcphy0_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi0_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds {
+	status = "okay";
+
+	port {
+		cif_mipi_in: endpoint {
+			remote-endpoint = <&mipi0_csi2_output>;
+		};
+	};
+};
+
+&i2c2 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2m4_xfer>;
+	status = "okay";
+
+	rk628_csi3: rk628_csi3@50 {
+		reg = <0x50>;
+		compatible = "rockchip,rk628-bt1120-csi";
+		status = "okay";
+		power-domains = <&power RK3588_PD_VI>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rk628_pin3>;
+		interrupt-parent = <&gpio4>;
+		interrupts = <RK_PB1 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B1
+		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>;
+		continues-clk = <1>;
+
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "HDMI-MIPI1";
+		rockchip,camera-module-lens-name = "RK628-CSI";
+
+		port {
+			hdmiin_out4: endpoint {
+				remote-endpoint = <&hdmi_mipi1_in>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+	};
+};
+
+&csi2_dcphy1 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			hdmi_mipi1_in: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&hdmiin_out4>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidcphy1_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi1_csi2_input>;
+			};
+		};
+	};
+};
+
+&mipi1_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi1_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidcphy1_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi1_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in1>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds1 {
+	status = "okay";
+
+	port {
+		cif_mipi_in1: endpoint {
+			remote-endpoint = <&mipi1_csi2_output>;
+		};
+	};
+};
+
+&rkcif {
+	status = "okay";
+};
+
+&rkcif_mmu {
+	status = "okay";
+};
+
+&pinctrl {
 	usb-typec {
 		typec5v_pwren: typec5v-pwren {
 			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 	
+	rk628 {
+		rk628_pwren: rk628-pwren {
+			rockchip,pins = <4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+	
+	gs2971 {
+		gs2971_reset1: gs2971-reset1 {
+			rockchip,pins = <4 RK_PB7 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		gs2971_reset2: gs2971-reset2 {
+			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		gs2971_reset3: gs2971-reset3 {
+			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		gs2971_reset4: gs2971-reset4 {
+			rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+	
+	hdmiin {
+		rk628_pin: rk628-pin {
+		rockchip,pins = <4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>,//INT
+			<4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;//RESET
+		};
+		
+		rk628_pin1: rk628-pin1 {
+		rockchip,pins = <4 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>,//INT
+			<4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;//RESET
+		};
+		
+		rk628_pin2: rk628-pin2 {
+		rockchip,pins = <4 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>,//INT
+			<4 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;//RESET
+		};
+		
+		rk628_pin3: rk628-pin3 {
+		rockchip,pins = <4 RK_PB1 RK_FUNC_GPIO &pcfg_pull_up>,//INT
+			<4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;//RESET
+		};
+	};	
 
 };
-
