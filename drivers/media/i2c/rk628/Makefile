@@ -11,3 +11,6 @@ obj-$(CONFIG_VIDEO_RK628_CSI)	+= rk628-csi.o
 
 rk628-bt1120-objs	:= rk628_bt1120_v4l2.o
 obj-$(CONFIG_VIDEO_RK628_BT1120)	+= rk628-bt1120.o
+
+rk628-bt1120-csi-objs	:= rk628_bt1120_csi.o
+obj-$(CONFIG_VIDEO_RK628_BT1120_CSI)	+= rk628-bt1120-csi.o

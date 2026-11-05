@@ -121,7 +121,8 @@
 #define DUAL_DATA_SWAP			BIT(6)
 #define DEC_DUALEDGE_EN			BIT(5)
 #define SW_PROGRESS_EN			BIT(4)
-#define SW_YC_SWAP			BIT(3)
+#define SW_BT1120_YC_SWAP		BIT(3)
+#define SW_BT1120_UV_SWAP		BIT(2)
 #define SW_CAP_EN_ASYNC			BIT(1)
 #define SW_CAP_EN_PSYNC			BIT(0)
 #define GRF_RGB_DEC_CON1		0x0044
@@ -217,6 +218,20 @@
 #define GRF_OS_REG1			0x0144
 #define GRF_OS_REG2			0x0148
 #define GRF_OS_REG3			0x014c
+#define GRF_RGB_RX_DBG_MEAS0		0x0170
+#define RGB_RX_EVAL_TIME_MASK		GENMASK(27, 16)
+#define RGB_RX_MODET_EN			BIT(1)
+#define RGB_RX_DCLK_EN			BIT(0)
+#define GRF_BT1120_TIMING_CTRL0		0x0190
+#define BT1120_DSP_HS_END(x)		UPDATE(x, 28, 16)
+#define BT1120_DSP_HTOTAL(x)		UPDATE(x, 12, 0)
+#define GRF_BT1120_TIMING_CTRL1		0x0194
+#define BT1120_DSP_HACT_ST(x)		UPDATE(x, 28, 16)
+#define GRF_BT1120_TIMING_CTRL2		0x0198
+#define	BT1120_DSP_VS_END(x)		UPDATE(x, 28, 16)
+#define BT1120_DSP_VTOTAL(x)		UPDATE(x, 12, 0)
+#define GRF_BT1120_TIMING_CTRL3		0x019c
+#define BT1120_DSP_VACT_ST(x)		UPDATE(x, 28, 16)
 #define GRF_CSC_MATRIX_COE01_COE00	0x01a0
 #define GRF_CSC_MATRIX_COE10_COE02	0x01a4
 #define GRF_CSC_MATRIX_COE12_COE11	0x01a8
@@ -281,6 +296,11 @@ enum {
 	RK628F_VERSION,
 };
 
+enum rx_mode_type {
+	HDMI_MODE = 0,
+	BT1120_MODE,
+};
+
 struct mipi_timing {
 	u8 data_lp;
 	u8 data_prepare;
@@ -309,6 +329,7 @@ struct rk628 {
 	struct gpio_desc *hdmirx_det_gpio;
 	bool last_mipi_status;
 	bool is_suspend;
+	int rx_mode;
 };
 
 #define rk628_dbg(rk628, format, ...)	\

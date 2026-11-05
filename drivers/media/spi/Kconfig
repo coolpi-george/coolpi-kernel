@@ -20,6 +20,14 @@ config VIDEO_GS1662
 	select VIDEO_V4L2_SUBDEV_API
 	help
 	  Enable the GS1662 driver which serializes video streams.
+	  
+config VIDEO_GS2971
+	tristate "Gennum Serializers video"
+	depends on SPI && VIDEO_DEV
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	help
+	  Enable the GS2971 driver which serializes video streams.
 
 config VIDEO_ROCKCHIP_PREISP
 	tristate "Rockchip Image Signal Pre-processing driver"

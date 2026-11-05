@@ -1614,7 +1614,7 @@ static void rk628_post_process_csc(struct rk628 *rk628, bool is_output_full_rang
 	struct post_csc_coef csc_coef = {};
 	u32 val;
 
-	in_fmt = rk628_hdmirx_get_format(rk628);
+	in_fmt = rk628->rx_mode ? BUS_FMT_YUV422 : rk628_hdmirx_get_format(rk628);
 	out_fmt = rk628->tx_mode ? BUS_FMT_RGB : BUS_FMT_YUV422;
 
 	if (rk628->version == RK628D_VERSION) {
@@ -1628,7 +1628,7 @@ static void rk628_post_process_csc(struct rk628 *rk628, bool is_output_full_rang
 		bool is_input_full_range;
 
 		in_color_range = rk628_hdmirx_get_range(rk628);
-		in_color_space = rk628_hdmirx_get_color_space(rk628);
+		in_color_space = rk628->rx_mode ? HDMIRX_XVYCC601 : rk628_hdmirx_get_color_space(rk628);
 		input_color_space = rk628_csc_color_space_convert(in_color_space, in_fmt);
 		is_input_full_range = (in_color_range == HDMIRX_LIMIT_RANGE) ? false : true;
 		output_color_space = rk628_get_output_color_space(rk628, input_color_space);
