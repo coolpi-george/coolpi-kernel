@@ -3477,7 +3477,7 @@ static int rk628_csi_probe(struct i2c_client *client,
 						  dev, MKDEV(0, 0),
 						  csi,
 						  rk628_groups,
-						  "rk628");
+						  "%s", dev_name(&client->dev));
 	if (IS_ERR(csi->classdev))
 		goto err_hdl;
 
