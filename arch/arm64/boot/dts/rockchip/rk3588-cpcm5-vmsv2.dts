@@ -543,24 +543,24 @@
 	};
 };
 
-&i2c8 {
+&i2c5 {
 	clock-frequency = <400000>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c8m3_xfer>;
+	pinctrl-0 = <&i2c5m1_xfer>;
 	status = "okay";
 
-	rk628_csi: rk628_csi@50 {
+	rk628_csi1: rk628_csi1@50 {
 		reg = <0x50>;
 		compatible = "rockchip,rk628-csi-v4l2";
 		status = "okay";
 		power-domains = <&power RK3588_PD_VI>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&rk628_pin>;
+		pinctrl-0 = <&rk628_pin1>;
 		interrupt-parent = <&gpio4>;
-		interrupts = <RK_PB1 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B1
-		enable-gpios = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio4 RK_PA6 GPIO_ACTIVE_LOW>;
-		plugin-det-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_LOW>;
+		interrupts = <RK_PB5 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B5
+		enable-gpios = <&gpio4 RK_PA7 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
+		plugin-det-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_LOW>;
 		continues-clk = <1>;
 
 		rockchip,camera-module-index = <0>;
@@ -652,24 +652,24 @@
 	};
 };
 
-&i2c5 {
+&i2c8 {
 	clock-frequency = <400000>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c5m1_xfer>;
+	pinctrl-0 = <&i2c8m3_xfer>;
 	status = "okay";
 
-	rk628_csi1: rk628_csi1@50 {
+	rk628_csi: rk628_csi@50 {
 		reg = <0x50>;
 		compatible = "rockchip,rk628-csi-v4l2";
 		status = "okay";
 		power-domains = <&power RK3588_PD_VI>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&rk628_pin1>;
+		pinctrl-0 = <&rk628_pin>;
 		interrupt-parent = <&gpio4>;
-		interrupts = <RK_PB5 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B5
-		enable-gpios = <&gpio4 RK_PA7 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
-		plugin-det-gpios = <&gpio4 RK_PB2 GPIO_ACTIVE_LOW>;
+		interrupts = <RK_PB1 IRQ_TYPE_LEVEL_HIGH>;//GPIO4_B1
+		enable-gpios = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio4 RK_PA6 GPIO_ACTIVE_LOW>;
+		plugin-det-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_LOW>;
 		continues-clk = <1>;
 
 		rockchip,camera-module-index = <0>;
