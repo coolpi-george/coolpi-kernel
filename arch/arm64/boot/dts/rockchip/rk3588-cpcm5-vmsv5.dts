@@ -18,7 +18,7 @@
 #include "rk3588-rk806-single.dtsi"
 
 / {
-	model = "RK3588 CoolPi CM5 VMSV1 Board";
+	model = "RK3588 CoolPi CM5 VMSV5 Board";
 	compatible = "rockchip,rk3588-core", "rockchip,rk3588";
 	
 	aliases {
@@ -161,7 +161,21 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&typec5v_pwren>;
 	};
-
+	
+	vcc3v3_tp9950: vcc3v3-tp9950-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "tp9950_pwr";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+		regulator-always-on;
+		enable-active-high;
+		gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc5v0_sys>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tp9950_pwren>;
+	};
+	
     vcc_1v1_nldo_s3: vcc-1v1-nldo-s3 {
             compatible = "regulator-fixed";
             regulator-name = "vcc_1v1_nldo_s3";
@@ -171,6 +185,26 @@
             regulator-max-microvolt = <1100000>;
             vin-supply = <&vcc5v0_sys>;
     };
+	
+	ext_cam_clk: external-camera-clock {
+		compatible = "fixed-clock";
+		clock-frequency = <27000000>;
+		clock-output-names = "CLK_CAMERA_27MHZ";
+		#clock-cells = <0>;
+	};
+	
+	i2c_gpio: i2c@100 {
+		compatible = "i2c-gpio";
+		sda-gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;  // SDA
+		scl-gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;  // SCL
+		i2c-gpio,delay-us = <2>;    // ~100KHz；<5> 约50K，<1> 200K
+		i2c-gpio,timeout-ms = <100>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c_gpio_pins>;
+		status = "okay";
+	};
 	
 };
 
@@ -370,6 +404,35 @@
 	status = "okay";
 };
 
+&usbdp_phy0 {
+
+	rockchip,udphy-tune-sequence = <
+		0x091c 0x13 0
+		0x191c 0x13 0
+		0x0c2c 0x0c 0
+		0x1c2c 0x0c 0
+	>;
+        rockchip,dp-lane-mux = < 2 3 >;
+        status = "okay";
+};
+
+&usbdp_phy0_dp {
+        status = "disabled";
+};
+
+&usbdp_phy0_u3 {
+        status = "okay";
+};
+
+&usbdrd3_0 {
+        status = "okay";
+};
+
+&usbdrd_dwc3_0 {
+        dr_mode = "host";
+        status = "okay";
+};
+
 &vdpu {
 	status = "okay";
 };
@@ -471,11 +534,11 @@
 };
 
 &mipi_dcphy0 {
-	status = "disabled";
+	status = "okay";
 };
 
 &mipi_dcphy1 {
-	status = "disabled";
+	status = "okay";
 };
 
 &uart2 {
@@ -514,20 +577,552 @@
 	};
 };
 
-&pinctrl {
+&i2c_gpio {
+		compatible = "i2c-gpio";
+		status = "okay";
+	
+	tp99501: tp99501@45 {
+        status = "okay";
+        compatible = "techpoint,tp9950";
+        reg = <0x45>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk"; 
+		reset-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tp9950_reset1>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+        rockchip,camera-module-name = "HDMI-MIPI2"; 
+        rockchip,camera-module-lens-name = "default"; 
+        port { 
+			tp9950_out1: endpoint { 
+				remote-endpoint = <&mipi_in1_tp9950>; 
+				data-lanes = <1 2>; 
+                        }; 
+             }; 
+        };
+};
 
-	rtl8111 {
-		rtl8111_isolate: rtl8111-isolate {
-			rockchip,pins = <1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;
+&csi2_dphy1 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi_in1_tp9950: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&tp9950_out1>;
+				data-lanes = <1 2>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidphy1_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi2_csi2_input>;
+			};
 		};
 	};
+};
 
+&csi2_dphy0_hw {
+	status = "okay";
+};
+
+&mipi2_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi2_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidphy1_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi2_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in2>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds2 {
+	status = "okay";
+
+	port {
+		cif_mipi_in2: endpoint {
+			remote-endpoint = <&mipi2_csi2_output>;
+		};
+	};
+};
+
+&i2c4 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c4m3_xfer>;
+	status = "okay";
+
+	tp99502: tp99502@45 {
+        status = "okay";
+        compatible = "techpoint,tp9950";
+        reg = <0x45>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk"; 
+		reset-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tp9950_reset2>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+        rockchip,camera-module-name = "HDMI-MIPI3"; 
+        rockchip,camera-module-lens-name = "default"; 
+        port { 
+			tp9950_out2: endpoint { 
+				remote-endpoint = <&mipi_in2_tp9950>; 
+				data-lanes = <1 2>; 
+                        }; 
+             }; 
+        };
+};
+
+&csi2_dphy2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi_in2_tp9950: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&tp9950_out2>;
+				data-lanes = <1 2>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidphy2_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi3_csi2_input>;
+			};
+		};
+	};
+};
+
+&csi2_dphy1_hw {
+	status = "okay";
+};
+
+&mipi3_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi3_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidphy2_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi3_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in3>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds3 {
+	status = "okay";
+
+	port {
+		cif_mipi_in3: endpoint {
+			remote-endpoint = <&mipi3_csi2_output>;
+		};
+	};
+};
+
+&i2c3 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c3m2_xfer>;
+	status = "okay";
+
+	tp99503: tp99503@45 {
+        status = "okay";
+        compatible = "techpoint,tp9950";
+        reg = <0x45>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk"; 
+		reset-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tp9950_reset3>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+        rockchip,camera-module-name = "HDMI-MIPI4"; 
+        rockchip,camera-module-lens-name = "default"; 
+        port { 
+			tp9950_out3: endpoint { 
+				remote-endpoint = <&mipi_in3_tp9950>; 
+				data-lanes = <1 2>; 
+                        }; 
+             }; 
+        };
+};
+
+&csi2_dphy4 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi_in3_tp9950: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&tp9950_out3>;
+				data-lanes = <1 2>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidphy4_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi4_csi2_input>;
+			};
+		};
+	};
+};
+
+&mipi4_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi4_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidphy4_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi4_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in4>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds4 {
+	status = "okay";
+
+	port {
+		cif_mipi_in4: endpoint {
+			remote-endpoint = <&mipi4_csi2_output>;
+		};
+	};
+};
+
+&i2c5 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c5m2_xfer>;
+	status = "okay";
+
+	tp99504: tp99504@45 {
+        status = "okay";
+        compatible = "techpoint,tp9950";
+        reg = <0x45>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk"; 
+		reset-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tp9950_reset4>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+        rockchip,camera-module-name = "HDMI-MIPI5"; 
+        rockchip,camera-module-lens-name = "default"; 
+        port { 
+			tp9950_out4: endpoint { 
+				remote-endpoint = <&mipi_in4_tp9950>; 
+				data-lanes = <1 2>; 
+                        }; 
+             }; 
+        };
+};
+
+&csi2_dphy5 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi_in4_tp9950: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&tp9950_out4>;
+				data-lanes = <1 2>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidphy5_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi5_csi2_input>;
+			};
+		};
+	};
+};
+
+&mipi5_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi5_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidphy5_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi5_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in5>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds5 {
+	status = "okay";
+
+	port {
+		cif_mipi_in5: endpoint {
+			remote-endpoint = <&mipi5_csi2_output>;
+		};
+	};
+};
+
+&i2c8 {
+	clock-frequency = <400000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c8m3_xfer>;
+	status = "okay";
+
+	tp99505: tp99505@45 {
+        status = "okay";
+        compatible = "techpoint,tp9950";
+        reg = <0x45>;
+        clocks = <&ext_cam_clk>;
+        clock-names = "xvclk"; 
+		reset-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tp9950_reset5>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+        rockchip,camera-module-name = "HDMI-MIPI0"; 
+        rockchip,camera-module-lens-name = "default"; 
+        port { 
+			tp9950_out5: endpoint { 
+				remote-endpoint = <&mipi_in5_tp9950>; 
+				data-lanes = <1 2>; 
+                        }; 
+             }; 
+        };
+};
+
+&csi2_dcphy0 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi_in5_tp9950: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&tp9950_out5>;
+				data-lanes = <1 2>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			csidcphy0_out: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&mipi0_csi2_input>;
+			};
+		};
+	};
+};
+
+&mipi0_csi2 {
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi0_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&csidcphy0_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			mipi0_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in0>;
+			};
+		};
+	};
+};
+
+&rkcif_mipi_lvds {
+	status = "okay";
+
+	port {
+		cif_mipi_in0: endpoint {
+			remote-endpoint = <&mipi0_csi2_output>;
+		};
+	};
+};
+
+&rkcif {
+	status = "okay";
+};
+
+&rkcif_mmu {
+	status = "okay";
+};
+
+&pinctrl {
 	usb-typec {
 		typec5v_pwren: typec5v-pwren {
 			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 	
+	tp9950 {
+		tp9950_pwren: tp9950-pwren {
+			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		tp9950_reset1: tp9950-reset1 {
+			rockchip,pins = <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
 
+		};
+		tp9950_reset2: tp9950-reset2 {
+			rockchip,pins = <4 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>;
+
+		};
+		tp9950_reset3: tp9950-reset3 {
+			rockchip,pins = <4 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>;
+
+		};
+		tp9950_reset4: tp9950-reset4 {
+			rockchip,pins = <4 RK_PB1 RK_FUNC_GPIO &pcfg_pull_up>;
+
+		};
+		tp9950_reset5: tp9950-reset5 {
+			rockchip,pins = <4 RK_PB7 RK_FUNC_GPIO &pcfg_pull_up>;
+
+		};
+	};
+	
+	i2c_io {
+		i2c_gpio_pins: i2c-gpio-pins{
+			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>,
+			<1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
 };
-

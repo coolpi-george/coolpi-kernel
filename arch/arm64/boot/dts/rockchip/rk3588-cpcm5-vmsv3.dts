@@ -18,7 +18,7 @@
 #include "rk3588-rk806-single.dtsi"
 
 / {
-	model = "RK3588 CoolPi CM5 VMSV2 Board";
+	model = "RK3588 CoolPi CM5 VMSV3 Board";
 	compatible = "rockchip,rk3588-core", "rockchip,rk3588";
 	
 	aliases {
