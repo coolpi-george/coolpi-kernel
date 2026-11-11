@@ -283,7 +283,7 @@ static void __techpoint_power_off(struct techpoint *techpoint)
 	if (!IS_ERR(techpoint->reset_gpio))
 		gpiod_set_value_cansleep(techpoint->reset_gpio, 1);
 
-	if (IS_ERR(techpoint->xvclk))
+	if (!IS_ERR(techpoint->xvclk))
 		clk_disable_unprepare(techpoint->xvclk);
 
 	if (!IS_ERR_OR_NULL(techpoint->pins_sleep)) {
@@ -511,6 +511,22 @@ static int techpoint_g_mbus_config(struct v4l2_subdev *sd,
 		cfg->type = V4L2_MBUS_CSI2_DPHY;
 		cfg->bus.mipi_csi2.num_data_lanes = techpoint->data_lanes;
 	}
+
+	return 0;
+}
+
+static int techpoint_enum_frame_interval(struct v4l2_subdev *sd,
+					 struct v4l2_subdev_state *sd_state,
+					 struct v4l2_subdev_frame_interval_enum *fie)
+{
+	struct techpoint *techpoint = to_techpoint(sd);
+
+	if (fie->index >= techpoint->video_modes_num)
+		return -EINVAL;
+
+	fie->width = techpoint->video_modes[fie->index].width;
+	fie->height = techpoint->video_modes[fie->index].height;
+	fie->interval = techpoint->video_modes[fie->index].max_fps;
 
 	return 0;
 }
@@ -824,6 +840,7 @@ static const struct v4l2_subdev_video_ops techpoint_video_ops = {
 static const struct v4l2_subdev_pad_ops techpoint_subdev_pad_ops = {
 	.enum_mbus_code = techpoint_enum_mbus_code,
 	.enum_frame_size = techpoint_enum_frame_sizes,
+	.enum_frame_interval = techpoint_enum_frame_interval,
 	.get_fmt = techpoint_get_fmt,
 	.set_fmt = techpoint_set_fmt,
 	.get_mbus_config = techpoint_g_mbus_config,
@@ -1356,6 +1373,17 @@ static int techpoint_sysfs_init(struct i2c_client *client,
 	return 0;
 }
 
+static void techpoint_sysfs_cleanup(struct techpoint *techpoint)
+{
+	struct device *dev = &techpoint->dev;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(techpoint_attrs); i++)
+		device_remove_file(dev, &techpoint_attrs[i]);
+
+	device_unregister(dev);
+}
+
 static int techpoint_probe(struct i2c_client *client,
 			   const struct i2c_device_id *id)
 {
@@ -1376,12 +1404,7 @@ static int techpoint_probe(struct i2c_client *client,
 	techpoint->client = client;
 	techpoint->supplies = NULL;
 
-	techpoint_sysfs_init(client, techpoint);
-
 	mutex_init(&techpoint->mutex);
-
-	sd = &techpoint->subdev;
-	v4l2_i2c_subdev_init(sd, client, &techpoint_subdev_ops);
 
 	techpoint_analyze_dts(techpoint);
 
@@ -1397,6 +1420,8 @@ static int techpoint_probe(struct i2c_client *client,
 		goto err_power_off;
 	}
 
+	sd = &techpoint->subdev;
+	v4l2_i2c_subdev_init(sd, client, &techpoint_subdev_ops);
 	ret = techpoint_initialize_controls(techpoint);
 	if (ret) {
 		dev_err(dev, "Failed to initialize controls techpoint\n");
@@ -1441,6 +1466,7 @@ static int techpoint_probe(struct i2c_client *client,
 		goto err_clean_entity;
 	}
 
+	techpoint_sysfs_init(client, techpoint);
 	pm_runtime_set_active(dev);
 	pm_runtime_enable(dev);
 	pm_runtime_idle(dev);
@@ -1466,6 +1492,7 @@ static void techpoint_remove(struct i2c_client *client)
 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
 	struct techpoint *techpoint = to_techpoint(sd);
 
+	techpoint_sysfs_cleanup(techpoint);
 	v4l2_async_unregister_subdev(sd);
 #if defined(CONFIG_MEDIA_CONTROLLER)
 	media_entity_cleanup(&sd->entity);
